@@ -194,5 +194,573 @@
     "slug": "seabed-sand",
     "prompt": "Use case: photorealistic-natural. Asset type: seamless tileable texture for a side-view underwater game seabed. Edge-to-edge continuous fine warm beige gray Cambrian marine sand, subtle broad natural ripple ridges crossing the frame horizontally with delicate tiny mineral grains. Oblique close top view under diffuse neutral underwater light. Uniform brightness and scale across entire canvas. Perfectly repeating left and right edges with matching ripple heights, no horizon, water column, plants, shells, stones, large objects, dark patches, highlights, shadows, gradients, borders, labels or text. Restrained realistic sandy beige texture, landscape 3:2.",
     "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-8e97fda3-9d8b-41be-b38c-3ceb844894e0.png"
+  },
+  {
+    "slug": "aegirocassis",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "エーギロカシス",
+    "path": "assets/units/aegirocassis.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Aegirocassis (Aegirocassis benmoulai), Radiodont (filter feeder): A radiodont up to 2 m long. Fine bristles on its head appendages sieved plankton from the water. Two rows of flaps ran along each side of its body. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-8fd98086-b7db-44a8-86ea-c8c7f1060dc8.png"
+  },
+  {
+    "slug": "asaphus",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "アサフス・コワレフスキー",
+    "path": "assets/units/asaphus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Asaphus kowalewskii (Asaphus kowalewskii), Trilobite: A trilobite with eyes on tall stalks. Buried in mud, it could still keep watch with its eyes raised like periscopes. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-0723becd-4a2c-45fb-aa1d-a9703cbefd41.png"
+  },
+  {
+    "slug": "baragwanathia",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "バラグワナチア",
+    "path": "assets/units/baragwanathia.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Baragwanathia (Baragwanathia longifolia), Lycopsid (clubmoss): A clubmoss with stems densely covered in slender leaves — a large plant with true leaves for its time. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-434560a9-140b-4a16-94e1-81d3efede71c.png"
+  },
+  {
+    "slug": "cameroceras",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "カメロケラス",
+    "path": "assets/units/cameroceras.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Cameroceras (Cameroceras), Cephalopod (nautiloid): A nautiloid with a straight, cone-shaped shell. Gas in the shell's chambers let it rise and sink, and it seized prey with its tentacles. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-0cf387f0-0e45-4555-8615-c4de9477624e.png"
+  },
+  {
+    "slug": "constellaria",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "コンステラリア（コケムシ）",
+    "path": "assets/units/constellaria.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Constellaria (bryozoan) (Constellaria), Bryozoan colony: Thousands of tiny individuals, each about half a millimetre across, build a branching colony patterned with little stars. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Upright natural pose attached to the bottom, base at the bottom edge. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-464e1d0e-ad62-4126-b6ed-4e148bee174b.png"
+  },
+  {
+    "slug": "cooksonia",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "クックソニア",
+    "path": "assets/units/cooksonia.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Cooksonia (Cooksonia), Vascular plant: A plant just a few centimetres tall made only of Y-shaped branching stems, releasing spores from round capsules at the tips. No leaves, no roots. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-13dbf472-8875-41a7-853b-66503f2601ee.png"
+  },
+  {
+    "slug": "crinoid",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "ウミユリ",
+    "path": "assets/units/crinoid.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Crinoid (sea lily) (Crinoidea), Echinoderm: A relative of sea urchins and starfish that stood on a long stalk, spreading its arms like a flower to catch drifting food. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Upright natural pose attached to the bottom, base at the bottom edge. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-9c224d1a-3052-4ca8-bd37-f560e57daf37.png"
+  },
+  {
+    "slug": "graptolite",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "筆石（グラプトライト）",
+    "path": "assets/units/graptolite.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Graptolite (Graptolithina), Hemichordate colony: A colony of tiny worm-like animals lined up along slender branches, drifting through the sea and feeding on plankton. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-17880de0-3177-4a25-92e3-55eb126c8ead.png"
+  },
+  {
+    "slug": "isotelus",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "イソテルス・レックス",
+    "path": "assets/units/isotelus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Isotelus rex (Isotelus rex), Trilobite: At over 70 cm long, one of the largest trilobites known. It walked slowly over the sea floor in a smooth shell. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-f2dbaa0d-66dc-4f5c-8e57-31f3bf4496eb.png"
+  },
+  {
+    "slug": "megalograptus",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "メガログラプトゥス",
+    "path": "assets/units/megalograptus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Megalograptus (Megalograptus ohioensis), Sea scorpion (eurypterid): An Ordovician sea scorpion over 1 m long. Rows of long spines on its front legs kept prey from escaping. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-0bc4a1aa-f419-43f1-ac88-64091bee6b2f.png"
+  },
+  {
+    "slug": "rafinesquina",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "ラフィネスキナ",
+    "path": "assets/units/rafinesquina.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Rafinesquina (Rafinesquina), Brachiopod: A brachiopod with two flat shells. It lay on the mud and filtered food from water drawn in between them. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Upright natural pose attached to the bottom, base at the bottom edge. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-ac476115-6bb5-4da4-83a5-69fb2c48c6a2.png"
+  },
+  {
+    "slug": "sacabambaspis",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "サカバンバスピス",
+    "path": "assets/units/sacabambaspis.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Sacabambaspis (Sacabambaspis janvieri), Jawless armoured fish: A jawless fish. Its head was covered in bony plates, its eyes sat at the very front of its face and its mouth was always open. It was not a strong swimmer. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-5fe846d0-7fb0-4928-9156-00b32d22c97c.png"
+  },
+  {
+    "slug": "streptelasma",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "ストレプテラスマ",
+    "path": "assets/units/streptelasma.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Streptelasma (Streptelasma), Rugose 'horn' coral: A solitary coral shaped like a cow's horn. It spread tentacles from the open end to catch tiny drifting creatures. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Upright natural pose attached to the bottom, base at the bottom edge. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-7ba75f17-93b2-4fff-823e-d087a93c23d3.png"
+  },
+  {
+    "slug": "calymene",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "カリメネ",
+    "path": "assets/units/calymene.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Calymene (Calymene blumenbachii), Trilobite: A trilobite that could roll itself into a ball for protection; many fossils are found curled up. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-2a450883-21bf-40cf-a851-8ec344ba7f1f.png"
+  },
+  {
+    "slug": "early-land-plants",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "最初の陸の植物（苔類のなかま）",
+    "path": "assets/units/early-land-plants.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: First land plants (liverwort-like) (Early embryophytes), Bryophyte-grade plant: Small flat plants hugging damp ground by the water, with no roots or stems, spreading by spores — among the first plants to turn the land green. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-832a331f-c483-4c44-a5ee-371b6a83db67.png"
+  },
+  {
+    "slug": "entelognathus",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "エンテログナトゥス",
+    "path": "assets/units/entelognathus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Entelognathus (Entelognathus primordialis), Placoderm: An armoured placoderm fish with plated head and chest — yet with jaw bones much like ours. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-43bb5216-4af3-43ac-843c-3b9e35496a41.png"
+  },
+  {
+    "slug": "eurypterus",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "ユーリプテルス",
+    "path": "assets/units/eurypterus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Eurypterus (Eurypterus remipes), Sea scorpion (eurypterid): A sea scorpion that swam with oar-shaped legs and caught small creatures on the floor of shallow lagoons. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-9e6f7db1-a6b1-434a-b31f-8bca532af9d7.png"
+  },
+  {
+    "slug": "favosites",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "ファボシテス（ハチノスサンゴ）",
+    "path": "assets/units/favosites.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Favosites (honeycomb coral) (Favosites), Tabulate coral: A coral colony of slender six-sided tubes packed together like a honeycomb, building large reefs in warm shallow seas. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Upright natural pose attached to the bottom, base at the bottom edge. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-8d377601-784a-49f1-a5da-f90705115b29.png"
+  },
+  {
+    "slug": "pneumodesmus",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "プネウモデスムス",
+    "path": "assets/units/pneumodesmus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Pneumodesmus (Pneumodesmus newmani), Myriapod (millipede): A millipede about 1 cm long with tiny breathing holes (spiracles) along its sides. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-8e96e0b8-a147-45ea-836f-b3287678b82b.png"
+  },
+  {
+    "slug": "prototaxites",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "プロトタキシーテス",
+    "path": "assets/units/prototaxites.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Prototaxites (Prototaxites), Giant fungus: A pillar-like giant up to 8 m tall. It was not a tree but probably a fungus. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-37897f5b-3fbf-46be-b68e-f284f7a28f3d.png"
+  },
+  {
+    "slug": "stromatoporoid",
+    "kind": "unit",
+    "period": "Ordovician",
+    "name": "層孔虫（ストロマトポロイド）",
+    "path": "assets/units/stromatoporoid.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Stromatoporoid (Stromatoporoidea), Sponge: A sponge that grew into lumps and domes by laying down layer after layer of lime. With corals, it built the framework of Paleozoic reefs. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Upright natural pose attached to the bottom, base at the bottom edge. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-e4ca2bb2-a5c7-4bce-9611-2aed979f7f32.png"
+  },
+  {
+    "slug": "acanthostega",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "アカントステガ",
+    "path": "assets/units/acanthostega.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Acanthostega (Acanthostega gunnari), Early tetrapod: One of the first tetrapods, with eight fingers on each hand. But its wrists were weak and it still had gills, so it lived mostly in water. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-54be877c-d79a-4300-bb82-ed56193ee09f.png"
+  },
+  {
+    "slug": "archaeopteris",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "アーケオプテリス",
+    "path": "assets/units/archaeopteris.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Archaeopteris (Archaeopteris), Progymnosperm tree: The first true tree, over 20 m tall, with a woody trunk and leafy branches. It formed forests all over the world. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-da1d73eb-ab55-4253-9e6e-28816c827f41.png"
+  },
+  {
+    "slug": "birkenia",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "ビルケニア",
+    "path": "assets/units/birkenia.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Birkenia (Birkenia elegans), Jawless fish (anaspid): A small jawless fish with a slender, finely scaled body and a tail fin longer below than above. It swam in shoals. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-487e538f-74e3-4f16-b711-33ba37d380cc.png"
+  },
+  {
+    "slug": "eospermatopteris",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "エオスペルマトプテリス",
+    "path": "assets/units/eospermatopteris.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Eospermatopteris (Eospermatopteris (Wattieza)), Cladoxylopsid tree: About 8 m tall, with a crown of branchlets but no leaves — a palm-like tree from the oldest known forest. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-de481c2f-5ab3-4bfd-9363-43559a6990a1.png"
+  },
+  {
+    "slug": "guiyu",
+    "kind": "unit",
+    "period": "Silurian",
+    "name": "グイユー",
+    "path": "assets/units/guiyu.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Guiyu (Guiyu oneiros), Lobe-finned bony fish: One of the oldest bony fishes known from a complete body, with thick scales, fleshy fins and spines on its back. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-cdaf0563-e490-40e5-bdff-d8382b53103f.png"
+  },
+  {
+    "slug": "jaekelopterus",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "イェーケロプテルス",
+    "path": "assets/units/jaekelopterus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Jaekelopterus (Jaekelopterus rhenaniae), Sea scorpion (eurypterid): Its claw alone was 46 cm long and its body perhaps 2.5 m — one of the biggest arthropods ever. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-1c291f25-b005-497f-bbe5-1d67c24aa2bf.png"
+  },
+  {
+    "slug": "manticoceras",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "マンティコセラス",
+    "path": "assets/units/manticoceras.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Manticoceras (Manticoceras), Cephalopod (ammonoid): An ammonoid — an early relative of ammonites — with a tightly coiled shell. The walls between its chambers trace wavy lines. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-4c252e3d-d8dd-4f57-b521-aa201095cf83.png"
+  },
+  {
+    "slug": "materpiscis",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "マテルピスキス",
+    "path": "assets/units/materpiscis.png",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-382525a7-f7cf-4b97-9c98-ce4aed39e082.png",
+    "prompt": "Use case: precise-object-edit. Edit target: this transparent Materpiscis placoderm fish game sprite. Correct ONLY the abdomen: completely remove the visible embryo, umbilical cord, translucent anatomical window and cutaway appearance. Replace this area with ordinary opaque intact healthy fish skin and fine scales consistent with the surrounding body. This is an external life reconstruction of a normal healthy fish, not an anatomy diagram. Preserve the exact full right-facing silhouette, head armor plates, eye, fins, tail, proportions, natural lighting and genuine transparent background outside the fish. No internal organs, embryos, inset, labels, scenery or text.",
+    "replace": true
+  },
+  {
+    "slug": "palaeocharinus",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "パレオカリヌス",
+    "path": "assets/units/palaeocharinus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Palaeocharinus (Palaeocharinus), Arachnid (trigonotarbid): A tiny spider-like hunter (a trigonotarbid). It spun no silk, but ambushed small creatures among the plants. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-d0a51857-d77b-410d-b8a7-cf94b6b5cfed.png"
+  },
+  {
+    "slug": "rhynia",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "ライニア",
+    "path": "assets/units/rhynia.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Rhynia (Rhynia gwynne-vaughanii), Vascular plant: A leafless plant about 20 cm tall that grew in a hot-spring wetland. Minerals in the spring water turned it to stone so fast that even its cells survive. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-a5a18297-2612-4d5d-ab9e-3342b16d6896.png"
+  },
+  {
+    "slug": "schinderhannes",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "シンダーハンネス",
+    "path": "assets/units/schinderhannes.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Schinderhannes (Schinderhannes bartelsi), Radiodont: It had big eyes, spiny grasping arms and a pair of large wing-like flaps on its back. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-fb6a1689-8849-4bc3-9f1a-8b74e7c58c4c.png"
+  },
+  {
+    "slug": "walliserops",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "ワリセロプス",
+    "path": "assets/units/walliserops.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Walliserops (Walliserops trifurcatus), Trilobite: A spiny trilobite with a trident-like prong sticking out from the front of its head. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-80c9f039-cedd-4d58-b22f-905da048a023.png"
+  },
+  {
+    "slug": "bothriolepis",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "ボスリオレピス",
+    "path": "assets/units/bothriolepis.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Bothriolepis (Bothriolepis canadensis), Placoderm (antiarch): A fish in a box of bony armour, with thin, crab-leg-like pectoral fins. It grubbed for food in the mud of rivers and estuaries. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-f2ac211b-1d79-4273-8965-5906c7527ea9.png"
+  },
+  {
+    "slug": "dunkleosteus",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "ダンクルオステウス",
+    "path": "assets/units/dunkleosteus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Dunkleosteus (Dunkleosteus terrelli), Placoderm (arthrodire): The armoured-headed ruler of the Devonian seas. It had no teeth; the edges of its jaw bones were sharp as blades. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-6522c523-dd77-43b1-8fe5-444edf0ebe64.png"
+  },
+  {
+    "slug": "eusthenopteron",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "ユーステノプテロン",
+    "path": "assets/units/eusthenopteron.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Eusthenopteron (Eusthenopteron foordi), Lobe-finned fish: A fish whose fins held bones in the same pattern as our arms: humerus, radius and ulna. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-c7b7c7b3-4a77-4dc6-80a5-7401ebaa1a47.png"
+  },
+  {
+    "slug": "gigantoproductus",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "ギガントプロダクトゥス",
+    "path": "assets/units/gigantoproductus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Gigantoproductus (Gigantoproductus), Brachiopod: The largest brachiopod ever, over 30 cm wide. It lived in groups, its heavy shell settled into the sea floor. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Upright natural pose attached to the bottom, base at the bottom edge. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-1c2327b2-6d2f-4b58-9de6-b0e9acc69402.png"
+  },
+  {
+    "slug": "ichthyostega",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "イクチオステガ",
+    "path": "assets/units/ichthyostega.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Ichthyostega (Ichthyostega), Early tetrapod: A tetrapod with powerful shoulders and forelimbs that could haul itself ashore like a seal. Its tail still had a fish-like fin. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-2e1db07a-2946-4aa7-866e-37a49f9d660b.png"
+  },
+  {
+    "slug": "tiktaalik",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "ティクターリク",
+    "path": "assets/units/tiktaalik.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Tiktaalik (Tiktaalik roseae), Lobe-finned 'fishapod': A fish with a flat, crocodile-like head, a neck and sturdy front fins strong enough to prop up its body and lift its head out of the shallows. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-b7b864c0-5b40-4c74-97bb-fc01db145966.png"
+  },
+  {
+    "slug": "arthropleura",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "アースロプレウラ",
+    "path": "assets/units/arthropleura.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Arthropleura (Arthropleura), Giant myriapod: At up to 2.5 m long, the largest land arthropod ever — a millipede relative that roamed the forest floor eating plants. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-676038c3-5680-4c46-adf4-c1eea4464bcd.png"
+  },
+  {
+    "slug": "calamites",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "カラミテス（ロボク）",
+    "path": "assets/units/calamites.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Calamites (Calamites), Giant horsetail: A horsetail up to 10 m tall with a jointed, bamboo-like trunk, growing thickly along rivers and swamps. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-9e05c57c-3b51-4adc-b46a-fd7e6a13f9aa.png"
+  },
+  {
+    "slug": "cladoselache",
+    "kind": "unit",
+    "period": "Devonian",
+    "name": "クラドセラケ",
+    "path": "assets/units/cladoselache.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Cladoselache (Cladoselache), Early shark: An early shark with a streamlined body much like modern sharks. It was a fast swimmer and had almost no scales. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-5c904fa8-70a0-49b3-8bba-3f410084c09f.png"
+  },
+  {
+    "slug": "dendrerpeton",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "デンドレルペトン",
+    "path": "assets/units/dendrerpeton.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Dendrerpeton (Dendrerpeton), Amphibian (temnospondyl): A big-headed amphibian that walked the waterside forests, eating insects and other small animals. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-ef1a3bd4-1038-4ea0-81fa-ac22ea97c4b7.png"
+  },
+  {
+    "slug": "hylonomus",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "ヒロノムス",
+    "path": "assets/units/hylonomus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Hylonomus (Hylonomus lyelli), Early reptile (amniote): A lizard-like animal and one of the oldest reptiles, able to lay shelled eggs on land. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-626e2102-9230-4dbb-b494-4585f2e7b77d.png"
+  },
+  {
+    "slug": "lepidodendron",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "レピドデンドロン（鱗木）",
+    "path": "assets/units/lepidodendron.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Lepidodendron (scale tree) (Lepidodendron), Giant lycopsid tree: A clubmoss relative over 30 m tall with a trunk patterned like scales. It formed vast swamp forests. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-88ab882a-6c18-4ed0-9102-2184c4c196e6.png"
+  },
+  {
+    "slug": "meganeura",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "メガネウラ",
+    "path": "assets/units/meganeura.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Meganeura (Meganeura monyi), Insect (griffinfly): A giant dragonfly-like insect with a 70 cm wingspan that caught other flying insects in mid-air. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Flying, wings spread, three-quarter side view, head pointing RIGHT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-127eea3f-7acb-4bb2-95f3-0565c702c129.png"
+  },
+  {
+    "slug": "pulmonoscorpius",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "プルモノスコルピウス",
+    "path": "assets/units/pulmonoscorpius.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Pulmonoscorpius (Pulmonoscorpius kirktonensis), Scorpion: A giant scorpion up to 70 cm long that breathed air on land and may even have hunted small tetrapods. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-7186fc6e-6fc5-40aa-b722-7faf2a65ddc9.png"
+  },
+  {
+    "slug": "stethacanthus",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "ステタカントゥス",
+    "path": "assets/units/stethacanthus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Stethacanthus (Stethacanthus), Shark relative: A shark relative with a strange flat-topped 'ironing board' fin on its back, its top covered in small tooth-like spines. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-7de11093-49ce-4ea2-8ea5-894b2e8a022b.png"
+  },
+  {
+    "slug": "tullimonstrum",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "ツリモンストラム（トゥリーモンスター）",
+    "path": "assets/units/tullimonstrum.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Tullimonstrum (Tully monster) (Tullimonstrum gregarium), Animal of uncertain affinity: Claw-like jaws at the end of a long snout, and eyes on the ends of a sideways bar. Scientists still argue about what kind of animal it was. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-5a0fa6ff-de73-474d-a9a3-64f1824dfb89.png"
+  },
+  {
+    "slug": "archimylacris",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "アーキミラクリス",
+    "path": "assets/units/archimylacris.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Archimylacris (Archimylacris), Insect (roachoid): A cockroach-like insect that lived in the leaf litter of the forest floor. They were very common in Carboniferous forests. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-3aa86561-a0e8-4da5-a37b-36421291f2d4.png"
+  },
+  {
+    "slug": "dimetrodon",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "ディメトロドン",
+    "path": "assets/units/dimetrodon.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Dimetrodon (Dimetrodon grandis), Synapsid (pelycosaur): The sail-backed top predator of the Early Permian. Not a dinosaur, but a synapsid — on the line leading to mammals like us. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-50a04cfa-c55d-4d48-b7fb-64ef14790821.png"
+  },
+  {
+    "slug": "diplocaulus",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "ディプロカウルス",
+    "path": "assets/units/diplocaulus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Diplocaulus (Diplocaulus magnicornis), Amphibian (lepospondyl): An amphibian with a boomerang-shaped head that lived on the beds of rivers and ponds. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-fe88def4-886c-46a6-b82f-b94ec6996a98.png"
+  },
+  {
+    "slug": "ditomopyge",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "ディトモピゲ",
+    "path": "assets/units/ditomopyge.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Ditomopyge (Ditomopyge), Trilobite: One of the last trilobites. After more than 270 million years, trilobites vanished at the end of the Permian. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-de94be3b-8bde-41fa-a7e8-31959f288289.png"
+  },
+  {
+    "slug": "eryops",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "エリオプス",
+    "path": "assets/units/eryops.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Eryops (Eryops megacephalus), Amphibian (temnospondyl): A heavy-set amphibian about 2 m long whose big head snapped up fish and small animals at the water's edge. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-290937f8-368b-474d-9995-3db113e5fd9d.png"
+  },
+  {
+    "slug": "glossopteris",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "グロッソプテリス",
+    "path": "assets/units/glossopteris.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Glossopteris (Glossopteris), Seed-fern tree: A tree with tongue-shaped leaves that spread across the cool lands of Gondwana, reproducing with seeds. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-2d28bca2-4c82-456a-afc4-1cb0fdc8a6cc.png"
+  },
+  {
+    "slug": "helicoprion",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "ヘリコプリオン",
+    "path": "assets/units/helicoprion.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Helicoprion (Helicoprion), Ratfish relative: A fish with a spiral whorl of teeth in its lower jaw, used to slice soft prey such as squid. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-ad1f534a-7f08-4b77-95c2-6211aee8243b.png"
+  },
+  {
+    "slug": "inostrancevia",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "イノストランケビア",
+    "path": "assets/units/inostrancevia.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Inostrancevia (Inostrancevia alexandri), Synapsid (gorgonopsian): A large Late Permian predator with sabre-like canine teeth up to 12 cm long. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-80c080b1-dae1-4a50-be1b-837a9420dadb.png"
+  },
+  {
+    "slug": "lystrosaurus",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "リストロサウルス",
+    "path": "assets/units/lystrosaurus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Lystrosaurus (Lystrosaurus), Synapsid (dicynodont): A pig-sized plant-eater with a beak and two tusks that probably lived in burrows. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-0e514ed6-814b-4f95-bb16-728b87cb05d3.png"
+  },
+  {
+    "slug": "mesosaurus",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "メソサウルス",
+    "path": "assets/units/mesosaurus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Mesosaurus (Mesosaurus tenuidens), Aquatic reptile: A water-dwelling reptile with long, slender jaws full of needle-like teeth, swimming with its long tail. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view swimming pose, head pointing RIGHT and tail LEFT. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-1d13fd31-ba58-4e5d-b039-d20c244ebba5.png"
+  },
+  {
+    "slug": "parafusulina",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "パラフズリナ（紡錘虫）",
+    "path": "assets/units/parafusulina.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Parafusulina (fusulinid) (Parafusulina), Foraminifer (fusulinid): A single-celled organism (a foraminifer) with a rice-grain-shaped shell. The biggest reached 10 cm. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Upright natural pose attached to the bottom, base at the bottom edge. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-4830ebc6-9725-4609-946e-5a8ee4740127.png"
+  },
+  {
+    "slug": "psaronius",
+    "kind": "unit",
+    "period": "Carboniferous",
+    "name": "プサロニウス（木生シダ）",
+    "path": "assets/units/psaronius.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Psaronius (tree fern) (Psaronius), Tree fern: A tree-like fern about 10 m tall. A thick mantle of roots wrapped its trunk, and large fronds spread from the top. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-7683c210-8991-420d-b5f4-11a2afa9f403.png"
+  },
+  {
+    "slug": "scutosaurus",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "スクトサウルス",
+    "path": "assets/units/scutosaurus.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Scutosaurus (Scutosaurus karpinskii), Reptile (pareiasaur): A bulky plant-eating reptile studded with bony knobs, with spiky projections on its cheeks. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-02369658-c528-411c-b6b6-1c4a3c25f0c9.png"
+  },
+  {
+    "slug": "walchia",
+    "kind": "unit",
+    "period": "Permian",
+    "name": "ワルキア",
+    "path": "assets/units/walchia.png",
+    "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Walchia (Walchia), Early conifer: An early conifer with neat tiers of level branches, like a modern monkey-puzzle relative. It could grow on dry ground. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene. Genuine transparent alpha background. One isolated organism only, no environmental substrate, rock, seabed, pedestal, cast shadow or supporting object. Full silhouette and every appendage inside frame. For rooted plants keep the base at bottom and show complete crown without a soil platform. Preserve the specified right-facing orientation; lateral or subtle three-quarter view, not a top-down diagram.",
+    "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b1e9-8e43-7200-8a99-e0f256b7552e\\exec-2753612e-5e3e-457b-b0ec-53621d9f8fbf.png"
   }
 ]

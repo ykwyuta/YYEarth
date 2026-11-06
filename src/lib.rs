@@ -11,6 +11,8 @@
 mod lang;
 mod art;
 mod artwork;
+#[cfg(test)]
+mod asset_list;
 mod units;
 mod reveal;
 mod dive;

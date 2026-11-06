@@ -1,4 +1,7 @@
-"""Compress generated originals for the embedded, offline field guide."""
+"""Compress generated originals for the embedded, offline field guide.
+
+Add new entries (slug, prompt, source) to assets/artwork/manifest.json. Slugs and suggested
+prompts for everything still missing are in assets/requests.json and docs/asset-requests.md."""
 import json
 from pathlib import Path
 from PIL import Image, ImageDraw
@@ -16,7 +19,7 @@ def main():
         if not target.exists():
             image = Image.open(source).convert("RGB")
             size = (768, 768) if entry["slug"] == "ms-toki" else (
-                (1536, 1024) if entry["slug"] in ("title", "shallow-sea", "deep-sea") else (960, 640))
+                (1536, 1024) if entry["slug"] in ("title", "shallow-sea", "deep-sea") or entry["slug"].startswith("backdrop-") else (960, 640))
             image.thumbnail(size,
                             Image.Resampling.LANCZOS)
             image.save(target, quality=88, optimize=True, progressive=False)
