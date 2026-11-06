@@ -13,6 +13,8 @@ def read(path):
 
 def main():
     requests=read(ROOT/'assets/requests.json')
+    batch=(read(ROOT/sys.argv[sys.argv.index('--batch')+1]) if '--batch' in sys.argv else None)
+    selected={entry['slug'] for entry in batch} if batch is not None else None
     missing=[]
     invalid=[]
     checked=Counter()
@@ -48,7 +50,8 @@ def main():
                 invalid.append({'slug':request['slug'],'kind':kind,'error':str(error)})
     for period in ['Ordovician','Silurian','Devonian','Carboniferous','Permian']:
         for kind in ('artwork','unit'):
-            entries=[r for r in requests if r.get('period')==period and kind in r and (ROOT/r[kind]['path']).exists()]
+            entries=[r for r in requests if r.get('period')==period and kind in r and (ROOT/r[kind]['path']).exists()
+                     and (selected is None or r['slug'] in selected)]
             width,height=(240,190) if kind=='artwork' else (240,190)
             columns=5
             sheet=Image.new('RGB',(columns*width,max(1,(len(entries)+columns-1)//columns)*height),'#123344')
@@ -61,7 +64,8 @@ def main():
                     point=(x+(width-image.width)//2,y+(height-30-image.height)//2)
                     sheet.paste(image,point,image if image.mode=='RGBA' else None)
                     draw.text((x+5,y+height-22),e['slug'],fill='#e9f0ec')
-            sheet.save(OUTPUT/f'{period.lower()}-{kind}.jpg',quality=92)
+            prefix='new-' if selected is not None else ''
+            sheet.save(OUTPUT/f'{prefix}{period.lower()}-{kind}.jpg',quality=92)
     backdrops=[r for r in requests if r.get('kind')=='backdrop' and (ROOT/r['artwork']['path']).exists()]
     sheet=Image.new('RGB',(1280,max(1,(len(backdrops)+3)//4)*205),'#123344')
     draw=ImageDraw.Draw(sheet)

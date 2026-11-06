@@ -264,7 +264,7 @@ impl Scene {
             }
             s.present.push(i);
             let a = abundance(sp, earth, spot, t) * if volcanic > 0.5 { 0.4 } else { 1.0 };
-            let count = ((a * 1.5 * rng.range(0.7, 1.3)).round() as usize).max(1).min(16);
+            let count = ((a * 1.8 * rng.range(0.7, 1.3)).round() as usize).max(1).min(18);
             for _ in 0..count {
                 s.spawn(i);
             }

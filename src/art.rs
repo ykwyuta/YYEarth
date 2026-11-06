@@ -178,6 +178,10 @@ pub fn draw(g: &mut Gfx, sp: usize, x: f32, y: f32, len: f32, facing: f32, pitch
         Art::Griffinfly => griffinfly(g, &pen, c, c2, t),
         Art::Tully => tully(g, &pen, c, c2, t),
         Art::Fusulinid => fusulinid(g, &pen, c, c2, seed),
+        Art::Mollusc(k) => mollusc(g, &pen, k, c, c2, t),
+        Art::Starfish => starfish(g, &pen, c, c2, t),
+        Art::RayFin => rayfin(g, &pen, c, c2, t),
+        Art::Limulid => limulid(g, &pen, c, c2, t),
     }
 }
 
@@ -214,6 +218,11 @@ pub fn extent(sp: usize) -> (f32, f32) {
         Art::Griffinfly => (1.0, 0.9),
         Art::Tully => (1.2, 0.4),
         Art::Fusulinid => (1.0, 0.3),
+        Art::Mollusc(1) => (0.7, 0.6),
+        Art::Mollusc(_) => (0.95, 0.75),
+        Art::Starfish => (1.0, 1.0),
+        Art::RayFin => (1.05, 0.3),
+        Art::Limulid => (1.0, 0.75),
         _ => (1.0, 0.4),
     }
 }
@@ -224,6 +233,7 @@ pub fn base_lift(sp: usize) -> f32 {
         Art::Sponge(_) | Art::Archaeocyath | Art::Tubes | Art::Brachiopod => 0.45,
         Art::Stromatolite => 0.2,
         Art::Crinoid | Art::Coral(_) | Art::Plant(_) | Art::Fusulinid => 0.5,
+        Art::Mollusc(1) => 0.45,
         // 歩く動物は足の裏（v=0）を地面に置く
         _ => 0.0,
     }
@@ -1895,5 +1905,90 @@ pub(crate) fn stromatoporoid(g: &mut Gfx, pen: &Pen, c: [f32; 3], c2: [f32; 3], 
     for i in 0..8 {
         let u = -0.35 + i as f32 * 0.1;
         circ(g, &p0, u, -0.5 + 0.4 * (1.0 - (u / 0.5).powi(2)).max(0.0).sqrt(), 0.012, mul(c2, 0.7), 0.7);
+    }
+}
+
+pub(crate) fn mollusc(g: &mut Gfx, pen: &Pen, k: u8, c: [f32; 3], c2: [f32; 3], t: f32) {
+    if k == 1 {
+        // 二枚貝：海底に立てた殻（少し開く）
+        let p0 = Pen { fx: 1.0, ..*pen };
+        let open = ((t * 0.6).sin() * 0.5 + 0.5) * 0.04;
+        ell(g, &p0, -open, -0.18, 0.3, 0.26, 0.15, mul(c, 0.8), 1.0);
+        ell(g, &p0, open, -0.18, 0.3, 0.26, -0.15, c, 1.0);
+        for i in 1..5 {
+            let f = 1.0 - i as f32 * 0.18;
+            ell(g, &p0, open, -0.18 - (1.0 - f) * 0.2, 0.3 * f, 0.26 * f, -0.15, if i % 2 == 0 { c } else { mix(c, c2, 0.4) }, 0.9);
+        }
+        return;
+    }
+    // 巻貝：這う足の上に巻いた殻
+    let crawl = (t * 1.5).sin() * 0.01;
+    ell(g, pen, 0.05 + crawl, 0.04, 0.42, 0.06, 0.0, mix(c2, WHITE, 0.2), 1.0);
+    seg(g, pen, 0.38, 0.07, 0.48, 0.16, 0.012, c2, 1.0);
+    seg(g, pen, 0.34, 0.07, 0.42, 0.18, 0.012, c2, 1.0);
+    for r in 0..4 {
+        let rr = 0.3 - r as f32 * 0.07;
+        ell(g, pen, -0.05 + r as f32 * 0.03, 0.08 + rr, rr, rr * 0.95, 0.0, if r % 2 == 0 { c } else { mix(c, c2, 0.35) }, 1.0);
+    }
+}
+
+pub(crate) fn starfish(g: &mut Gfx, pen: &Pen, c: [f32; 3], c2: [f32; 3], t: f32) {
+    let wob = (t * 0.8).sin() * 0.04;
+    for k in 0..5 {
+        let a = k as f32 / 5.0 * TAU + wob * if k % 2 == 0 { 1.0 } else { -1.0 };
+        let (s, co) = a.sin_cos();
+        taper(g, pen, &[(0.0, 0.0), (co * 0.25, s * 0.25), (co * 0.48, s * 0.48)], 0.2, 0.04, c, 1.0);
+        for q in 1..5 {
+            let f = q as f32 / 5.0 * 0.45;
+            circ(g, pen, co * f, s * f, 0.018, c2, 0.8);
+        }
+    }
+    circ(g, pen, 0.0, 0.0, 0.09, mix(c, c2, 0.3), 1.0);
+}
+
+pub(crate) fn rayfin(g: &mut Gfx, pen: &Pen, c: [f32; 3], c2: [f32; 3], t: f32) {
+    let wv = |f: f32| (f * 6.0 - t * 9.0).sin() * 0.035 * f * f;
+    let prof = |f: f32| {
+        let h = if f < 0.18 { 0.09 * (f / 0.18).sqrt() } else { 0.09 * (1.0 - (f - 0.18) / 0.82 * 0.8) };
+        (h, h * 0.85)
+    };
+    let (top, bot, mid) = body_strip(g, pen, 18, &prof, &wv, c);
+    // うろこの列と、お腹の明るい色
+    for i in 2..16 {
+        let (u, v) = mid[i];
+        seg(g, pen, u, v - 0.01, u - 0.03, (v + bot[i].1) * 0.5, 0.025, c2, 0.45);
+        circ(g, pen, u, v + 0.025, 0.01, mix(c, WHITE, 0.25), 0.5);
+    }
+    // 背びれ・しりびれ・二股の尾びれ
+    poly(g, pen, &[(-0.02, top[9].1), (-0.12, top[11].1 + 0.07), (-0.16, top[11].1)], mul(c, 0.8), 1.0);
+    poly(g, pen, &[(-0.1, bot[11].1), (-0.2, bot[12].1 - 0.06), (-0.24, bot[13].1)], mul(c, 0.8), 1.0);
+    let (u, v) = mid[17];
+    poly(g, pen, &[(u + 0.04, v), (u - 0.1, v + 0.12), (u - 0.04, v), (u - 0.09, v - 0.08)], mul(c, 0.85), 1.0);
+    eye(g, pen, 0.43, mid[1].1 + 0.02, 0.018);
+    seg(g, pen, 0.5, mid[0].1 - 0.01, 0.4, mid[1].1 - 0.035, 0.008, INK, 0.7);
+}
+
+pub(crate) fn limulid(g: &mut Gfx, pen: &Pen, c: [f32; 3], c2: [f32; 3], t: f32) {
+    let walk = (t * 6.0).sin() * 0.01;
+    // 尾のとげ
+    taper(g, pen, &[(-0.2, 0.0), (-0.5, walk)], 0.04, 0.01, mul(c, 0.8), 1.0);
+    // 腹の甲羅（トゲつき）
+    poly(g, pen, &[(0.05, 0.22), (-0.22, 0.14), (-0.24, -0.14), (0.05, -0.22)], mul(c, 0.9), 1.0);
+    for sgn in [-1.0f32, 1.0] {
+        for q in 0..3 {
+            let u = -0.02 - q as f32 * 0.08;
+            seg(g, pen, u, sgn * 0.18, u - 0.03, sgn * 0.26, 0.012, c2, 0.9);
+        }
+    }
+    // 頭の半月形の甲羅
+    let mut pts = vec![(0.05, 0.0)];
+    for i in 0..=14 {
+        let a = -PI * 0.5 + i as f32 / 14.0 * PI;
+        pts.push((0.05 + a.cos() * 0.42, a.sin() * 0.34));
+    }
+    poly(g, pen, &pts, c, 1.0);
+    seg(g, pen, 0.05, 0.0, 0.42, 0.0, 0.01, mul(c, 0.7), 0.7);
+    for sgn in [-1.0f32, 1.0] {
+        circ(g, pen, 0.26, sgn * 0.14, 0.018, INK, 1.0);
     }
 }

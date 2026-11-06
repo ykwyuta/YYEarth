@@ -12,8 +12,8 @@
 
 ## 進み具合
 
-- 図鑑の画像：112/112（生きもの99・現象13）
-- 観察用スプライト：99/99
+- 図鑑の画像：167/167（生きもの154・現象13）
+- 観察用スプライト：154/154
 - 遠景（任意）：16/16
 
 ## カンブリア紀（Cambrian）
@@ -78,6 +78,15 @@
 | `megalograptus` | メガログラプトゥス | *Megalograptus ohioensis* | ウミサソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
 | `early-land-plants` | 最初の陸の植物（苔類のなかま） | *Early embryophytes* | コケ植物 | 立っている植物 | ✅ | ✅ |
 | `stromatoporoid` | 層孔虫（ストロマトポロイド） | *Stromatoporoidea* | 海綿動物 | 海底に固着 | ✅ | ✅ |
+| `maclurites` | マクルリテス | *Maclurites* | 腹足類（巻貝） | 歩く（横から） | ✅ | ✅ |
+| `ambonychia` | アンボニキア | *Ambonychia* | 二枚貝 | 海底に固着 | ✅ | ✅ |
+| `orthis` | オルティス | *Orthis* | 腕足動物 | 海底に固着 | ✅ | ✅ |
+| `triarthrus` | トリアルトルス | *Triarthrus eatoni* | 三葉虫 | 歩く（横から） | ✅ | ✅ |
+| `neseuretus` | ネセウレトゥス | *Neseuretus* | 三葉虫 | 歩く（横から） | ✅ | ✅ |
+| `orthoceras` | オルトセラス | *Orthoceras* | 頭足類（オウムガイの仲間） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `hudsonaster` | ハドソナスター（古いヒトデ） | *Hudsonaster* | 棘皮動物（ヒトデ） | 歩く（横から） | ✅ | ✅ |
+| `arandaspis` | アランダスピス | *Arandaspis prionotolepis* | 無顎類（甲冑魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `promissum` | プロミッスム（巨大コノドント） | *Promissum pulchrum* | 脊椎動物（コノドント） | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `hirnantian-ice` | ヒルナンシアンの氷床 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
 遠景（任意）：`backdrop-ordovician-land` ✅、`backdrop-ice-land` ✅、`backdrop-ordovician-sea` ✅、`backdrop-ordovician-deep` ✅
@@ -95,6 +104,15 @@
 | `entelognathus` | エンテログナトゥス | *Entelognathus primordialis* | 板皮類 | 底の近くを泳ぐ（横から） | ✅ | ✅ |
 | `birkenia` | ビルケニア | *Birkenia elegans* | 無顎類（欠甲類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `eurypterus` | ユーリプテルス | *Eurypterus remipes* | ウミサソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `pentamerus` | ペンタメルス | *Pentamerus oblongus* | 腕足動物 | 海底に固着 | ✅ | ✅ |
+| `goniophyllum` | ゴニオフィルム | *Goniophyllum pyramidale* | 四放サンゴ（角サンゴ） | 海底に固着 | ✅ | ✅ |
+| `dalmanites` | ダルマニテス | *Dalmanites* | 三葉虫 | 歩く（横から） | ✅ | ✅ |
+| `dawsonoceras` | ドーソノセラス | *Dawsonoceras* | 頭足類（オウムガイの仲間） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `platyceras` | プラティセラス | *Platyceras* | 腹足類（巻貝） | 海底に固着 | ✅ | ✅ |
+| `climatius` | クリマティウス | *Climatius reticulatus* | 棘魚類（トゲのあるサメの仲間） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `loganellia` | ロガネリア | *Loganellia scotica* | 無顎類（テロドゥス類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `slimonia` | スリモニア | *Slimonia acuminata* | ウミサソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `zosterophyllum` | ゾステロフィルム | *Zosterophyllum* | 維管束植物 | 立っている植物 | ✅ | ✅ |
 | `green-shore` | 最初の緑の岸辺 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
 遠景（任意）：`backdrop-silurian-land` ✅、`backdrop-silurian-sea` ✅、`backdrop-silurian-deep` ✅
@@ -120,6 +138,17 @@
 | `ichthyostega` | イクチオステガ | *Ichthyostega* | 四肢動物 | 歩く（横から） | ✅ | ✅ |
 | `dunkleosteus` | ダンクルオステウス | *Dunkleosteus terrelli* | 板皮類（節頸類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `cladoselache` | クラドセラケ | *Cladoselache* | 軟骨魚類（サメ） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `phacops` | ファコプス | *Phacops* | 三葉虫 | 歩く（横から） | ✅ | ✅ |
+| `mucrospirifer` | ムクロスピリファー | *Mucrospirifer* | 腕足動物 | 海底に固着 | ✅ | ✅ |
+| `heliophyllum` | ヘリオフィルム | *Heliophyllum* | 四放サンゴ（角サンゴ） | 海底に固着 | ✅ | ✅ |
+| `cephalaspis` | ケファラスピス | *Cephalaspis* | 無顎類（骨甲類） | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `pteraspis` | プテラスピス | *Pteraspis* | 無顎類（異甲類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `cheirolepis` | ケイロレピス | *Cheirolepis* | 条鰭類（硬骨魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `coccosteus` | コッコステウス | *Coccosteus* | 板皮類（節頸類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `dipterus` | ディプテルス | *Dipterus* | 肺魚類 | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `hyneria` | ハイネリア | *Hyneria lindae* | 肉鰭類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `psilophyton` | プシロフィトン | *Psilophyton* | 維管束植物 | 立っている植物 | ✅ | ✅ |
+| `rhacophyton` | ラコフィトン | *Rhacophyton* | シダの仲間 | 立っている植物 | ✅ | ✅ |
 | `euramerica` | ユーラメリカ大陸 | — | 現象 | 上空から見た大陸 | ✅ | 不要 |
 | `first-forest` | 最初の森 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
@@ -141,6 +170,19 @@
 | `meganeura` | メガネウラ | *Meganeura monyi* | 昆虫（オオトンボ類） | 飛ぶ（はねを広げて） | ✅ | ✅ |
 | `archimylacris` | アーキミラクリス | *Archimylacris* | 昆虫（ゴキブリの祖先の仲間） | 歩く（横から） | ✅ | ✅ |
 | `psaronius` | プサロニウス（木生シダ） | *Psaronius* | シダ植物（木生シダ） | 立っている植物 | ✅ | ✅ |
+| `spirifer` | スピリファー | *Spirifer* | 腕足動物 | 海底に固着 | ✅ | ✅ |
+| `lithostrotion` | リソストロティオン | *Lithostrotion* | 四放サンゴ（群体） | 海底に固着 | ✅ | ✅ |
+| `archimedes` | アルキメデス（らせんコケムシ） | *Archimedes* | コケムシ動物（群体） | 海底に固着 | ✅ | ✅ |
+| `goniatites` | ゴニアタイト | *Goniatites* | 頭足類（アンモノイド） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `pentremites` | ペントレマイテス（ウミツボミ） | *Pentremites* | 棘皮動物（ウミツボミ） | 海底に固着 | ✅ | ✅ |
+| `elonichthys` | エロニクティス | *Elonichthys* | 条鰭類（硬骨魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `euproops` | ユープロープス（カブトガニの仲間） | *Euproops* | カブトガニ類 | 歩く（横から） | ✅ | ✅ |
+| `bellerophon` | ベレロフォン | *Bellerophon* | 軟体動物（巻貝の仲間） | 歩く（横から） | ✅ | ✅ |
+| `sigillaria` | シギラリア（封印木） | *Sigillaria* | ヒカゲノカズラ類（木） | 立っている植物 | ✅ | ✅ |
+| `cordaites` | コルダイテス | *Cordaites* | 裸子植物（木） | 立っている植物 | ✅ | ✅ |
+| `medullosa` | メデュローサ（種子シダ） | *Medullosa* | 種子シダ類 | 立っている植物 | ✅ | ✅ |
+| `stenodictya` | ステノディクティア | *Stenodictya* | 昆虫（ムカシアミバネムシ類） | 飛ぶ（はねを広げて） | ✅ | ✅ |
+| `amphibamus` | アンフィバムス | *Amphibamus grandiceps* | 両生類（分椎類） | 歩く（横から） | ✅ | ✅ |
 | `coal-forest` | 石炭紀の湿地林 | — | 現象 | 陸の景色 | ✅ | 不要 |
 | `gondwana-ice` | ゴンドワナの大氷河 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
@@ -162,6 +204,19 @@
 | `inostrancevia` | イノストランケビア | *Inostrancevia alexandri* | 単弓類（ゴルゴノプス類） | 歩く（横から） | ✅ | ✅ |
 | `scutosaurus` | スクトサウルス | *Scutosaurus karpinskii* | 爬虫類（パレイアサウルス類） | 歩く（横から） | ✅ | ✅ |
 | `lystrosaurus` | リストロサウルス | *Lystrosaurus* | 単弓類（ディキノドン類） | 歩く（横から） | ✅ | ✅ |
+| `leptodus` | レプトドゥス | *Leptodus* | 腕足動物 | 海底に固着 | ✅ | ✅ |
+| `waagenoceras` | ワーゲノセラス | *Waagenoceras* | 頭足類（アンモノイド） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `waagenophyllum` | ワーゲノフィルム | *Waagenophyllum* | 四放サンゴ（群体） | 海底に固着 | ✅ | ✅ |
+| `eurydesma` | エウリデスマ | *Eurydesma* | 二枚貝 | 海底に固着 | ✅ | ✅ |
+| `xenacanthus` | クセナカントゥス | *Xenacanthus* | 軟骨魚類（淡水のサメ） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `palaeoniscum` | パレオニスクム | *Palaeoniscum freieslebeni* | 条鰭類（硬骨魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `edaphosaurus` | エダフォサウルス | *Edaphosaurus* | 単弓類（盤竜類） | 歩く（横から） | ✅ | ✅ |
+| `seymouria` | セイモウリア | *Seymouria baylorensis* | 爬形類（両生類と爬虫類の間） | 歩く（横から） | ✅ | ✅ |
+| `captorhinus` | カプトリヌス | *Captorhinus aguti* | 爬虫類 | 歩く（横から） | ✅ | ✅ |
+| `dicynodon` | ディキノドン | *Dicynodon* | 単弓類（ディキノドン類） | 歩く（横から） | ✅ | ✅ |
+| `moschops` | モスコプス | *Moschops capensis* | 単弓類（恐頭類） | 歩く（横から） | ✅ | ✅ |
+| `tshekardocoleus` | チェカルドコレウス（古い甲虫） | *Tshekardocoleus* | 昆虫（甲虫の祖先） | 歩く（横から） | ✅ | ✅ |
+| `gigantopteris` | ギガントプテリス | *Gigantopteris* | 種子植物（大羽羊歯類） | 立っている植物 | ✅ | ✅ |
 | `pangaea` | 超大陸パンゲア | — | 現象 | 上空から見た大陸 | ✅ | 不要 |
 | `permian-desert` | パンゲアの砂漠 | — | 現象 | 陸の景色 | ✅ | 不要 |
 | `siberian-traps` | シベリアの大噴火 | — | 現象 | 巨大噴火 | ✅ | 不要 |
