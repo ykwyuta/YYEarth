@@ -1,0 +1,10 @@
+{
+  "name": "yyearth",
+  "private": true,
+  "version": "0.1.0",
+  "description": "地球史図鑑 — 時をめぐる観察カプセル（Rust → WebAssembly のブラウザ版）",
+  "scripts": {
+    "build": "bash build.sh",
+    "deploy": "bash build.sh && npx wrangler deploy"
+  }
+}
