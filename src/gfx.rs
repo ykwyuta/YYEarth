@@ -236,6 +236,13 @@ impl Gfx {
         self.upload_draw(t.id, linear);
     }
 
+    /// Submit an entire deformable alpha sprite with one texture binding.
+    pub fn draw_textured_mesh(&mut self, t: &Texture, vertices: &[Vertex]) {
+        self.flush();
+        self.verts.extend_from_slice(vertices);
+        self.upload_draw(t.id, true);
+    }
+
     /// 任意の四角形にテクスチャを貼る（p と uv は左上・右上・右下・左下の順）。大陸の回転・移動に使う
     pub fn draw_textured_quad(&mut self, t: &Texture, p: [(f32, f32); 4], uv: [(f32, f32); 4], c: [f32; 4], linear: bool) {
         self.flush();

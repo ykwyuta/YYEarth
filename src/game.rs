@@ -4,6 +4,7 @@
 //! 観察の場面では生きものを撮影し、写りのよさ（★1〜3）とともに図鑑に収録する。
 
 use crate::art;
+use crate::artwork::{Artwork, Fit};
 use crate::dive::*;
 use crate::earth::*;
 use crate::gfx::{Font, Gfx, Texture};
@@ -86,6 +87,7 @@ enum Act {
     Lens(i32),
     ToTitle,
     IntroNext,
+    NextPhoto,
     MissionCard,
     Boost,
     Jump(bool),
@@ -113,6 +115,8 @@ struct PhotoCard {
     /// 写りが悪かったときの助言
     advice: Option<&'static str>,
     left: f32,
+    age: f32,
+    index: usize,
     done_missions: Vec<usize>,
 }
 
@@ -125,6 +129,8 @@ pub struct Game {
     ocean_tex: Texture,
     cloud_tex: Texture,
     plate_tex: Vec<Texture>,
+    artwork: Artwork,
+    units: crate::units::Units,
     // 地図
     cam: (f32, f32),
     zoom: f32,
@@ -239,6 +245,8 @@ impl Game {
             ocean_tex,
             cloud_tex,
             plate_tex,
+            artwork: Artwork::new(),
+            units: crate::units::Units::new(),
             cam: (MAP_W * 0.5, MAP_H * 0.5),
             zoom: 0.4,
             follow: true,
@@ -486,9 +494,10 @@ impl Game {
             }
         }
         if let Some(p) = &mut self.photo {
+            p.age += dt;
             p.left -= dt;
             if p.left <= 0.0 {
-                self.close_photo();
+                self.next_photo();
             }
         }
         match self.screen {
@@ -594,7 +603,7 @@ impl Game {
     }
 
     fn update_dive(&mut self, dt: f32) {
-        let blocked = self.panel != Panel::None;
+        let blocked = self.panel != Panel::None || self.photo.is_some();
         let mut ax = 0.0;
         let mut ay = 0.0;
         if !blocked {
@@ -689,7 +698,7 @@ impl Game {
                         return false;
                     }
                     if self.photo.is_some() {
-                        self.close_photo();
+                        self.next_photo();
                         return false;
                     }
                     match self.panel {
@@ -799,8 +808,10 @@ impl Game {
             return;
         }
         if self.photo.is_some() {
-            if k == VK_SPACE || k == VK_RETURN || k == VK_ESCAPE {
+            if k == VK_ESCAPE {
                 self.close_photo();
+            } else if k == VK_SPACE || k == VK_RETURN {
+                self.next_photo();
             }
             return;
         }
@@ -924,6 +935,7 @@ impl Game {
                 }
             }
             Act::Shoot => self.shoot(),
+            Act::NextPhoto => self.next_photo(),
             Act::Guide => {
                 self.panel = if self.panel == Panel::Guide { Panel::None } else { Panel::Guide };
             }
@@ -1138,7 +1150,20 @@ impl Game {
         if !lines.is_empty() || !done.is_empty() {
             self.autosave(true);
         }
-        self.photo = Some(PhotoCard { lines, advice, left: 4.5, done_missions: done });
+        self.photo = Some(PhotoCard { lines, advice, left: crate::reveal::HOLD_SECONDS, age:0.0, index:0, done_missions: done });
+    }
+
+    fn next_photo(&mut self) {
+        if let Some(p) = &mut self.photo {
+            if !p.lines.is_empty() && p.age < 0.7 { return; }
+            if p.index + 1 < p.lines.len() {
+                p.index += 1;
+                p.age = 0.0;
+                p.left = crate::reveal::HOLD_SECONDS;
+                return;
+            }
+        }
+        self.close_photo();
     }
 
     fn close_photo(&mut self) {
@@ -1189,12 +1214,26 @@ impl Game {
         self.tip = None;
         self.gfx.begin([0.02, 0.05, 0.09, 1.0]);
         match self.screen {
-            Screen::Title | Screen::Map => self.render_map_world(),
+            Screen::Title => {
+                self.gfx.set_screen_xform();
+                let (w, h) = (self.w(), self.h());
+                self.artwork.draw(&mut self.gfx, 40, [0.0, 0.0, w, h], 1.0, Fit::Cover);
+                for i in 0..32 {
+                    let t = i as f32 / 32.0;
+                    self.gfx.rect(w * t, 0.0, w * (t + 1.0 / 32.0), h,
+                        [0.01, 0.03, 0.07, 0.65 * (1.0 - t)]);
+                }
+            }
+            Screen::Map => self.render_map_world(),
             Screen::Dive => {
                 let v = self.dive_view();
                 let hide = self.lens >= 1.8;
+                let backdrop = self.scene.as_ref().map(|sc| {
+                    if sc.hab == Habitat::Land { 39 } else if sc.depth > 100.0 { 42 } else { 41 }
+                });
+                let backdrop = backdrop.and_then(|i| self.artwork.texture(&self.gfx, i));
                 if let Some(sc) = &self.scene {
-                    sc.render(&mut self.gfx, &v, self.prog.light, hide);
+                    sc.render(&mut self.gfx, &v, self.prog.light, hide, backdrop, &mut self.units);
                 }
             }
         }
@@ -1205,13 +1244,14 @@ impl Game {
             Panel::Entry(i) => self.render_entry_gl(i),
             _ => {}
         }
+        self.render_photo_gl();
         if self.flash > 0.0 {
             let (w, h) = (self.w(), self.h());
             self.gfx.rect(0.0, 0.0, w, h, [1.0, 1.0, 1.0, self.flash.min(1.0) * 0.85]);
         }
         self.gfx.flush();
         if self.gfx.d2d_begin() {
-            let full = matches!(self.panel, Panel::Guide | Panel::Entry(_) | Panel::Missions | Panel::Help);
+            let full = self.photo.is_some() || matches!(self.panel, Panel::Guide | Panel::Entry(_) | Panel::Missions | Panel::Help);
             if !full {
                 match self.screen {
                     Screen::Title => self.render_title(),
@@ -1219,7 +1259,7 @@ impl Game {
                     Screen::Dive => self.render_dive_ui(),
                 }
             }
-            if self.screen != Screen::Title {
+            if self.screen != Screen::Title && self.photo.is_none() {
                 if matches!(self.panel, Panel::Missions | Panel::Help) {
                     let (w, h) = (self.w(), self.h());
                     self.gfx.fill_rect(0.0, 0.0, w, h, [0.0, 0.03, 0.06, 0.5]);
@@ -1239,7 +1279,7 @@ impl Game {
                 Panel::None => {}
             }
             self.render_photo();
-            self.render_notices();
+            if self.photo.is_none() { self.render_notices(); }
             self.render_tip();
             self.gfx.d2d_end();
         }
@@ -1727,7 +1767,7 @@ impl Game {
         let (w, h) = (self.w(), self.h());
         self.gfx.fill_rect(0.0, 0.0, w, h, [0.0, 0.03, 0.06, 0.35]);
         let cw = if self.compact() { 420.0 } else { 520.0 };
-        let x0 = (w - cw) * 0.5;
+        let x0 = if self.compact() { (w - cw) * 0.5 } else { w * 0.06 };
         let y0 = h * 0.16;
         self.gfx.fill_round(x0, y0, x0 + cw, y0 + 150.0, 18.0, [0.02, 0.08, 0.13, 0.72]);
         self.gfx.stroke_round(x0, y0, x0 + cw, y0 + 150.0, 18.0, 1.5, EDGE);
@@ -1736,7 +1776,7 @@ impl Game {
         self.gfx.text(t!("第1巻　古生代カンブリア紀", "Volume 1: The Cambrian Period", "第1卷　古生代寒武纪"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
         let bw = if self.compact() { 300.0 } else { 340.0 };
         let bh = if self.compact() { 40.0 } else { 44.0 };
-        let bx = (w - bw) * 0.5;
+        let bx = x0 + (cw - bw) * 0.5;
         let mut by = y0 + 172.0;
         if self.have_save {
             self.add_button(bx, by, bx + bw, by + bh, t!("つづきから", "Continue", "继续"), Act::Continue, true, true);
@@ -1805,6 +1845,9 @@ impl Game {
 
     /// 図鑑の絵（生きもの・現象）を枠の中に描く
     fn draw_entry_art(&mut self, e: usize, x0: f32, y0: f32, x1: f32, y1: f32, a: f32) {
+        if self.artwork.draw(&mut self.gfx, e, [x0, y0, x1, y1], a, Fit::Contain) {
+            return;
+        }
         let (bw, bh) = (x1 - x0, y1 - y0);
         let ns = n_species();
         if e < ns {
@@ -1951,6 +1994,10 @@ impl Game {
         let st = self.prog.stars[e];
         let found = st > 0;
         let top = self.top_h();
+        if found {
+            self.gfx.text(t!("復元イメージ", "Artist's reconstruction", "复原想象图"),
+                30.0, y1 - 43.0, split - 50.0, 20.0, Font::NormalCenter, DIM);
+        }
         self.gfx.text(&tf!("図鑑 No.{:02}", "Guide No.{:02}", "图鉴 No.{:02}", e + 1), 24.0, top + 14.0, 300.0, 24.0, Font::Big, DIM);
         self.add_button(w - 120.0, top + 10.0, w - 20.0, top + 44.0, t!("一覧へ", "Back", "返回"), Act::Close, true, false);
         let prev = (e + n_entries() - 1) % n_entries();
@@ -2125,6 +2172,10 @@ impl Game {
     }
 
     fn teacher(&mut self, x: f32, y: f32, r: f32) {
+        if self.artwork.draw_teacher(&self.gfx, [x - r, y - r, x + r, y + r]) {
+            self.gfx.stroke_round(x - r, y - r, x + r, y + r, 10.0, 1.5, EDGE);
+            return;
+        }
         // トキ先生（未来の先生）
         self.gfx.fill_circle(x, y, r + 4.0, [0.45, 0.85, 0.80, 0.6]);
         self.gfx.fill_circle(x, y, r, [0.10, 0.22, 0.32, 1.0]);
@@ -2198,8 +2249,59 @@ impl Game {
 
     // ------------------------------------------------------------ 写真・知らせ・説明
 
+    fn render_photo_gl(&mut self) {
+        let Some(p)=&self.photo else { return; };
+        let Some(&(entry,stars,fresh,_))=p.lines.get(p.index) else { return; };
+        let (age,w,h)=(p.age,self.w(),self.h());
+        let reveal=crate::reveal::draw_stage(&mut self.gfx,w,h,age,stars,fresh);
+        let [x0,y0,x1,y1]=reveal.bounds;
+        if reveal.front {
+            let pad=(x1-x0)*0.045;
+            self.artwork.draw(&mut self.gfx,entry,[x0+pad,y0+48.0,x1-pad,y1-132.0],reveal.alpha,Fit::Contain);
+            let c=crate::reveal::accent(stars);
+            self.gfx.rect(x0+pad,y1-122.0,x1-pad,y1-121.0,[c[0],c[1],c[2],0.45]);
+        }
+    }
+
     fn render_photo(&mut self) {
         let Some(p) = &self.photo else { return };
+        if let Some(&(entry,stars,fresh,better))=p.lines.get(p.index) {
+            let (age,index,count)=(p.age,p.index,p.lines.len());
+            let (w,h)=(self.w(),self.h());
+            let reveal=crate::reveal::layout(w,h,age);
+            if !reveal.front || age<0.60 { return; }
+            let [x0,y0,x1,y1]=reveal.bounds;
+            let cw=x1-x0;
+            let c=crate::reveal::accent(stars);
+            let head=if fresh { t!("新発見！", "NEW DISCOVERY!", "新发现！") }
+                else if better { t!("ベスト記録更新！", "NEW BEST!", "最佳记录！") }
+                else { t!("撮影成功！", "CAPTURED!", "拍摄成功！") };
+            self.gfx.text(head,x0-100.0,y0-44.0,cw+200.0,32.0,Font::BigCenter,c);
+            self.gfx.text(&tf!("図鑑 No.{:02}","Guide No.{:02}","图鉴 No.{:02}",entry+1),
+                x0+14.0,y0+15.0,cw-90.0,20.0,Font::Normal,c);
+            self.gfx.text(&format!("{} / {}",index+1,count),x1-68.0,y0+15.0,54.0,20.0,Font::NormalCenter,DIM);
+            self.gfx.text(entry_name(entry),x0+10.0,y1-111.0,cw-20.0,27.0,Font::BigCenter,TEXT);
+            if entry<n_species() {
+                self.gfx.text(SPECIES[entry].sci,x0+10.0,y1-83.0,cw-20.0,18.0,Font::NormalCenter,DIM);
+            }
+            let visible=crate::reveal::visible_stars(age,stars);
+            let cx=(x0+x1)*0.5;
+            for i in 0..3 {
+                let elapsed=(age-0.82-i as f32*0.22).max(0.0);
+                let pop=if i<visible as usize {(elapsed*14.0).sin()*(-elapsed*7.0).exp()*8.0}else{0.0};
+                self.gfx.text(if i<visible as usize {"★"}else{"☆"},cx+(i as f32-1.0)*39.0-22.0,
+                    y1-55.0-pop,44.0,48.0,Font::Title,if i<visible as usize {GOLD}else{[0.26,0.35,0.39,1.0]});
+            }
+            let label=if index+1<count {
+                t!("次のカード ▶", "Next card ▶", "下一张 ▶")
+            } else { t!("図鑑に収録！", "Added to guide!", "已收录图鉴！") };
+            if age>1.2 {
+                self.add_button(cx-110.0,y1+16.0,cx+110.0,y1+53.0,label,Act::NextPhoto,true,true);
+                self.gfx.text(t!("タップ・Enterで進む　Escですべて閉じる", "Tap / Enter to continue · Esc to close all", "点击或Enter继续 · Esc全部关闭"),
+                    cx-250.0,y1+59.0,500.0,18.0,Font::Small,DIM);
+            }
+            return;
+        }
         let lines = p.lines.clone();
         let advice = p.advice;
         let (w, h) = (self.w(), self.h());
@@ -2264,7 +2366,8 @@ impl Game {
     }
 }
 
-#[cfg(test)]
+// These simulations use the headless renderer; native Direct3D needs a real HWND.
+#[cfg(all(test, not(windows)))]
 mod tests {
     use super::*;
 

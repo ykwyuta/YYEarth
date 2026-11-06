@@ -5,8 +5,9 @@
 
 use crate::art;
 use crate::earth::*;
-use crate::gfx::Gfx;
+use crate::gfx::{Gfx, Texture};
 use crate::life::*;
+use crate::units::{self, Pose, Units};
 use crate::rng::{fbm, value_noise, Rng};
 
 /// 海底の帯の奥行き（画面の縦、m）
@@ -561,17 +562,9 @@ impl Scene {
                 continue;
             }
             let len = spd.disp_len() * cr.scale;
-            let (ew, eh) = art::extent(cr.sp);
-            let sq = if spd.art.dorsal() { 0.45 } else { 1.0 };
-            let hw = ew * len * 0.5;
-            let hh = (eh * len * 0.5 * sq).max(len * 0.12);
-            let lift = art::base_lift(cr.sp);
-            let cy = match spd.beh {
-                Beh::Sessile | Beh::Burrow => cr.y - (lift + eh * 0.5) * len * 0.8,
-                Beh::Crawl | Beh::FlatCrawl => cr.y - hh * 0.5,
-                _ => cr.y,
-            };
-            let cx = cr.x;
+            let [bx0,by0,bx1,by1] = units::bounds(cr.sp, cr.x, cr.y, len, cr.out);
+            let (hw,hh) = ((bx1-bx0)*0.5, (by1-by0)*0.5);
+            let (cx,cy) = ((bx0+bx1)*0.5,(by0+by1)*0.5);
             if cx < vx0 || cx > vx1 || cy < vy0 || cy > vy1 {
                 continue;
             }
@@ -614,7 +607,7 @@ impl Scene {
 
     // ------------------------------------------------------------ 描画
 
-    pub fn render(&self, g: &mut Gfx, v: &View, light: bool, hide_capsule: bool) {
+    pub fn render(&self, g: &mut Gfx, v: &View, light: bool, hide_capsule: bool, backdrop: Option<&Texture>, units: &mut Units) {
         let (sw, sh) = (v.w, v.h);
         // 場面の座標 → 画面
         let sx = 2.0 * v.ppm / sw;
@@ -622,7 +615,13 @@ impl Scene {
         g.set_xform(sx, sy, -v.cx * sx, -v.cy * sy);
         let (x0, y0, x1, y1) = (v.x0() - 1.0, v.y0() - 1.0, v.x1() + 1.0, v.y1() + 1.0);
         self.render_back(g, x0, y0, x1, y1);
-        self.render_floor(g, x0, y0, x1, y1);
+        if let Some(texture) = backdrop {
+            // Distant scenery sits behind the interactive seabed and animals.
+            // Restrict marine photographs to the water below the surface.
+            let by0 = if self.has_water() { y0.max(0.0) } else { y0 };
+            crate::artwork::draw(g, texture, [x0, by0, x1, y1], 0.32, crate::artwork::Fit::Cover);
+        }
+        self.render_floor(g, x0, y0, x1, y1, units);
         // 奥の生きもの → カプセル → 手前の生きもの
         let mut order: Vec<(f32, usize)> = self.creatures.iter().enumerate().filter(|(_, c)| c.x > x0 - 2.0 && c.x < x1 + 2.0).map(|(i, c)| (self.depth_key(c), i)).collect();
         order.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
@@ -630,14 +629,14 @@ impl Scene {
         for &(k, i) in &order {
             if !cap_drawn && k > 0.5 {
                 if !hide_capsule {
-                    self.render_capsule(g, light);
+                    self.render_capsule(g, light, units);
                 }
                 cap_drawn = true;
             }
-            self.render_creature(g, &self.creatures[i], light);
+            self.render_creature(g, &self.creatures[i], light, units);
         }
         if !cap_drawn && !hide_capsule {
-            self.render_capsule(g, light);
+            self.render_capsule(g, light, units);
         }
         self.render_front(g, x0, y0, x1, y1, light);
     }
@@ -815,7 +814,7 @@ impl Scene {
         mix(c, mix(top, [0.0, 0.0, 0.0], 0.5), 0.25 * (1.0 - a) + 0.08)
     }
 
-    fn render_floor(&self, g: &mut Gfx, x0: f32, _y0: f32, x1: f32, y1: f32) {
+    fn render_floor(&self, g: &mut Gfx, x0: f32, _y0: f32, x1: f32, y1: f32, units: &mut Units) {
         let (sc, deepc) = self.sediment_cols();
         let mut x = (x0 / FSTEP).floor() * FSTEP;
         let bottom = y1 + 2.0;
@@ -836,8 +835,30 @@ impl Scene {
             g.tri3((a, fa + BAND), (b, bottom), (a, bottom), s0, s1, s1);
             x += FSTEP;
         }
-        // 海底の小石・砂の模様
-        {
+        // Dedicated continuous sand texture, anchored to the world and terrain slope.
+        let textured = {
+            let mut vertices = Vec::new();
+            let tile = 4.0;
+            let mut start = (x0 / tile).floor() * tile;
+            while start < x1 {
+                let mut a = start.max(x0);
+                let end = (start + tile).min(x1);
+                while a < end {
+                    let b = (a + FSTEP).min(end);
+                    let (fa,fb) = (self.floor_at(a),self.floor_at(b));
+                    let (u0,u1) = ((a-start)/tile,(b-start)/tile);
+                    let vertex=|x,y,u,v|crate::gfx::Vertex {x,y,u,v,c:[0.92,0.94,0.91,0.88]};
+                    vertices.extend_from_slice(&[
+                        vertex(a,fa,u0,0.0),vertex(b,fb,u1,0.0),vertex(b,fb+BAND,u1,1.0),
+                        vertex(a,fa,u0,0.0),vertex(b,fb+BAND,u1,1.0),vertex(a,fa+BAND,u0,1.0)]);
+                    a=b;
+                }
+                start+=tile;
+            }
+            units.seabed(g,&vertices)
+        };
+        // Keep procedural sand detail as a fallback for missing scenery.
+        if !textured {
             let mut x = (x0 / 0.18).floor() * 0.18;
             while x < x1 {
                 let i = (x / 0.18).round() as i32;
@@ -869,7 +890,7 @@ impl Scene {
             }
         }
         // 波の跡（浅い海）
-        if matches!(self.hab, Habitat::Shallow | Habitat::Tidal) {
+        if !textured && matches!(self.hab, Habitat::Shallow | Habitat::Tidal) {
             let mut x = x0.floor();
             while x < x1 {
                 for r in 0..3 {
@@ -933,6 +954,7 @@ impl Scene {
                 continue;
             }
             let y = self.floor_at(r.x) + r.z * BAND;
+            if units.rock(g,r.x,y,r.r,r.tone) { continue; }
             let base = if self.hab == Habitat::Land { mix([0.56, 0.38, 0.28], [0.40, 0.36, 0.34], r.tone) } else { mix(sc, [0.36, 0.34, 0.32], 0.5 + r.tone * 0.4) };
             let c = self.shade(base, y);
             let seed = (r.x * 100.0) as i32;
@@ -959,7 +981,7 @@ impl Scene {
         }
     }
 
-    fn render_creature(&self, g: &mut Gfx, c: &Creature, light: bool) {
+    fn render_creature(&self, g: &mut Gfx, c: &Creature, light: bool, units: &mut Units) {
         let spd = &SPECIES[c.sp];
         let len = spd.disp_len() * c.scale;
         let lift = art::base_lift(c.sp);
@@ -968,6 +990,14 @@ impl Scene {
             _ => c.y,
         };
         // 海底の生きものの影
+        if matches!(spd.beh, Beh::Sessile | Beh::Crawl | Beh::FlatCrawl | Beh::Burrow) {
+            for i in 0..20 {
+                let a=i as f32/20.0*std::f32::consts::TAU;
+                let b=(i+1) as f32/20.0*std::f32::consts::TAU;
+                g.tri((c.x,c.y), (c.x+a.cos()*len*0.44,c.y+a.sin()*len*0.055),
+                    (c.x+b.cos()*len*0.44,c.y+b.sin()*len*0.055),[0.0,0.0,0.0,0.20]);
+            }
+        }
         if matches!(spd.beh, Beh::NearFloor) {
             let fy = self.floor_at(c.x) + BAND * 0.5;
             let a = (0.25 - (fy - c.y) * 0.08).clamp(0.0, 0.25);
@@ -978,14 +1008,19 @@ impl Scene {
         // 深い所では色を暗くする代わりに、上から暗さを重ねる（ライトの穴を開けるため）
         let anim = c.phase * if matches!(spd.beh, Beh::Crawl) && c.vx.abs() < 0.001 { 0.15 } else { 1.0 };
         let pitch = if spd.art.dorsal() { 0.0 } else { c.pitch };
-        art::draw(g, c.sp, c.x, y, len, c.facing, pitch, anim, 1.0, c.out, c.seed);
+        let activity = (c.vx.abs() / spd.speed.max(0.005)).clamp(0.0,1.0);
+        let drawn = units.creature(g, c.sp, Pose { x:c.x, y:c.y, len, facing:c.facing,
+            pitch, time:anim + (c.seed % 997) as f32 * 0.07, activity, out:c.out });
+        if !drawn {
+            art::draw(g, c.sp, c.x, y, len, c.facing, pitch, anim, 1.0, c.out, c.seed);
+        }
         // 光る放散虫
         if spd.art == Art::Radiolarian && !light {
             g.radial(c.x, y, len * 1.6, 12, [0.6, 0.9, 1.0, 0.18], [0.6, 0.9, 1.0, 0.0]);
         }
     }
 
-    fn render_capsule(&self, g: &mut Gfx, light: bool) {
+    fn render_capsule(&self, g: &mut Gfx, light: bool, units: &mut Units) {
         let c = &self.cap;
         let (x, y) = (c.x, c.y + (self.t * 1.6).sin() * 0.015);
         let r = CAP_R;
@@ -1015,6 +1050,7 @@ impl Scene {
             // 浮かぶための光
             g.tri3((x - r * 0.5, y + r * 0.8), (x + r * 0.5, y + r * 0.8), (x, fy), [0.5, 0.9, 1.0, 0.25], [0.5, 0.9, 1.0, 0.25], [0.5, 0.9, 1.0, 0.0]);
         }
+        if units.capsule(g,x,y,r,f,c.tilt) { return; }
         let tilt = c.tilt;
         let p = |u: f32, v: f32| -> (f32, f32) {
             let (s, co) = tilt.sin_cos();

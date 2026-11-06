@@ -5,6 +5,9 @@ edition = "2021"
 description = "観察カプセルで地球の歴史をめぐり、生きものを撮影して図鑑を作るゲーム（ブラウザ版：Rust → WebAssembly／Windows 版：Rust + Direct3D11 / Direct2D）"
 build = "build.rs"
 
+[dependencies]
+image = { version = "0.25.9", default-features = false, features = ["jpeg", "png"] }
+
 # ゲーム本体。ブラウザ版はこれを wasm（cdylib）にする
 [lib]
 crate-type = ["cdylib", "rlib"]
