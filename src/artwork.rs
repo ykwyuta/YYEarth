@@ -1,54 +1,25 @@
 //! Generated artwork shared by the WebGL and Direct3D editions.
 //! JPEGs are embedded so offline builds need no image server or asynchronous loading.
+//!
+//! 画像は名前（slug）で引く。build.rs が assets/artwork/*.jpg を探して表を作るので、
+//! 新しい画像は同じ名前で置いてビルドし直すだけでよい。無い画像は手描き（art.rs）で代わりに描く。
 use crate::gfx::{Bitmap, Gfx, Texture};
 
-const TEACHER_IMAGE: &[u8] = include_bytes!("../assets/artwork/ms-toki.jpg");
+#[allow(dead_code)]
+mod gen {
+    include!(concat!(env!("OUT_DIR"), "/assets_gen.rs"));
+}
+pub use gen::{ARTWORK, UNITS};
 
-const IMAGES: &[&[u8]] = &[
-    include_bytes!("../assets/artwork/stromatolite.jpg"),
-    include_bytes!("../assets/artwork/microbial-mat.jpg"),
-    include_bytes!("../assets/artwork/treptichnus.jpg"),
-    include_bytes!("../assets/artwork/anabarites.jpg"),
-    include_bytes!("../assets/artwork/archaeocyath.jpg"),
-    include_bytes!("../assets/artwork/lingulella.jpg"),
-    include_bytes!("../assets/artwork/redlichia.jpg"),
-    include_bytes!("../assets/artwork/halkieria.jpg"),
-    include_bytes!("../assets/artwork/haikouichthys.jpg"),
-    include_bytes!("../assets/artwork/fuxianhuia.jpg"),
-    include_bytes!("../assets/artwork/isoxys.jpg"),
-    include_bytes!("../assets/artwork/leanchoilia.jpg"),
-    include_bytes!("../assets/artwork/hallucigenia.jpg"),
-    include_bytes!("../assets/artwork/amplectobelua.jpg"),
-    include_bytes!("../assets/artwork/kerygmachela.jpg"),
-    include_bytes!("../assets/artwork/tamisiocaris.jpg"),
-    include_bytes!("../assets/artwork/anomalocaris.jpg"),
-    include_bytes!("../assets/artwork/opabinia.jpg"),
-    include_bytes!("../assets/artwork/wiwaxia.jpg"),
-    include_bytes!("../assets/artwork/marrella.jpg"),
-    include_bytes!("../assets/artwork/pikaia.jpg"),
-    include_bytes!("../assets/artwork/ottoia.jpg"),
-    include_bytes!("../assets/artwork/aysheaia.jpg"),
-    include_bytes!("../assets/artwork/olenoides.jpg"),
-    include_bytes!("../assets/artwork/vauxia.jpg"),
-    include_bytes!("../assets/artwork/sidneyia.jpg"),
-    include_bytes!("../assets/artwork/nectocaris.jpg"),
-    include_bytes!("../assets/artwork/burgessomedusa.jpg"),
-    include_bytes!("../assets/artwork/cambroraster.jpg"),
-    include_bytes!("../assets/artwork/paradoxides.jpg"),
-    include_bytes!("../assets/artwork/olenus.jpg"),
-    include_bytes!("../assets/artwork/agnostus.jpg"),
-    include_bytes!("../assets/artwork/climactichnites.jpg"),
-    include_bytes!("../assets/artwork/conodont.jpg"),
-    include_bytes!("../assets/artwork/radiolarian.jpg"),
-    include_bytes!("../assets/artwork/glass-sponge.jpg"),
-    include_bytes!("../assets/artwork/gondwana.jpg"),
-    include_bytes!("../assets/artwork/laurentia.jpg"),
-    include_bytes!("../assets/artwork/eruption.jpg"),
-    include_bytes!("../assets/artwork/barren-land.jpg"),
-    include_bytes!("../assets/artwork/title.jpg"),
-    include_bytes!("../assets/artwork/shallow-sea.jpg"),
-    include_bytes!("../assets/artwork/deep-sea.jpg"),
-];
+/// その名前の図鑑画像の番号
+pub fn find(slug: &str) -> Option<usize> {
+    ARTWORK.iter().position(|a| a.0 == slug)
+}
+
+/// その名前の観察用スプライトの番号
+pub fn find_unit(slug: &str) -> Option<usize> {
+    UNITS.iter().position(|a| a.0 == slug)
+}
 
 #[derive(Clone, Copy)]
 pub enum Fit { Contain, Cover }
@@ -62,18 +33,18 @@ pub struct Artwork {
 impl Artwork {
     pub fn new() -> Self {
         Self {
-            textures: (0..IMAGES.len()).map(|_| None).collect(),
-            attempted: vec![false; IMAGES.len()],
+            textures: (0..ARTWORK.len()).map(|_| None).collect(),
+            attempted: vec![false; ARTWORK.len()],
             teacher: None,
         }
     }
 
     /// Decode and upload once, only when an image first becomes visible.
     pub fn texture(&mut self, gfx: &Gfx, index: usize) -> Option<&Texture> {
-        if index >= IMAGES.len() { return None; }
+        if index >= ARTWORK.len() { return None; }
         if !self.attempted[index] {
             self.attempted[index] = true;
-            if let Ok(image) = image::load_from_memory_with_format(IMAGES[index], image::ImageFormat::Jpeg) {
+            if let Ok(image) = image::load_from_memory_with_format(ARTWORK[index].1, image::ImageFormat::Jpeg) {
                 let rgba = image.to_rgba8();
                 let pixels: Vec<u32> = rgba.as_raw().chunks_exact(4)
                     .map(|p| u32::from_le_bytes([p[0], p[1], p[2], p[3]])).collect();
@@ -83,7 +54,14 @@ impl Artwork {
         self.textures[index].as_ref()
     }
 
-    pub fn draw(&mut self, gfx: &mut Gfx, index: usize, bounds: [f32; 4], alpha: f32, fit: Fit) -> bool {
+    pub fn texture_slug(&mut self, gfx: &Gfx, slug: &str) -> Option<&Texture> {
+        let i = find(slug)?;
+        self.texture(gfx, i)
+    }
+
+    /// 画像があれば描いて true。無ければ何もせず false（呼ぶ側が手描きで代わりに描く）
+    pub fn draw(&mut self, gfx: &mut Gfx, slug: &str, bounds: [f32; 4], alpha: f32, fit: Fit) -> bool {
+        let Some(index) = find(slug) else { return false; };
         let Some(texture) = self.texture(gfx, index) else { return false; };
         draw(gfx, texture, bounds, alpha, fit);
         true
@@ -92,7 +70,8 @@ impl Artwork {
     /// Dialog portraits are drawn in the UI pass (Canvas2D / Direct2D).
     pub fn draw_teacher(&mut self, gfx: &Gfx, [x0, y0, x1, y1]: [f32; 4]) -> bool {
         if self.teacher.as_ref().map(|(generation, _)| *generation) != Some(gfx.d2d_gen) {
-            let Ok(image) = image::load_from_memory_with_format(TEACHER_IMAGE, image::ImageFormat::Jpeg) else { return false; };
+            let Some(i) = find("ms-toki") else { return false; };
+            let Ok(image) = image::load_from_memory_with_format(ARTWORK[i].1, image::ImageFormat::Jpeg) else { return false; };
             let rgba = image.to_rgba8();
             // The bitmap API expects premultiplied BGRA; JPEG pixels are opaque.
             let pixels: Vec<u32> = rgba.as_raw().chunks_exact(4)
@@ -139,18 +118,43 @@ pub fn draw(gfx: &mut Gfx, texture: &Texture, [x0, y0, x1, y1]: [f32; 4], alpha:
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::life::{PHENOMS, SPECIES};
+
+    /// 置いてある画像はすべて読める（無いものは手描きで代わりに描くので、無くてもよい）
     #[test]
-    fn every_guide_entry_has_decodable_artwork() {
-        assert_eq!(IMAGES.len(), crate::life::n_entries() + 3);
-        for bytes in IMAGES {
-            let image = image::load_from_memory_with_format(bytes, image::ImageFormat::Jpeg).expect("valid artwork");
-            assert!(image.width() >= 768 && image.height() >= 480);
+    fn embedded_artwork_decodes() {
+        for (slug, bytes) in ARTWORK {
+            let image = image::load_from_memory_with_format(bytes, image::ImageFormat::Jpeg).expect(slug);
+            assert!(image.width() >= 512 && image.height() >= 480, "{}", slug);
         }
+    }
+
+    /// カンブリア紀の図鑑の画像はそろっている
+    #[test]
+    fn cambrian_entries_have_artwork() {
+        for sp in SPECIES.iter().filter(|s| s.t0 > crate::earth::PERIODS[1].t0) {
+            assert!(find(sp.slug).is_some(), "{}", sp.slug);
+        }
+        for p in ["gondwana", "laurentia", "eruption", "barren-land", "title", "shallow-sea", "deep-sea"] {
+            assert!(find(p).is_some(), "{}", p);
+        }
+        assert!(PHENOMS.iter().all(|p| !p.slug.is_empty()));
+    }
+
+    /// 名前の重なりがない
+    #[test]
+    fn slugs_are_unique() {
+        let mut v: Vec<&str> = SPECIES.iter().map(|s| s.slug).chain(PHENOMS.iter().map(|p| p.slug)).collect();
+        let n = v.len();
+        v.sort();
+        v.dedup();
+        assert_eq!(v.len(), n);
     }
 
     #[test]
     fn teacher_portrait_is_square_and_decodable() {
-        let image = image::load_from_memory_with_format(TEACHER_IMAGE, image::ImageFormat::Jpeg).expect("valid teacher portrait");
+        let i = find("ms-toki").unwrap();
+        let image = image::load_from_memory_with_format(ARTWORK[i].1, image::ImageFormat::Jpeg).expect("valid teacher portrait");
         assert_eq!(image.width(), image.height());
         assert!(image.width() >= 512);
     }

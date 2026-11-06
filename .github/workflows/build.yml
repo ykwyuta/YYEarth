@@ -20,6 +20,9 @@ jobs:
       - name: Test
         run: cargo test --release --lib
 
+      - name: Test WebAssembly packaging
+        run: node --test tools/package_wasm.test.mjs
+
       - name: Build (WebAssembly)
         run: bash build.sh
 

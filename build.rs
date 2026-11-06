@@ -30,7 +30,50 @@ fn write_res_header(out: &mut Vec<u8>, data_size: u32, res_type: u16, res_id: u1
     push_u32(out, 0); // Characteristics
 }
 
+/// assets/artwork/*.jpg と assets/units/*.png を探して、名前（slug）と中身の表を作る。
+/// 画像はあとから足せる：同じ名前のファイルを置いてビルドし直せば使われ、無いものは手描きの絵で代わりに描く。
+fn gen_assets() {
+    let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    println!("cargo:rerun-if-changed=assets/artwork");
+    println!("cargo:rerun-if-changed=assets/units");
+    let list = |dir: &str, ext: &str| -> Vec<(String, PathBuf)> {
+        let mut v: Vec<(String, PathBuf)> = fs::read_dir(root.join(dir))
+            .map(|rd| {
+                rd.filter_map(|e| e.ok())
+                    .map(|e| e.path())
+                    .filter(|p| p.extension().map_or(false, |x| x.eq_ignore_ascii_case(ext)))
+                    .map(|p| (p.file_stem().unwrap().to_string_lossy().to_string(), p))
+                    .collect()
+            })
+            .unwrap_or_default();
+        v.sort();
+        v
+    };
+    let lit = |p: &PathBuf| format!("{:?}", p.to_string_lossy().replace('\\', "/"));
+    let mut out = String::from("// build.rs が assets/ から作る（手で書き換えない）\n");
+    out.push_str("pub static ARTWORK: &[(&str, &[u8])] = &[\n");
+    for (slug, p) in list("assets/artwork", "jpg") {
+        out.push_str(&format!("    ({:?}, include_bytes!({})),\n", slug, lit(&p)));
+    }
+    out.push_str("];\n");
+    out.push_str("pub static UNITS: &[(&str, &[u8], u32, u32)] = &[\n");
+    for (slug, p) in list("assets/units", "png") {
+        // PNG の IHDR から幅と高さを読む
+        let b = fs::read(&p).expect("read png");
+        if b.len() < 24 || &b[1..4] != b"PNG" {
+            panic!("not a PNG: {}", p.display());
+        }
+        let w = u32::from_be_bytes([b[16], b[17], b[18], b[19]]);
+        let h = u32::from_be_bytes([b[20], b[21], b[22], b[23]]);
+        out.push_str(&format!("    ({:?}, include_bytes!({}), {}, {}),\n", slug, lit(&p), w, h));
+    }
+    out.push_str("];\n");
+    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
+    fs::write(out_dir.join("assets_gen.rs"), out).expect("write assets_gen.rs");
+}
+
 fn main() {
+    gen_assets();
     println!("cargo:rerun-if-changed=assets/app_icon.ico");
     // ログに書く版（クラッシュの行番号をソースと突き合わせるため）
     println!("cargo:rerun-if-changed=.git/logs/HEAD");

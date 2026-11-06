@@ -81,6 +81,7 @@ enum Act {
     Close,
     Entry(usize),
     Goto(Target),
+    GuideTab(usize),
     StepStage(i32),
     TimeAt(f32),
     Light,
@@ -129,6 +130,7 @@ pub struct Game {
     ocean_tex: Texture,
     cloud_tex: Texture,
     plate_tex: Vec<Texture>,
+    plate_green: Vec<Texture>,
     artwork: Artwork,
     units: crate::units::Units,
     // 地図
@@ -160,6 +162,8 @@ pub struct Game {
     clock: f32,
     guide_scroll: f32,
     guide_max: f32,
+    /// 図鑑で開いている巻（紀）
+    guide_period: usize,
     mission_open: bool,
     have_save: bool,
     confirm_new: f32,
@@ -221,6 +225,27 @@ fn size_text(cm: f32) -> String {
     }
 }
 
+/// 観察の場面の遠景の画像。紀ごとの画像（backdrop-<紀>-land / -sea）があればそれを、無ければ共通の画像を使う
+fn backdrop_slug(sc: &Scene, t: f32) -> Option<&'static str> {
+    let p = period_at(t);
+    let first = |v: &[&'static str]| v.iter().copied().find(|s| crate::artwork::find(s).is_some());
+    if sc.hab == Habitat::Land {
+        if sc.icy {
+            return first(&["backdrop-ice-land"]);
+        }
+        let own = ["barren-land", "backdrop-ordovician-land", "backdrop-silurian-land", "backdrop-devonian-land", "backdrop-carboniferous-land", "backdrop-permian-land"][p];
+        // 植物のない大地の絵は、陸に植物が広がる前（シルル紀の前半まで）だけ使う
+        return if veg_at(t) < 0.05 { first(&[own, "barren-land"]) } else { first(&[own]) };
+    }
+    if sc.depth > 100.0 {
+        let own = ["deep-sea", "backdrop-ordovician-deep", "backdrop-silurian-deep", "backdrop-devonian-deep", "backdrop-carboniferous-deep", "backdrop-permian-deep"][p];
+        first(&[own, "deep-sea"])
+    } else {
+        let own = ["shallow-sea", "backdrop-ordovician-sea", "backdrop-silurian-sea", "backdrop-devonian-sea", "backdrop-carboniferous-sea", "backdrop-permian-sea"][p];
+        first(&[own, "shallow-sea"])
+    }
+}
+
 fn hab_list(bits: u8) -> String {
     let all = [Habitat::Land, Habitat::Tidal, Habitat::Shallow, Habitat::Shelf, Habitat::Deep];
     all.iter().filter(|h| bits & h.bit() != 0).map(|h| h.name()).collect::<Vec<_>>().join(lang::sep())
@@ -234,6 +259,7 @@ impl Game {
         let (cw, ch, cpx) = cloud_texture();
         let cloud_tex = gfx.create_texture(cw, ch, &cpx).expect("texture");
         let plate_tex = earth.plates.iter().map(|p| gfx.create_texture(p.w as u32, p.h as u32, &p.px).expect("texture")).collect();
+        let plate_green = earth.plates.iter().map(|p| gfx.create_texture(p.w as u32, p.h as u32, &p.px_green).expect("texture")).collect();
         let prog = Progress::new();
         let cap = lonlat_to_map(prog.lon, prog.lat);
         let mut g = Game {
@@ -245,6 +271,7 @@ impl Game {
             ocean_tex,
             cloud_tex,
             plate_tex,
+            plate_green,
             artwork: Artwork::new(),
             units: crate::units::Units::new(),
             cam: (MAP_W * 0.5, MAP_H * 0.5),
@@ -271,6 +298,7 @@ impl Game {
             flash: 0.0,
             clock: 0.0,
             guide_scroll: 0.0,
+            guide_period: 0,
             guide_max: 0.0,
             mission_open: true,
             have_save: platform::slot_info(0).is_some(),
@@ -938,6 +966,11 @@ impl Game {
             Act::NextPhoto => self.next_photo(),
             Act::Guide => {
                 self.panel = if self.panel == Panel::Guide { Panel::None } else { Panel::Guide };
+                if self.panel == Panel::Guide {
+                    // 新しく収録した項目のある巻、なければいまの紀を開く
+                    self.guide_period = (0..n_entries()).filter(|&e| self.prog.fresh[e]).map(entry_period).next().unwrap_or(period_at(self.prog.t));
+                    self.guide_scroll = 0.0;
+                }
             }
             Act::Missions => {
                 self.panel = if self.panel == Panel::Missions { Panel::None } else { Panel::Missions };
@@ -958,6 +991,10 @@ impl Game {
                 }
             }
             Act::Goto(tg) => self.goto(tg),
+            Act::GuideTab(i) => {
+                self.guide_period = i.min(PERIODS.len() - 1);
+                self.guide_scroll = 0.0;
+            }
             Act::StepStage(d) => {
                 let t = self.travel.as_ref().map_or(self.prog.t, |tr| tr.to);
                 let idx = STAGES.iter().position(|s| t <= s.t0 + 1e-3 && t > s.t1 + 1e-3).unwrap_or(STAGES.len() - 1) as i32;
@@ -1032,30 +1069,20 @@ impl Game {
                 self.zoom = self.zoom.max(1.0);
             }
             Target::Ph(p) => {
-                let (t, pos, fit): (f32, (f32, f32), Option<usize>) = match p {
-                    P_GONDWANA => {
-                        let (x, y, _) = self.earth.pose(GONDWANA, self.prog.t);
-                        (self.prog.t, (x, y), Some(GONDWANA))
-                    }
-                    P_LAURENTIA => {
-                        let (x, y, _) = self.earth.pose(LAURENTIA, self.prog.t);
-                        (self.prog.t, (x, y), Some(LAURENTIA))
-                    }
-                    P_ERUPTION => (511.0, self.earth.site_lonlat(S_KALKARINDJI, 511.0), None),
-                    _ => (self.prog.t, self.earth.to_world(GONDWANA, self.prog.t, (10.0, 0.0)), None),
-                };
-                let (lon, lat) = (pos.0, pos.1);
+                let near = map_to_lonlat(self.cap.0, self.cap.1);
+                let (t, (lon, lat)) = phenom_where_when(p, &self.earth, self.prog.t, near);
                 self.travel_to(t);
-                let m = lonlat_to_map(lon, lat);
-                self.cap_target = Some(m);
-                if let Some(pi) = fit {
-                    let (x0, y0, x1, y1) = self.earth.plate_bounds(pi, t);
-                    self.zoom = ((self.w() * 0.62) / (x1 - x0)).min((self.h() - 200.0) * 0.8 / (y1 - y0));
-                    self.cam = ((x0 + x1) * 0.5, (y0 + y1) * 0.5);
-                    self.follow = false;
-                    self.clamp_cam();
-                } else if p == P_ERUPTION {
-                    self.zoom = self.zoom.max(1.4);
+                self.cap_target = Some(lonlat_to_map(lon, lat));
+                match PHENOMS[p].kind {
+                    PhKind::Continent(plates) => {
+                        let (x0, y0, x1, y1) = self.earth.plates_bounds(plates, t);
+                        self.zoom = ((self.w() * 0.62) / (x1 - x0)).min((self.h() - 200.0) * 0.8 / (y1 - y0)).max(self.min_zoom());
+                        self.cam = ((x0 + x1) * 0.5, (y0 + y1) * 0.5);
+                        self.follow = false;
+                        self.clamp_cam();
+                    }
+                    PhKind::Eruption(_) => self.zoom = self.zoom.max(1.4),
+                    PhKind::Scenery(_) => self.zoom = self.zoom.max(1.0),
                 }
             }
         }
@@ -1101,10 +1128,20 @@ impl Game {
                 }
                 if r.landscape {
                     let s = if self.lens < 1.5 { 90.0 } else { 60.0 };
-                    found.push((n_species() + P_BARREN, s));
+                    let (lon, lat) = map_to_lonlat(self.cap.0, self.cap.1);
+                    let spot = self.earth.sample(lon, lat, self.prog.t);
+                    if let Some(k) = scenery_at(&Spot { hab: Habitat::Land, ..spot }, self.prog.t) {
+                        for p in scenery_phenoms(k, self.prog.t) {
+                            found.push((n_species() + p, s));
+                        }
+                    }
                 }
                 if r.eruption {
-                    found.push((n_species() + P_ERUPTION, 70.0));
+                    for (p, ph) in PHENOMS.iter().enumerate() {
+                        if matches!(ph.kind, PhKind::Eruption(_)) && ph.at(self.prog.t) {
+                            found.push((n_species() + p, 70.0));
+                        }
+                    }
                 }
                 let best = r.subjects.first().map_or(0.0, |b| b.1);
                 if r.subjects.is_empty() && !r.landscape {
@@ -1181,27 +1218,36 @@ impl Game {
         let va = (x1 - x0) * (y1 - y0);
         let t = self.prog.t;
         let mut out = Vec::new();
-        for (p, pi) in [(P_GONDWANA, GONDWANA), (P_LAURENTIA, LAURENTIA)] {
-            let (bx0, by0, bx1, by1) = self.earth.plate_bounds(pi, t);
-            let ba = (bx1 - bx0) * (by1 - by0);
-            let ix = ((bx1.min(x1)) - (bx0.max(x0))).max(0.0);
-            let iy = ((by1.min(y1)) - (by0.max(y0))).max(0.0);
-            let inside = ix * iy / ba;
-            let fill = ba / va;
-            if inside > 0.9 && fill > 0.12 {
-                let s = 30.0 + ((fill - 0.12) / 0.38).clamp(0.0, 1.0) * 60.0 + (inside - 0.9) * 100.0;
-                out.push((n_species() + p, s));
+        for (p, ph) in PHENOMS.iter().enumerate() {
+            if !ph.at(t) {
+                continue;
             }
-        }
-        if (509.9..=511.6).contains(&t) {
-            let (lon, lat) = self.earth.site_lonlat(S_KALKARINDJI, t);
-            let (mx, my) = lonlat_to_map(lon, lat);
-            if mx > x0 && mx < x1 && my > y0 && my < y1 {
-                let wdeg = (x1 - x0) / DEG;
-                let cx = ((mx - (x0 + x1) * 0.5) / (x1 - x0) * 2.0).abs();
-                let cy = ((my - (y0 + y1) * 0.5) / (y1 - y0) * 2.0).abs();
-                let s = 32.0 + (1.0 - ((wdeg - 12.0) / 70.0).clamp(0.0, 1.0)) * 40.0 + (1.0 - cx.max(cy)) * 25.0;
-                out.push((n_species() + P_ERUPTION, s));
+            match ph.kind {
+                PhKind::Continent(plates) => {
+                    let (bx0, by0, bx1, by1) = self.earth.plates_bounds(plates, t);
+                    let ba = (bx1 - bx0) * (by1 - by0);
+                    let ix = ((bx1.min(x1)) - (bx0.max(x0))).max(0.0);
+                    let iy = ((by1.min(y1)) - (by0.max(y0))).max(0.0);
+                    let inside = ix * iy / ba;
+                    let fill = ba / va;
+                    if inside > 0.9 && fill > 0.12 {
+                        let s = 30.0 + ((fill - 0.12) / 0.38).clamp(0.0, 1.0) * 60.0 + (inside - 0.9) * 100.0;
+                        out.push((n_species() + p, s));
+                    }
+                }
+                PhKind::Eruption(e) => {
+                    let er = &ERUPTIONS[e];
+                    let (lon, lat) = self.earth.site_lonlat(er.site, t);
+                    let (mx, my) = lonlat_to_map(lon, lat);
+                    if mx > x0 && mx < x1 && my > y0 && my < y1 {
+                        let wdeg = (x1 - x0) / DEG;
+                        let cx = ((mx - (x0 + x1) * 0.5) / (x1 - x0) * 2.0).abs();
+                        let cy = ((my - (y0 + y1) * 0.5) / (y1 - y0) * 2.0).abs();
+                        let s = 32.0 + (1.0 - ((wdeg - 12.0) / 70.0).clamp(0.0, 1.0)) * 40.0 + (1.0 - cx.max(cy)) * 25.0;
+                        out.push((n_species() + p, s));
+                    }
+                }
+                PhKind::Scenery(_) => {}
             }
         }
         out
@@ -1217,7 +1263,7 @@ impl Game {
             Screen::Title => {
                 self.gfx.set_screen_xform();
                 let (w, h) = (self.w(), self.h());
-                self.artwork.draw(&mut self.gfx, 40, [0.0, 0.0, w, h], 1.0, Fit::Cover);
+                self.artwork.draw(&mut self.gfx, "title", [0.0, 0.0, w, h], 1.0, Fit::Cover);
                 for i in 0..32 {
                     let t = i as f32 / 32.0;
                     self.gfx.rect(w * t, 0.0, w * (t + 1.0 / 32.0), h,
@@ -1228,10 +1274,8 @@ impl Game {
             Screen::Dive => {
                 let v = self.dive_view();
                 let hide = self.lens >= 1.8;
-                let backdrop = self.scene.as_ref().map(|sc| {
-                    if sc.hab == Habitat::Land { 39 } else if sc.depth > 100.0 { 42 } else { 41 }
-                });
-                let backdrop = backdrop.and_then(|i| self.artwork.texture(&self.gfx, i));
+                let backdrop = self.scene.as_ref().and_then(|sc| backdrop_slug(sc, self.prog.t));
+                let backdrop = backdrop.and_then(|slug| self.artwork.texture_slug(&self.gfx, slug));
                 if let Some(sc) = &self.scene {
                     sc.render(&mut self.gfx, &v, self.prog.light, hide, backdrop, &mut self.units);
                 }
@@ -1330,7 +1374,7 @@ impl Game {
         let sy = -2.0 * z / h;
         self.gfx.set_xform(sx, sy, -self.cam.0 * sx, -self.cam.1 * sy);
         // タイトル画面では大陸がゆっくり動き続ける
-        let t = if self.screen == Screen::Title { 512.0 - (self.title_t * 0.12).sin() * 26.0 } else { self.prog.t };
+        let t = if self.screen == Screen::Title { 395.0 - (self.title_t * 0.05).sin() * 140.0 } else { self.prog.t };
         let g = &mut self.gfx;
         g.draw_textured(&self.ocean_tex, 0.0, 0.0, MAP_W, MAP_H, [1.0, 1.0, 1.0, 1.0], true);
         // 経緯線
@@ -1344,16 +1388,29 @@ impl Game {
             g.line((0.0, y), (MAP_W, y), lw, [0.6, 0.85, 1.0, if k == 3 { 0.16 } else { 0.07 }]);
         }
         g.flush();
+        // 陸の植物（シルル紀から緑が広がる。ペルム紀は乾いて少し減る）
+        let veg = veg_at(t) * if t < 292.0 { 0.75 } else { 1.0 };
         for i in 0..self.plate_tex.len() {
             let q = self.earth.plate_quad(i, t);
-            self.gfx.draw_textured_quad(&self.plate_tex[i], q, [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [1.0, 1.0, 1.0, 1.0], true);
+            let uv = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)];
+            self.gfx.draw_textured_quad(&self.plate_tex[i], q, uv, [1.0, 1.0, 1.0, 1.0], true);
+            if veg > 0.01 {
+                self.gfx.draw_textured_quad(&self.plate_green[i], q, uv, [1.0, 1.0, 1.0, veg], true);
+            }
+        }
+        // 氷河時代の南極の氷
+        if glacial(t) {
+            let g = &mut self.gfx;
+            let y55 = (90.0 + 55.0) * DEG;
+            g.rect_vgrad(0.0, y55, MAP_W, MAP_H - 2.0 * DEG, [0.92, 0.96, 1.0, 0.0], [0.92, 0.96, 1.0, 0.72]);
+            g.rect(0.0, MAP_H - 2.0 * DEG, MAP_W, MAP_H, [0.92, 0.96, 1.0, 0.72]);
         }
         // 大噴火
-        let erupting = (509.9..=511.6).contains(&t);
-        if erupting {
-            let (lon, lat) = self.earth.site_lonlat(S_KALKARINDJI, t);
+        if let Some(er) = eruption_at(t) {
+            let (lon, lat) = self.earth.site_lonlat(er.site, t);
             let (mx, my) = lonlat_to_map(lon, lat);
-            let k = 1.0 - ((t - 510.75).abs() / 0.85).clamp(0.0, 1.0) * 0.5;
+            let tm = (er.t0 + er.t1) * 0.5;
+            let k = 1.0 - ((t - tm).abs() / ((er.t0 - er.t1) * 0.5)).clamp(0.0, 1.0) * 0.5;
             let g = &mut self.gfx;
             g.radial(mx, my, 90.0 * k, 32, [1.0, 0.35, 0.1, 0.55], [1.0, 0.2, 0.05, 0.0]);
             for i in 0..18 {
@@ -1410,7 +1467,7 @@ impl Game {
 
     fn timeline_rect(&self) -> (f32, f32, f32, f32) {
         let (w, h) = (self.w(), self.h());
-        let th = if self.compact() { 50.0 } else { 58.0 };
+        let th = if self.compact() { 64.0 } else { 72.0 };
         let x0 = if self.compact() { 64.0 } else { 80.0 };
         (x0, h - th - 8.0, w - x0, h - 8.0)
     }
@@ -1517,14 +1574,47 @@ impl Game {
         self.add_button(mid + 5.0, by, x1 - 10.0, by + bh, t!("撮影 (Space)", "Photo (Space)", "拍摄 (Space)"), Act::Shoot, true, false);
     }
 
+    /// 年表：上の細い帯が古生代の6つの紀、下の帯がいまの紀の期
     fn render_timeline(&mut self) {
         let (x0, y0, x1, y1) = self.timeline_rect();
         let t = self.prog.t;
+        let pi = period_at(t);
+        let per = &PERIODS[pi];
         self.gfx.fill_round(x0 - 56.0, y0 - 4.0, x1 + 56.0, y1 + 4.0, 12.0, BG);
-        let bar_y0 = y0 + 22.0;
+        let strip_y0 = y0 + 20.0;
+        let strip_y1 = strip_y0 + 14.0;
+        let bar_y0 = strip_y1 + 8.0;
         let bar_y1 = y1 - 6.0;
-        let tx = |tt: f32| x0 + (T_START - tt) / (T_START - T_END) * (x1 - x0);
-        for s in STAGES {
+        // 紀の帯（全体）
+        let px = |tt: f32| x0 + (T_START - tt) / (T_START - T_END) * (x1 - x0);
+        for (i, p) in PERIODS.iter().enumerate() {
+            let (a, b) = (px(p.t0), px(p.t1));
+            let cur = i == pi;
+            self.gfx.fill_rect(a, strip_y0, b - 1.0, strip_y1, if cur { c4(p.col, 1.0) } else { c4([p.col[0] * 0.55, p.col[1] * 0.55, p.col[2] * 0.55], 0.95) });
+            let nm = p.name.get();
+            let wd = self.gfx.measure(nm, Font::Small);
+            if wd < b - a - 4.0 {
+                self.gfx.text(nm, a + (b - a - wd) * 0.5, strip_y0 - 1.0, wd + 4.0, strip_y1 - strip_y0 + 2.0, Font::Small, if cur { [0.05, 0.08, 0.08, 1.0] } else { [0.94, 0.97, 0.96, 0.9] });
+            }
+            if cur {
+                self.gfx.stroke_rect(a, strip_y0, b - 1.0, strip_y1, 1.5, [1.0, 1.0, 1.0, 0.9]);
+            }
+            // 紀の始まりの期へ
+            let first = STAGES.iter().find(|s| (s.t0 - p.t0).abs() < 1e-3).unwrap_or(&STAGES[0]);
+            let go = ((first.t0 + first.t1) * 0.5 * 10.0).round() / 10.0;
+            self.buttons.push(Button { x0: a, y0: strip_y0 - 2.0, x1: b, y1: strip_y1 + 2.0, act: Act::TimeAt(if cur { t } else { go }), enabled: self.travel.is_none() && !cur });
+            let (mx, my) = self.mouse;
+            if mx >= a && mx <= b && my >= strip_y0 - 2.0 && my <= strip_y1 + 2.0 {
+                self.tip = Some(tf!("{}（{}）\nクリックでこの紀へ", "{} ({})\nClick to travel to this period", "{}（{}）\n点击前往这个纪", nm, span_text(p.t0, p.t1)));
+            }
+        }
+        // いまの位置（全体の帯）
+        let cxa = px(t);
+        self.gfx.fill_rect(cxa - 1.5, strip_y0 - 2.0, cxa + 1.5, strip_y1 + 2.0, [1.0, 1.0, 1.0, 1.0]);
+        // いまの紀を広げた帯（期）
+        let (t0, t1) = (per.t0, per.t1);
+        let tx = |tt: f32| x0 + (t0 - tt) / (t0 - t1) * (x1 - x0);
+        for s in STAGES.iter().filter(|s| s.t0 <= t0 + 1e-3 && s.t1 >= t1 - 1e-3) {
             let (a, b) = (tx(s.t0), tx(s.t1));
             self.gfx.fill_rect(a, bar_y0, b - 1.0, bar_y1, c4(s.col, 0.9));
             let nm = s.name.get();
@@ -1533,40 +1623,42 @@ impl Game {
                 self.gfx.text(nm, a + 2.0, bar_y0 + 2.0, b - a - 4.0, bar_y1 - bar_y0, Font::Small, [0.08, 0.14, 0.12, 1.0]);
             }
         }
-        for m in MILESTONES {
+        for m in MILESTONES.iter().filter(|m| m.ma <= t0 + 1e-3 && m.ma >= t1 - 1e-3) {
             let x = tx(m.ma);
             self.gfx.fill_rect(x - 1.0, bar_y0 - 5.0, x + 1.0, bar_y0, [1.0, 0.85, 0.5, 0.8]);
         }
-        // 宿題の時代
         let title = tf!("{}　{}", "{}   {}", "{}　{}", era_text(t), ma_text(t));
         self.gfx.text(&title, x0, y0 + 1.0, x1 - x0, 18.0, Font::Normal, TEXT);
-        let fut = t!("オルドビス紀〜現代：準備中", "Ordovician to today: coming soon", "奥陶纪至今：准备中");
-        let fw = self.gfx.measure(fut, Font::Small);
-        self.gfx.text(fut, x1 - fw, y0 + 3.0, fw + 4.0, 16.0, Font::Small, [0.6, 0.66, 0.7, 1.0]);
         // 現在の時代
         let cx = tx(t);
         self.gfx.fill_rect(cx - 2.0, bar_y0 - 4.0, cx + 2.0, bar_y1 + 3.0, [1.0, 1.0, 1.0, 1.0]);
         self.gfx.fill_circle(cx, bar_y0 - 5.0, 5.0, ACCENT);
         // 行き先
         if let Some(tr) = &self.travel {
-            let dx = tx(tr.to);
-            self.gfx.stroke_circle(dx, bar_y0 - 5.0, 6.0, 2.0, ACCENT);
+            if tr.to <= t0 + 1e-3 && tr.to >= t1 - 1e-3 {
+                let dx = tx(tr.to);
+                self.gfx.stroke_circle(dx, bar_y0 - 5.0, 6.0, 2.0, ACCENT);
+            } else {
+                let dx = px(tr.to);
+                self.gfx.stroke_circle(dx, strip_y0 - 3.0, 5.0, 2.0, ACCENT);
+            }
         }
         // マウスを乗せた時代
         let (mx, my) = self.mouse;
+        let step = if t0 - t1 > 20.0 { 0.5 } else { 0.1 };
         if mx >= x0 && mx <= x1 && my >= bar_y0 - 8.0 && my <= bar_y1 + 4.0 {
-            let tt = T_START - (mx - x0) / (x1 - x0) * (T_START - T_END);
-            let tt = (tt * 2.0).round() / 2.0;
+            let tt = t0 - (mx - x0) / (x1 - x0) * (t0 - t1);
+            let tt = (tt / step).round() * step;
             self.tip = Some(tf!("{}\nクリックでこの時代へ", "{}\nClick to travel here", "{}\n点击前往这个时代", ma_text(tt)));
             self.gfx.fill_rect(mx - 1.0, bar_y0, mx + 1.0, bar_y1, [1.0, 1.0, 1.0, 0.5]);
         }
         // 年表のクリック（ボタンとして扱う）
-        let n = 107;
+        let n = 120;
         for i in 0..n {
             let f0 = i as f32 / n as f32;
             let f1 = (i + 1) as f32 / n as f32;
-            let tt = T_START - (f0 + f1) * 0.5 * (T_START - T_END);
-            let tt = (tt * 2.0).round() / 2.0;
+            let tt = t0 - (f0 + f1) * 0.5 * (t0 - t1);
+            let tt = ((tt / step).round() * step).clamp(t1, t0);
             self.buttons.push(Button { x0: x0 + f0 * (x1 - x0), y0: bar_y0 - 8.0, x1: x0 + f1 * (x1 - x0), y1: bar_y1 + 4.0, act: Act::TimeAt(tt), enabled: self.travel.is_none() });
         }
         let bw = 44.0;
@@ -1625,7 +1717,7 @@ impl Game {
         let Some((x0, y0, x1, y1)) = self.mission_rect() else { return };
         self.panel_box(x0, y0, x1, y1);
         if self.prog.all_clear() {
-            self.gfx.text(t!("カンブリア紀の宿題：すべて合格！", "Cambrian tasks: all passed!", "寒武纪作业：全部合格！"), x0 + 12.0, y0 + 7.0, x1 - x0 - 24.0, 20.0, Font::Normal, GOLD);
+            self.gfx.text(t!("古生代の宿題：すべて合格！", "Paleozoic tasks: all passed!", "古生代作业：全部合格！"), x0 + 12.0, y0 + 7.0, x1 - x0 - 24.0, 20.0, Font::Normal, GOLD);
             return;
         }
         let mi = self.prog.mission;
@@ -1773,7 +1865,7 @@ impl Game {
         self.gfx.stroke_round(x0, y0, x0 + cw, y0 + 150.0, 18.0, 1.5, EDGE);
         self.gfx.text(t!("地球史図鑑", "YYEarth", "地球史图鉴"), x0, y0 + 14.0, cw, 56.0, Font::Title, [0.80, 1.0, 0.96, 1.0]);
         self.gfx.text(t!("時をめぐる観察カプセル", "A Field Guide Through Deep Time", "时光观测舱"), x0, y0 + 72.0, cw, 26.0, Font::BigCenter, TEXT);
-        self.gfx.text(t!("第1巻　古生代カンブリア紀", "Volume 1: The Cambrian Period", "第1卷　古生代寒武纪"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
+        self.gfx.text(t!("第1〜6巻　古生代（カンブリア紀〜ペルム紀）", "Volumes 1–6: The Paleozoic (Cambrian to Permian)", "第1—6卷　古生代（寒武纪至二叠纪）"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
         let bw = if self.compact() { 300.0 } else { 340.0 };
         let bh = if self.compact() { 40.0 } else { 44.0 };
         let bx = x0 + (cw - bw) * 0.5;
@@ -1792,9 +1884,9 @@ impl Game {
         by += 46.0;
         self.add_button(bx, by, bx + bw, by + 36.0, t!("記録ファイルを読み込む", "Load a save file", "读取存档文件"), Act::Import, true, false);
         let foot = t!(
-            "西暦2650年。時間旅行学校の宿題で、5億年前の地球へ。",
-            "The year 2650. A time-travel school assignment takes you 500 million years into the past.",
-            "公元2650年。为了完成时间旅行学校的作业，你将前往5亿年前的地球。"
+            "西暦2650年。時間旅行学校の宿題で、5億年前から2億5000万年前の地球へ。",
+            "The year 2650. A time-travel school assignment takes you from 500 to 250 million years into the past.",
+            "公元2650年。为了完成时间旅行学校的作业，你将前往5亿年前至2亿5000万年前的地球。"
         );
         self.gfx.text_shadow(foot, 20.0, h - 34.0, w - 40.0, 24.0, Font::NormalCenter, [0.9, 0.96, 0.96, 0.9]);
     }
@@ -1804,7 +1896,7 @@ impl Game {
     fn guide_layout(&self) -> (f32, f32, f32, f32, usize, f32, f32) {
         let (w, h) = (self.w(), self.h());
         let x0 = 20.0;
-        let y0 = self.top_h() + 56.0;
+        let y0 = self.top_h() + 96.0;
         let x1 = w - 20.0;
         let y1 = h - 16.0;
         let cell_w = if self.compact() { 112.0 } else { 132.0 };
@@ -1814,15 +1906,21 @@ impl Game {
         (x0, y0, x1, y1, cols, cw, ch)
     }
 
+    /// いま図鑑で開いている巻（紀）の項目
+    fn guide_entries(&self) -> Vec<usize> {
+        (0..n_entries()).filter(|&e| entry_period(e) == self.guide_period).collect()
+    }
+
     fn render_guide_gl(&mut self) {
         let (w, h) = (self.w(), self.h());
         self.gfx.rect(0.0, 0.0, w, h, [0.02, 0.07, 0.11, 0.97]);
         let (x0, y0, _x1, y1, cols, cw, ch) = self.guide_layout();
-        let rows = (n_entries() + cols - 1) / cols;
+        let list = self.guide_entries();
+        let rows = (list.len() + cols - 1) / cols;
         self.guide_max = ((rows as f32) * (ch + 10.0) - (y1 - y0)).max(0.0);
         self.guide_scroll = self.guide_scroll.clamp(0.0, self.guide_max);
-        for e in 0..n_entries() {
-            let (r, c) = (e / cols, e % cols);
+        for (k, &e) in list.iter().enumerate() {
+            let (r, c) = (k / cols, k % cols);
             let cx0 = x0 + c as f32 * (cw + 10.0);
             let cy0 = y0 + r as f32 * (ch + 10.0) - self.guide_scroll;
             if cy0 + ch < y0 - 4.0 || cy0 > y1 {
@@ -1845,7 +1943,7 @@ impl Game {
 
     /// 図鑑の絵（生きもの・現象）を枠の中に描く
     fn draw_entry_art(&mut self, e: usize, x0: f32, y0: f32, x1: f32, y1: f32, a: f32) {
-        if self.artwork.draw(&mut self.gfx, e, [x0, y0, x1, y1], a, Fit::Contain) {
+        if self.artwork.draw(&mut self.gfx, entry_slug(e), [x0, y0, x1, y1], a, Fit::Contain) {
             return;
         }
         let (bw, bh) = (x1 - x0, y1 - y0);
@@ -1863,17 +1961,38 @@ impl Game {
             art::draw(&mut self.gfx, e, x, y, len, 1.0, 0.0, self.clock, a, state, 7);
         } else {
             let p = e - ns;
-            match p {
-                P_GONDWANA | P_LAURENTIA => {
-                    let pi = if p == P_GONDWANA { GONDWANA } else { LAURENTIA };
-                    let pl = &self.earth.plates[pi];
-                    let asp = pl.w as f32 / pl.h as f32;
-                    let (dw, dh) = if bw / bh > asp { (bh * asp, bh) } else { (bw, bw / asp) };
-                    let (cx, cy) = ((x0 + x1) * 0.5, (y0 + y1) * 0.5);
+            let ph = &PHENOMS[p];
+            match ph.kind {
+                PhKind::Continent(plates) => {
+                    // その時代の大陸を枠に収めて描く
+                    let t = (ph.t0 + ph.t1) * 0.5;
+                    // 大陸の絵（まわりの浅い海を含む）全体が枠に収まるように
+                    let (mut mx0, mut my0, mut mx1, mut my1) = (f32::MAX, f32::MAX, f32::MIN, f32::MIN);
+                    for &pi in plates {
+                        for (x, y) in self.earth.plate_quad(pi, t) {
+                            mx0 = mx0.min(x);
+                            my0 = my0.min(y);
+                            mx1 = mx1.max(x);
+                            my1 = my1.max(y);
+                        }
+                    }
+                    let (mw, mh) = (mx1 - mx0, my1 - my0);
+                    let k = (bw / mw).min(bh / mh);
+                    let (ox, oy) = ((x0 + x1) * 0.5 - (mx0 + mx1) * 0.5 * k, (y0 + y1) * 0.5 - (my0 + my1) * 0.5 * k);
                     self.gfx.rect(x0, y0, x1, y1, [0.06, 0.18, 0.36, a]);
-                    self.gfx.draw_textured(&self.plate_tex[pi], cx - dw * 0.5, cy - dh * 0.5, cx + dw * 0.5, cy + dh * 0.5, [1.0, 1.0, 1.0, a], true);
+                    let veg = veg_at(t);
+                    for &pi in plates {
+                        let q = self.earth.plate_quad(pi, t).map(|(x, y)| (ox + x * k, oy + y * k));
+                        let uv = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)];
+                        self.gfx.draw_textured_quad(&self.plate_tex[pi], q, uv, [1.0, 1.0, 1.0, a], true);
+                        if veg > 0.01 {
+                            self.gfx.draw_textured_quad(&self.plate_green[pi], q, uv, [1.0, 1.0, 1.0, a * veg], true);
+                        }
+                    }
+                    // 枠からはみ出した分を隠す
+                    self.gfx.flush();
                 }
-                P_ERUPTION => {
+                PhKind::Eruption(_) => {
                     self.gfx.rect_vgrad(x0, y0, x1, y1, [0.22, 0.12, 0.12, a], [0.7, 0.32, 0.14, a]);
                     let gy = y0 + bh * 0.7;
                     self.gfx.rect(x0, gy, x1, y1, [0.12, 0.10, 0.10, a]);
@@ -1885,8 +2004,17 @@ impl Game {
                     }
                     self.gfx.rect(x0, gy - 2.0, x1, gy + 3.0, [1.0, 0.45, 0.1, a]);
                 }
-                _ => {
-                    self.gfx.rect_vgrad(x0, y0, x1, y1, [0.36, 0.58, 0.82, a], [0.82, 0.86, 0.88, a]);
+                PhKind::Scenery(k) => {
+                    // 景色ごとの空・山・地面・点景の色
+                    let (sky, hill, ground, dot) = match k {
+                        Scenery::Barren => ([0.36, 0.58, 0.82], [0.62, 0.44, 0.34], [0.70, 0.50, 0.36], [0.44, 0.32, 0.28]),
+                        Scenery::Ice => ([0.60, 0.72, 0.86], [0.86, 0.90, 0.96], [0.94, 0.96, 1.0], [0.70, 0.78, 0.88]),
+                        Scenery::GreenShore => ([0.40, 0.62, 0.84], [0.60, 0.46, 0.36], [0.64, 0.52, 0.38], [0.30, 0.52, 0.26]),
+                        Scenery::Forest => ([0.42, 0.62, 0.80], [0.30, 0.42, 0.26], [0.40, 0.42, 0.26], [0.22, 0.40, 0.20]),
+                        Scenery::CoalForest => ([0.50, 0.62, 0.66], [0.20, 0.32, 0.20], [0.24, 0.28, 0.18], [0.16, 0.34, 0.16]),
+                        Scenery::Desert => ([0.56, 0.70, 0.86], [0.80, 0.50, 0.30], [0.86, 0.58, 0.36], [0.70, 0.42, 0.26]),
+                    };
+                    self.gfx.rect_vgrad(x0, y0, x1, y1, c4(sky, a), [0.82, 0.86, 0.88, a]);
                     let gy = y0 + bh * 0.62;
                     let n = 8;
                     for i in 0..n {
@@ -1894,13 +2022,21 @@ impl Game {
                         let fb = (i + 1) as f32 / n as f32;
                         let ha = (fa * 9.0).sin() * 0.1 + 0.12;
                         let hb = (fb * 9.0).sin() * 0.1 + 0.12;
-                        self.gfx.tri((x0 + bw * fa, gy), (x0 + bw * fb, gy), (x0 + bw * fb, gy - bh * hb), [0.62, 0.44, 0.34, a]);
-                        self.gfx.tri((x0 + bw * fa, gy), (x0 + bw * fb, gy - bh * hb), (x0 + bw * fa, gy - bh * ha), [0.62, 0.44, 0.34, a]);
+                        self.gfx.tri((x0 + bw * fa, gy), (x0 + bw * fb, gy), (x0 + bw * fb, gy - bh * hb), c4(hill, a));
+                        self.gfx.tri((x0 + bw * fa, gy), (x0 + bw * fb, gy - bh * hb), (x0 + bw * fa, gy - bh * ha), c4(hill, a));
                     }
-                    self.gfx.rect_vgrad(x0, gy, x1, y1, [0.70, 0.50, 0.36, a], [0.50, 0.34, 0.26, a]);
+                    self.gfx.rect_vgrad(x0, gy, x1, y1, c4(ground, a), c4([ground[0] * 0.72, ground[1] * 0.72, ground[2] * 0.72], a));
+                    let trees = matches!(k, Scenery::Forest | Scenery::CoalForest);
                     for i in 0..6 {
                         let rx = x0 + bw * (0.1 + i as f32 * 0.16);
-                        self.gfx.circle(rx, gy + bh * (0.12 + (i % 3) as f32 * 0.06), bh * 0.04, 10, [0.44, 0.32, 0.28, a]);
+                        let ry = gy + bh * (0.12 + (i % 3) as f32 * 0.06);
+                        if trees {
+                            let th = bh * (0.35 + (i % 2) as f32 * 0.12);
+                            self.gfx.rect(rx - bw * 0.008, ry - th, rx + bw * 0.008, ry, [0.30, 0.24, 0.18, a]);
+                            self.gfx.circle(rx, ry - th, bh * 0.1, 12, c4(dot, a));
+                        } else {
+                            self.gfx.circle(rx, ry, bh * 0.04, 10, c4(dot, a));
+                        }
                     }
                 }
             }
@@ -1910,11 +2046,28 @@ impl Game {
     fn render_guide_ui(&mut self) {
         let w = self.w();
         let (x0, y0, _x1, y1, cols, cw, ch) = self.guide_layout();
-        let title = tf!("カンブリア紀の図鑑　{}/{}", "Cambrian field guide  {}/{}", "寒武纪图鉴　{}/{}", self.prog.found(), n_entries());
+        let title = tf!("古生代の図鑑　{}/{}", "Paleozoic field guide  {}/{}", "古生代图鉴　{}/{}", self.prog.found(), n_entries());
         self.gfx.text(&title, 24.0, self.top_h() + 12.0, w - 200.0, 30.0, Font::Big, TEXT);
         self.add_button(w - 120.0, self.top_h() + 10.0, w - 20.0, self.top_h() + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
-        for e in 0..n_entries() {
-            let (r, c) = (e / cols, e % cols);
+        // 巻（紀）のタブ
+        let ty = self.top_h() + 52.0;
+        let tw = ((w - 40.0) / PERIODS.len() as f32).min(200.0);
+        for (i, p) in PERIODS.iter().enumerate() {
+            let n = (0..n_entries()).filter(|&e| entry_period(e) == i).count();
+            let got = (0..n_entries()).filter(|&e| entry_period(e) == i && self.prog.stars[e] > 0).count();
+            let fresh = (0..n_entries()).any(|e| entry_period(e) == i && self.prog.fresh[e]);
+            let label = if self.compact() { p.name.get().to_string() } else { format!("{} {}/{}{}", p.name.get(), got, n, if fresh { " ●" } else { "" }) };
+            let bx = 20.0 + i as f32 * tw;
+            let cur = i == self.guide_period;
+            if cur {
+                self.gfx.fill_round(bx, ty, bx + tw - 6.0, ty + 34.0, 8.0, c4(p.col, 0.35));
+            }
+            self.add_button(bx, ty, bx + tw - 6.0, ty + 34.0, &label, Act::GuideTab(i), true, cur || fresh);
+            self.gfx.fill_rect(bx + 6.0, ty + 30.0, bx + tw - 12.0, ty + 33.0, c4(p.col, if cur { 1.0 } else { 0.5 }));
+        }
+        let list = self.guide_entries();
+        for (k, &e) in list.iter().enumerate() {
+            let (r, c) = (k / cols, k % cols);
             let cx0 = x0 + c as f32 * (cw + 10.0);
             let cy0 = y0 + r as f32 * (ch + 10.0) - self.guide_scroll;
             if cy0 + ch < y0 || cy0 > y1 - 10.0 {
@@ -1950,6 +2103,7 @@ impl Game {
         let x1 = w - 20.0;
         let y1 = h - 16.0;
         let split = x0 + (x1 - x0) * 0.46;
+        let _ = PERIODS.len();
         (x0, y0, x1, y1, split)
     }
 
@@ -1998,10 +2152,12 @@ impl Game {
             self.gfx.text(t!("復元イメージ", "Artist's reconstruction", "复原想象图"),
                 30.0, y1 - 43.0, split - 50.0, 20.0, Font::NormalCenter, DIM);
         }
-        self.gfx.text(&tf!("図鑑 No.{:02}", "Guide No.{:02}", "图鉴 No.{:02}", e + 1), 24.0, top + 14.0, 300.0, 24.0, Font::Big, DIM);
+        self.gfx.text(&tf!("図鑑 No.{:02}　{}", "Guide No.{:02}  {}", "图鉴 No.{:02}　{}", e + 1, PERIODS[entry_period(e)].name.get()), 24.0, top + 14.0, 420.0, 24.0, Font::Big, DIM);
         self.add_button(w - 120.0, top + 10.0, w - 20.0, top + 44.0, t!("一覧へ", "Back", "返回"), Act::Close, true, false);
-        let prev = (e + n_entries() - 1) % n_entries();
-        let next = (e + 1) % n_entries();
+        let list: Vec<usize> = (0..n_entries()).filter(|&x| entry_period(x) == entry_period(e)).collect();
+        let k = list.iter().position(|&x| x == e).unwrap_or(0);
+        let prev = list[(k + list.len() - 1) % list.len()];
+        let next = list[(k + 1) % list.len()];
         self.add_button(w - 230.0, top + 10.0, w - 180.0, top + 44.0, "◀", Act::Entry(prev), true, false);
         self.add_button(w - 174.0, top + 10.0, w - 124.0, top + 44.0, "▶", Act::Entry(next), true, false);
         let (tx, tw) = (split + 14.0, x1 - split - 14.0);
@@ -2076,7 +2232,7 @@ impl Game {
         let y0 = self.top_h() + 16.0;
         let y1 = h - 16.0;
         self.panel_box(x0, y0, x0 + pw, y1);
-        self.gfx.text(t!("学校の宿題：カンブリア紀の図鑑づくり", "School assignment: a Cambrian field guide", "学校作业：制作寒武纪图鉴"), x0 + 20.0, y0 + 14.0, pw - 160.0, 26.0, Font::Big, TEXT);
+        self.gfx.text(t!("学校の宿題：古生代の図鑑づくり", "School assignment: a Paleozoic field guide", "学校作业：制作古生代图鉴"), x0 + 20.0, y0 + 14.0, pw - 160.0, 26.0, Font::Big, TEXT);
         self.add_button(x0 + pw - 120.0, y0 + 12.0, x0 + pw - 16.0, y0 + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         let mut y = y0 + 56.0;
         let cur = self.prog.mission;
@@ -2100,14 +2256,29 @@ impl Game {
             }
             y += 10.0;
         } else {
-            self.gfx.text(t!("すべての宿題に合格！ 次はオルドビス紀（準備中）。", "All tasks passed! Next: the Ordovician (coming soon).", "全部作业合格！下一站：奥陶纪（准备中）。"), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, GOLD);
+            self.gfx.text(t!("すべての宿題に合格！ 次は中生代（準備中）。", "All tasks passed! Next: the Mesozoic (coming soon).", "全部作业合格！下一站：中生代（准备中）。"), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, GOLD);
             y += 34.0;
         }
-        self.gfx.text(t!("宿題の一覧", "All tasks", "作业一览"), x0 + 20.0, y, pw - 40.0, 20.0, Font::Normal, DIM);
+        // いまの宿題の紀の一覧（紀ごとの進み具合も）
+        let vp = MISSIONS.get(cur).map_or(PERIODS.len() - 1, |m| m.period);
+        let mut prog_line = String::new();
+        for (pi, p) in PERIODS.iter().enumerate() {
+            let all = MISSIONS.iter().filter(|m| m.period == pi).count();
+            let done = MISSIONS.iter().enumerate().filter(|(i, m)| m.period == pi && *i < cur).count();
+            if pi > 0 {
+                prog_line.push_str("　");
+            }
+            prog_line.push_str(&format!("{}{} {}/{}", if done == all { "✔" } else if pi == vp { "▶" } else { "" }, p.name.get(), done, all));
+        }
+        let hh = self.gfx.measure_h(&prog_line, Font::Small, pw - 40.0);
+        self.gfx.text(&prog_line, x0 + 20.0, y, pw - 40.0, hh, Font::Small, DIM);
+        y += hh + 8.0;
+        self.gfx.text(&tf!("{}の宿題", "{} tasks", "{}的作业", PERIODS[vp].name.get()), x0 + 20.0, y, pw - 40.0, 20.0, Font::Normal, DIM);
         y += 24.0;
         let col2 = self.compact() || pw < 700.0;
-        for (i, m) in MISSIONS.iter().enumerate() {
-            let (cx, cy) = if col2 { (x0 + 20.0 + (i % 2) as f32 * (pw - 40.0) * 0.5, y + (i / 2) as f32 * 22.0) } else { (x0 + 20.0 + (i % 2) as f32 * (pw - 40.0) * 0.5, y + (i / 2) as f32 * 24.0) };
+        let list: Vec<(usize, &Mission)> = MISSIONS.iter().enumerate().filter(|(_, m)| m.period == vp).collect();
+        for (k, &(i, m)) in list.iter().enumerate() {
+            let (cx, cy) = if col2 { (x0 + 20.0 + (k % 2) as f32 * (pw - 40.0) * 0.5, y + (k / 2) as f32 * 22.0) } else { (x0 + 20.0 + (k % 2) as f32 * (pw - 40.0) * 0.5, y + (k / 2) as f32 * 24.0) };
             let (mark, c) = if i < cur {
                 ("✔", GOOD)
             } else if i == cur {
@@ -2222,9 +2393,9 @@ impl Game {
                 "第一站是5亿多年前的古生代寒武纪。那是“寒武纪大爆发”的时代，海中一下子出现了长着眼睛、外壳和腿的动物。陆地上还没有植物。",
             ),
             L(
-                "地図の下の年表で時代を選び、地図で場所を選びます。大陸はゆっくり動いているので、時代によって形と位置が変わりますよ。「潜る」で海の中へ、撮影ボタンで写真を撮ります。",
-                "Choose a time with the timeline under the map and a place on the map. The continents drift slowly, so their shapes and positions change with time. 'Dive' takes you under the sea; the shutter takes a photo.",
-                "用地图下方的年表选择时代，在地图上选择地点。大陆在缓慢移动，所以不同时代的形状和位置都会变化。按“下潜”进入海中，按快门拍照。",
+                "地図の下の年表で時代を選び、地図で場所を選びます。年表の上の帯でオルドビス紀・シルル紀・デボン紀・石炭紀・ペルム紀へも行けます。大陸はゆっくり動いて、やがて一つの超大陸になりますよ。「潜る」で海の中へ、撮影ボタンで写真を撮ります。",
+                "Choose a time with the timeline under the map and a place on the map. The strip above the timeline takes you on to the Ordovician, Silurian, Devonian, Carboniferous and Permian. The continents drift slowly and finally join into one supercontinent. 'Dive' takes you under the sea; the shutter takes a photo.",
+                "用地图下方的年表选择时代，在地图上选择地点。年表上方的色带可以前往奥陶纪、志留纪、泥盆纪、石炭纪和二叠纪。大陆缓慢移动，最终连成一个超大陆。按“下潜”进入海中，按快门拍照。",
             ),
             L(
                 "生きものは、大きく・真ん中に・明るく撮るほど★が増えます。右上の宿題のカードの「行く」を押せば、カプセルが目的の時代と場所へ向かいます。では、いってらっしゃい！",
@@ -2257,7 +2428,8 @@ impl Game {
         let [x0,y0,x1,y1]=reveal.bounds;
         if reveal.front {
             let pad=(x1-x0)*0.045;
-            self.artwork.draw(&mut self.gfx,entry,[x0+pad,y0+48.0,x1-pad,y1-132.0],reveal.alpha,Fit::Contain);
+            // 画像が無いものは手描きの絵（draw_entry_art の中で画像を先に試す）
+            self.draw_entry_art(entry,x0+pad,y0+48.0,x1-pad,y1-132.0,reveal.alpha);
             let c=crate::reveal::accent(stars);
             self.gfx.rect(x0+pad,y1-122.0,x1-pad,y1-121.0,[c[0],c[1],c[2],0.45]);
         }

@@ -27,9 +27,21 @@ cp target/wasm32-unknown-unknown/release/yyearth.wasm dist/
 if command -v wasm-opt >/dev/null 2>&1; then
   wasm-opt -O3 dist/yyearth.wasm -o dist/yyearth.wasm || true
 fi
+node tools/package_wasm.mjs dist/yyearth.wasm
 cat > dist/_headers <<'H'
 /yyearth.wasm
   Content-Type: application/wasm
-  Cache-Control: public, max-age=3600
+  Cache-Control: no-cache
+/wasm/*
+  Content-Type: application/octet-stream
+  Cache-Control: public, max-age=31536000, immutable
+/wasm-manifest.json
+  Cache-Control: no-cache
+/main.js
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
 H
 ls -la dist

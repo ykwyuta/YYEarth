@@ -4,7 +4,10 @@ use crate::mission::{mission_done, MISSIONS};
 use crate::save::{RResult, Reader, Writer};
 
 const MAGIC: &[u8; 4] = b"YYE1";
-const VERSION: u32 = 1;
+/// 2：古生代の全体（オルドビス紀〜ペルム紀）を加えた版。図鑑の項目の並びが変わった
+const VERSION: u32 = 2;
+/// 版1（カンブリア紀だけ）の生きものの数。版1の記録の現象はこの後ろに並ぶ
+const V1_SPECIES: usize = 36;
 
 #[derive(Clone)]
 pub struct Progress {
@@ -93,9 +96,11 @@ impl Progress {
         for i in 0..n {
             let s = r.u8()?.min(3);
             let f = r.bool()?;
-            if i < p.stars.len() {
-                p.stars[i] = s;
-                p.fresh[i] = f;
+            // 版1の記録では、現象が生きもの36種のすぐ後ろにあった
+            let j = if v < 2 && i >= V1_SPECIES { crate::life::n_species() + (i - V1_SPECIES) } else { i };
+            if j < p.stars.len() {
+                p.stars[j] = s;
+                p.fresh[j] = f;
             }
         }
         p.mission = r.usize()?.min(MISSIONS.len());
@@ -114,7 +119,8 @@ impl Progress {
     /// 記録の見出し
     pub fn meta(&self) -> String {
         let m = if self.all_clear() { t!("全課題クリア", "All clear", "全部完成").to_string() } else { tf!("宿題{}", "Task {}", "作业{}", self.mission + 1) };
-        tf!("カンブリア紀・{}・図鑑 {}/{}", "Cambrian · {} · Guide {}/{}", "寒武纪·{}·图鉴 {}/{}", m, self.found(), n_entries())
+        let era = crate::earth::PERIODS[crate::earth::period_at(self.t)].name.get();
+        tf!("{}・{}・図鑑 {}/{}", "{} · {} · Guide {}/{}", "{}·{}·图鉴 {}/{}", era, m, self.found(), n_entries())
     }
 }
 
@@ -142,6 +148,33 @@ mod tests {
         assert!(q.intro_done);
         assert!(Progress::from_bytes(&b[..b.len() - 3]).is_err());
         assert!(Progress::from_bytes(b"NOPE").is_err());
+    }
+
+    /// カンブリア紀だけの版（版1）の記録を読むと、現象の星が新しい並びに移る
+    #[test]
+    fn reads_v1_save() {
+        let mut w = Writer::new();
+        w.bytes(MAGIC);
+        w.u32(1);
+        w.usize(40);
+        for i in 0..40 {
+            w.u8(if i == 16 || i == 36 || i == 39 { 2 } else { 0 });
+            w.bool(false);
+        }
+        w.usize(10);
+        w.f32(486.0);
+        w.f32(10.0);
+        w.f32(-5.0);
+        w.u32(7);
+        w.bool(true);
+        w.bool(false);
+        let p = Progress::from_bytes(&w.buf).unwrap();
+        assert_eq!(p.stars[16], 2);
+        assert_eq!(p.stars[36], 0);
+        assert_eq!(p.stars[crate::life::n_species() + crate::life::P_GONDWANA], 2);
+        assert_eq!(p.stars[crate::life::n_species() + crate::life::P_BARREN], 2);
+        assert_eq!(p.mission, 10);
+        assert_eq!(p.t, 486.0);
     }
 
     #[test]

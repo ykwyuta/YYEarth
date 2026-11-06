@@ -95,6 +95,12 @@ pub struct Scene {
     pub volcanic: f32,
     /// 酸素の少ない暗い海
     pub anoxic: bool,
+    /// 陸の植物の広がり（0〜1）
+    pub veg: f32,
+    /// 氷河におおわれた陸
+    pub icy: bool,
+    /// 乾いた砂漠
+    pub arid: bool,
     pub lat: f32,
     pub seed: u32,
     rng: Rng,
@@ -170,9 +176,14 @@ impl Scene {
         let n = (w / FSTEP) as usize + 2;
         let near_site = |s: usize| deg_dist(earth.site_lonlat(s, t), (spot.lon, spot.lat)) < 7.0;
         let cliff = hab == Habitat::Shelf && near_site(S_BURGESS) && t <= SITES[S_BURGESS].t0 + 0.5 && t >= SITES[S_BURGESS].t1 - 0.5;
-        let (kx, ky) = earth.site_lonlat(S_KALKARINDJI, t);
-        let erupting = t <= 511.6 && t >= 509.9;
-        let volcanic = if erupting { (1.0 - deg_dist((kx, ky), (spot.lon, spot.lat)) / 9.0).clamp(0.0, 1.0) } else { 0.0 };
+        let volcanic = match eruption_at(t) {
+            Some(er) => (1.0 - deg_dist(earth.site_lonlat(er.site, t), (spot.lon, spot.lat)) / 9.0).clamp(0.0, 1.0),
+            None => 0.0,
+        };
+        let land = hab == Habitat::Land;
+        let icy = land && glacial(t) && spot.lat < -55.0;
+        let arid = land && !icy && arid(t, spot.lat);
+        let veg = if icy { 0.0 } else if arid { veg_at(t) * 0.25 } else { veg_at(t) };
         let anoxic = near_site(S_ALUM) && t <= SITES[S_ALUM].t0 + 0.5 && hab.is_water();
         let base = match hab {
             Habitat::Land => -0.4,
@@ -217,6 +228,9 @@ impl Scene {
             t: 0.0,
             volcanic,
             anoxic,
+            veg,
+            icy,
+            arid,
             lat: spot.lat,
             seed,
             rng: Rng::new(seed as u64),
@@ -662,6 +676,12 @@ impl Scene {
     }
 
     fn sky_cols(&self) -> ([f32; 3], [f32; 3]) {
+        if self.icy {
+            return ([0.52, 0.64, 0.80], [0.86, 0.90, 0.94]);
+        }
+        if self.arid && self.volcanic <= 0.2 {
+            return ([0.36, 0.56, 0.84], [0.90, 0.80, 0.66]);
+        }
         if self.volcanic > 0.2 {
             let k = self.volcanic;
             (mix([0.42, 0.62, 0.82], [0.30, 0.18, 0.14], k), mix([0.76, 0.84, 0.88], [0.86, 0.44, 0.24], k))
@@ -694,7 +714,7 @@ impl Scene {
                 for layer in 0..3 {
                     let k = layer as f32;
                     // 遠いほど空の色にかすむ
-                    let col = mix(hor, [0.50, 0.36, 0.30], 0.25 + k * 0.22);
+                    let col = mix(hor, self.hill_col(), 0.25 + k * 0.22);
                     let par = 0.15 + 0.2 * k;
                     let amp = 0.7 + k * 0.3;
                     let mut x = x0 - 2.0;
@@ -781,16 +801,32 @@ impl Scene {
         }
     }
 
+    /// 遠くの山の色（岩・森・雪・砂漠）
+    fn hill_col(&self) -> [f32; 3] {
+        if self.icy {
+            [0.88, 0.92, 0.96]
+        } else if self.arid {
+            [0.74, 0.46, 0.30]
+        } else {
+            mix([0.50, 0.36, 0.30], [0.26, 0.38, 0.24], self.veg)
+        }
+    }
+
     fn sediment_cols(&self) -> ([f32; 3], [f32; 3]) {
         match self.hab {
             Habitat::Land => {
                 if self.volcanic > 0.3 {
                     ([0.24, 0.20, 0.20], [0.14, 0.12, 0.12])
+                } else if self.icy {
+                    ([0.92, 0.95, 0.98], [0.70, 0.76, 0.84])
+                } else if self.arid {
+                    ([0.86, 0.58, 0.36], [0.62, 0.38, 0.24])
                 } else {
-                    ([0.66, 0.46, 0.32], [0.46, 0.30, 0.22])
+                    // 植物が広がると、むき出しの岩から湿った土と下草の色へ
+                    (mix([0.66, 0.46, 0.32], [0.36, 0.40, 0.22], self.veg), mix([0.46, 0.30, 0.22], [0.28, 0.22, 0.16], self.veg))
                 }
             }
-            Habitat::Tidal => ([0.74, 0.66, 0.50], [0.52, 0.44, 0.34]),
+            Habitat::Tidal => (mix([0.74, 0.66, 0.50], [0.46, 0.50, 0.32], self.veg * 0.7), mix([0.52, 0.44, 0.34], [0.34, 0.30, 0.22], self.veg * 0.7)),
             Habitat::Shallow => ([0.82, 0.76, 0.60], [0.56, 0.50, 0.40]),
             Habitat::Shelf => {
                 if self.anoxic {
@@ -836,7 +872,17 @@ impl Scene {
             x += FSTEP;
         }
         // Dedicated continuous sand texture, anchored to the world and terrain slope.
-        let textured = {
+        // 陸と干潟では、その時代の地面の色（森の土・雪・赤い砂）に染める
+        // （植物のない時代はこれまでどおりの砂の色）
+        let tint = {
+            let k = if !matches!(self.hab, Habitat::Land | Habitat::Tidal) { 0.0 } else if self.icy || self.arid { 1.0 } else { self.veg };
+            let base = [0.80, 0.72, 0.56];
+            let to = [(sc[0] / base[0]).min(1.25) * 0.94, (sc[1] / base[1]).min(1.25) * 0.94, (sc[2] / base[2]).min(1.25) * 0.94];
+            let c = mix([0.92, 0.94, 0.91], to, k);
+            [c[0], c[1], c[2], 0.88 + 0.04 * k]
+        };
+        // 雪の上では砂の絵を使わず、雪の色で塗る
+        let textured = !self.icy && {
             let mut vertices = Vec::new();
             let tile = 4.0;
             let mut start = (x0 / tile).floor() * tile;
@@ -847,7 +893,7 @@ impl Scene {
                     let b = (a + FSTEP).min(end);
                     let (fa,fb) = (self.floor_at(a),self.floor_at(b));
                     let (u0,u1) = ((a-start)/tile,(b-start)/tile);
-                    let vertex=|x,y,u,v|crate::gfx::Vertex {x,y,u,v,c:[0.92,0.94,0.91,0.88]};
+                    let vertex=|x,y,u,v|crate::gfx::Vertex {x,y,u,v,c:tint};
                     vertices.extend_from_slice(&[
                         vertex(a,fa,u0,0.0),vertex(b,fb,u1,0.0),vertex(b,fb+BAND,u1,1.0),
                         vertex(a,fa,u0,0.0),vertex(b,fb+BAND,u1,1.0),vertex(a,fa+BAND,u0,1.0)]);
@@ -954,8 +1000,19 @@ impl Scene {
                 continue;
             }
             let y = self.floor_at(r.x) + r.z * BAND;
-            if units.rock(g,r.x,y,r.r,r.tone) { continue; }
-            let base = if self.hab == Habitat::Land { mix([0.56, 0.38, 0.28], [0.40, 0.36, 0.34], r.tone) } else { mix(sc, [0.36, 0.34, 0.32], 0.5 + r.tone * 0.4) };
+            if units.rock(g,r.x,y,r.r,r.tone) {
+                if self.icy {
+                    // 岩に積もった雪（平たい帽子）
+                    let (cx, cy, rx, ry) = (r.x, y - r.r * 0.62, r.r * 1.05, r.r * 0.26);
+                    for k in 0..12 {
+                        let a0 = std::f32::consts::PI * (1.0 + k as f32 / 12.0);
+                        let a1 = std::f32::consts::PI * (1.0 + (k + 1) as f32 / 12.0);
+                        g.tri((cx, cy + ry * 0.4), (cx + a0.cos() * rx, cy + a0.sin() * ry), (cx + a1.cos() * rx, cy + a1.sin() * ry), [0.95, 0.97, 1.0, 0.92]);
+                    }
+                }
+                continue;
+            }
+            let base = if self.hab == Habitat::Land && !self.icy { mix([0.56, 0.38, 0.28], [0.40, 0.36, 0.34], r.tone) } else { mix(sc, [0.36, 0.34, 0.32], 0.5 + r.tone * 0.4) };
             let c = self.shade(base, y);
             let seed = (r.x * 100.0) as i32;
             // 下が平らな、角ばった石
@@ -1098,6 +1155,8 @@ impl Scene {
         let vh = y1 - y0;
         let (col, a) = if self.volcanic > 0.2 && !self.has_water() {
             ([0.3, 0.28, 0.28], 0.7)
+        } else if self.icy {
+            ([1.0, 1.0, 1.0], 0.7)
         } else if self.has_water() {
             ([0.9, 0.95, 0.95], 0.45)
         } else {

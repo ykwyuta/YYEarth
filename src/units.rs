@@ -1,16 +1,18 @@
 //! Alpha sprites with species-specific mesh animation, shared by both editions.
 use crate::art;
 use crate::gfx::{Gfx, Texture, Vertex};
+use crate::artwork::{find_unit, UNITS};
 use crate::life::{Art, Beh, SPECIES};
-
-#[path = "unit_assets.rs"]
-mod assets;
-use assets::ASSETS;
 
 pub struct Units {
     textures: Vec<Option<Texture>>,
     attempted: Vec<bool>,
     mesh: Vec<Vertex>,
+    /// 生きものごとのスプライトの番号（無いものは手描き）
+    species: Vec<Option<usize>>,
+    capsule: Option<usize>,
+    rock: Option<usize>,
+    sand: Option<usize>,
 }
 
 #[derive(Clone, Copy)]
@@ -27,10 +29,16 @@ pub struct Pose {
 
 /// The same bounds feed drawing, culling and photo scoring.
 pub fn bounds(sp: usize, x: f32, y: f32, len: f32, out: f32) -> [f32; 4] {
-    let (_, iw, ih) = ASSETS[sp];
     let (ew, eh) = art::extent(sp);
-    let mut w = len * ew * 1.12;
-    let mut h = w * ih as f32 / iw as f32;
+    let (mut w, mut h) = match find_unit(SPECIES[sp].slug) {
+        Some(i) => {
+            let (_, _, iw, ih) = UNITS[i];
+            let w = len * ew * 1.12;
+            (w, w * ih as f32 / iw as f32)
+        }
+        // スプライトが無いものは手描きの絵の大きさ
+        None => (len * ew, len * eh.max(0.25)),
+    };
     let cap = len * eh.max(0.25) * 1.65;
     if h > cap { w *= cap / h; h = cap; }
     let grounded = matches!(SPECIES[sp].beh, Beh::Sessile | Beh::Crawl | Beh::FlatCrawl | Beh::Burrow);
@@ -46,8 +54,19 @@ fn deform(art: Art, beh: Beh, u: f32, v: f32, t: f32, activity: f32) -> (f32, f3
     }
     let wave = (t * (4.0 + activity * 3.0) - u * 10.0).sin();
     match art {
-        Art::Fish(_) | Art::Nectocaris | Art::Kerygmachela =>
+        Art::Fish(_) | Art::Nectocaris | Art::Kerygmachela | Art::Jawless(_) | Art::Placoderm(_)
+        | Art::Shark(_) | Art::LobeFin(_) | Art::Tully | Art::Tetrapod(7) =>
             (u, v + wave * (1.0-u).powi(2) * 0.16),
+        Art::Cephalopod(_) | Art::Graptolite => {
+            // 触手・枝の先だけがゆれる
+            let tip = ((u - 0.6) / 0.4).clamp(0.0, 1.0);
+            (u, v + wave * tip * 0.05)
+        }
+        Art::Griffinfly => {
+            // はねを上下に羽ばたく（体の中心から離れるほど大きく）
+            let flap = (t * 22.0).sin();
+            (u, 0.5 + (v - 0.5) * (1.0 - 0.45 * flap.abs()))
+        }
         Art::Jelly => {
             let pulse = (t * 3.6).sin();
             let tentacles = ((v - 0.38) / 0.62).clamp(0.0, 1.0);
@@ -68,14 +87,16 @@ fn deform(art: Art, beh: Beh, u: f32, v: f32, t: f32, activity: f32) -> (f32, f3
 
 impl Units {
     pub fn new() -> Self {
-        Self { textures: (0..ASSETS.len()).map(|_|None).collect(),
-            attempted: vec![false;ASSETS.len()], mesh: Vec::with_capacity(18*6*6) }
+        Self { textures: (0..UNITS.len()).map(|_|None).collect(),
+            attempted: vec![false;UNITS.len()], mesh: Vec::with_capacity(18*6*6),
+            species: SPECIES.iter().map(|s| find_unit(s.slug)).collect(),
+            capsule: find_unit("capsule"), rock: find_unit("rock"), sand: find_unit("seabed-sand") }
     }
 
     fn load(&mut self, g: &Gfx, index: usize) {
         if self.attempted[index] { return; }
         self.attempted[index] = true;
-        if let Ok(image) = image::load_from_memory_with_format(ASSETS[index].0, image::ImageFormat::Png) {
+        if let Ok(image) = image::load_from_memory_with_format(UNITS[index].1, image::ImageFormat::Png) {
             let rgba = image.to_rgba8();
             let pixels: Vec<u32> = rgba.as_raw().chunks_exact(4)
                 .map(|p|u32::from_le_bytes([p[0],p[1],p[2],p[3]])).collect();
@@ -85,8 +106,9 @@ impl Units {
 
     pub fn creature(&mut self, g: &mut Gfx, sp: usize, pose: Pose) -> bool {
         if SPECIES[sp].beh == Beh::Burrow && pose.out < 0.025 { return true; }
-        self.load(g, sp);
-        let Some(texture) = &self.textures[sp] else { return false; };
+        let Some(index) = self.species[sp] else { return false; };
+        self.load(g, index);
+        let Some(texture) = &self.textures[index] else { return false; };
         let [x0,y0,x1,y1] = bounds(sp, pose.x, pose.y, pose.len, pose.out);
         let (w,h) = (x1-x0,y1-y0);
         let grounded = matches!(SPECIES[sp].beh, Beh::Sessile | Beh::Crawl | Beh::FlatCrawl | Beh::Burrow);
@@ -112,7 +134,7 @@ impl Units {
     }
 
     pub fn capsule(&mut self, g:&mut Gfx, x:f32,y:f32,r:f32,facing:f32,tilt:f32) -> bool {
-        let index=SPECIES.len();
+        let Some(index)=self.capsule else { return false; };
         self.load(g,index);
         let Some(texture)=&self.textures[index] else { return false; };
         let w=r*3.4;
@@ -125,7 +147,7 @@ impl Units {
     }
 
     pub fn rock(&mut self,g:&mut Gfx,x:f32,y:f32,r:f32,tone:f32) -> bool {
-        let index=SPECIES.len()+1;
+        let Some(index)=self.rock else { return false; };
         self.load(g,index);
         let Some(texture)=&self.textures[index] else { return false; };
         let w=r*2.6;
@@ -139,7 +161,7 @@ impl Units {
     }
 
     pub fn seabed(&mut self,g:&mut Gfx,mesh:&[Vertex]) -> bool {
-        let index=SPECIES.len()+2;
+        let Some(index)=self.sand else { return false; };
         self.load(g,index);
         let Some(texture)=&self.textures[index] else { return false; };
         g.draw_textured_mesh(texture,mesh);
@@ -152,13 +174,13 @@ mod tests {
     use super::*;
     #[test]
     fn assets_are_real_alpha_sprites() {
-        assert_eq!(ASSETS.len(),SPECIES.len()+3);
-        for (index,&(bytes,w,h)) in ASSETS.iter().enumerate() {
+        for &(slug,bytes,w,h) in UNITS.iter() {
             let image=image::load_from_memory_with_format(bytes,image::ImageFormat::Png).unwrap().to_rgba8();
-            assert_eq!(image.dimensions(),(w,h));
-            if index<SPECIES.len()+2 { assert!(image.pixels().any(|p|p[3]==0)); }
-            assert!(image.pixels().any(|p|p[3]>220));
+            assert_eq!(image.dimensions(),(w,h),"{}",slug);
+            if slug!="seabed-sand" { assert!(image.pixels().any(|p|p[3]==0),"{}",slug); }
+            assert!(image.pixels().any(|p|p[3]>220),"{}",slug);
         }
+        for slug in ["capsule","rock","seabed-sand"] { assert!(find_unit(slug).is_some()); }
     }
     #[test]
     fn attached_life_stays_still_but_swimming_tails_move() {
