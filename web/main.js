@@ -871,8 +871,28 @@ function checkSize() {
 
 // ------------------------------------------------------------------ 起動
 async function loadWasm() {
-  const url = new URL('./yyearth.wasm', import.meta.url);
   const imports = { env };
+  let manifest = null;
+  try {
+    const response = await fetch(new URL('./wasm-manifest.json', import.meta.url), { cache: 'no-cache' });
+    if (response.ok) manifest = await response.json();
+  } catch { /* Local/older builds may still serve just yyearth.wasm. */ }
+  const parts = manifest?.parts;
+  if (Array.isArray(parts) && parts.length > 1 && parts.every(p => typeof p === 'string')) {
+    const buffers = await Promise.all(parts.map(async part => {
+      const response = await fetch(new URL(`./${part}`, import.meta.url));
+      if (!response.ok) throw new Error(`Wasm asset: HTTP ${response.status}`);
+      return new Uint8Array(await response.arrayBuffer());
+    }));
+    const length = buffers.reduce((total, part) => total + part.length, 0);
+    if (length !== manifest.bytes) throw new Error('Incomplete Wasm download');
+    const bytes = new Uint8Array(length);
+    let offset = 0;
+    for (const part of buffers) { bytes.set(part, offset); offset += part.length; }
+    return (await WebAssembly.instantiate(bytes, imports)).instance.exports;
+  }
+  const file = Array.isArray(parts) && parts.length === 1 ? parts[0] : 'yyearth.wasm';
+  const url = new URL(`./${file}`, import.meta.url);
   try {
     const r = await WebAssembly.instantiateStreaming(fetch(url), imports);
     return r.instance.exports;

@@ -22,6 +22,8 @@ Windows 版：`cargo run --release --bin yyearth-win`（記録は `%APPDATA%\yye
 
 Windowsでブラウザ版をローカル確認するときは `python tools/serve.py` で `http://localhost:8765/` を開けます（`dist/` を配信し、JavaScriptとWasmのMIME型も設定します）。
 
+ブラウザ版のビルドにはNode.jsも必要です。画像を含むWasmが大きい場合は、公開先の1ファイル上限に収まるよう24MiBごとに分割し、ブラウザで結合して起動します。通常のビルドで配信設定とファイル一覧も自動的に出力されます。
+
 Cloudflare への公開は YYMongolia と同じ（`bash build.sh && npx wrangler deploy`、または Pages でビルドコマンド `npm run build`・出力 `dist`）。
 
 ## ゲームの流れ
