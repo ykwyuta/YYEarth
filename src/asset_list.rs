@@ -58,6 +58,7 @@ fn pose(sp: &Species) -> &'static str {
     match (sp.beh, sp.art) {
         (_, Art::Plant(_)) => "Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped.",
         (_, Art::Griffinfly) => "Flying, wings spread, three-quarter side view, head pointing RIGHT.",
+        (_, Art::Starfish | Art::Limulid) => "Seen from above at a low angle, lying flat on its underside, front pointing RIGHT.",
         (Beh::Sessile, _) => "Upright natural pose attached to the bottom, base at the bottom edge.",
         (Beh::Crawl | Beh::FlatCrawl, _) => "Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette.",
         _ => "Side view swimming pose, head pointing RIGHT and tail LEFT.",

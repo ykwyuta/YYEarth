@@ -1,13 +1,15 @@
 //! 進み具合（図鑑の星・宿題・時と場所）と、その記録の読み書き
-use crate::life::n_entries;
+use crate::life::{n_entries, n_species};
 use crate::mission::{mission_done, MISSIONS};
 use crate::save::{RResult, Reader, Writer};
 
 const MAGIC: &[u8; 4] = b"YYE1";
-/// 2：古生代の全体（オルドビス紀〜ペルム紀）を加えた版。図鑑の項目の並びが変わった
-const VERSION: u32 = 2;
-/// 版1（カンブリア紀だけ）の生きものの数。版1の記録の現象はこの後ろに並ぶ
+/// 3：生きものの数を記録に書く版（生きものを足しても、現象の星がずれない）
+/// 2：古生代の全体（オルドビス紀〜ペルム紀）を加えた版。1：カンブリア紀だけ
+const VERSION: u32 = 3;
+/// 版1・版2の記録の生きものの数。現象はこの後ろに並んでいた
 const V1_SPECIES: usize = 36;
+const V2_SPECIES: usize = 99;
 
 #[derive(Clone)]
 pub struct Progress {
@@ -67,6 +69,7 @@ impl Progress {
         let mut w = Writer::new();
         w.bytes(MAGIC);
         w.u32(VERSION);
+        w.usize(n_species());
         w.usize(self.stars.len());
         for (i, &s) in self.stars.iter().enumerate() {
             w.u8(s);
@@ -92,12 +95,17 @@ impl Progress {
             return Err(t!("新しい版で作られた記録で、読み込めない", "This save was made by a newer version", "此存档由更新版本创建，无法读取").into());
         }
         let mut p = Progress::new();
+        // 記録したときの生きものの数。現象の星は、いまの生きものの数の後ろへ移す
+        let saved_species = match v {
+            1 => V1_SPECIES,
+            2 => V2_SPECIES,
+            _ => r.len(4096)?,
+        };
         let n = r.len(4096)?;
         for i in 0..n {
             let s = r.u8()?.min(3);
             let f = r.bool()?;
-            // 版1の記録では、現象が生きもの36種のすぐ後ろにあった
-            let j = if v < 2 && i >= V1_SPECIES { crate::life::n_species() + (i - V1_SPECIES) } else { i };
+            let j = if i >= saved_species { n_species() + (i - saved_species) } else { i };
             if j < p.stars.len() {
                 p.stars[j] = s;
                 p.fresh[j] = f;
@@ -150,6 +158,31 @@ mod tests {
         assert!(Progress::from_bytes(b"NOPE").is_err());
     }
 
+    /// 古生代99種の版（版2）の記録を読むと、現象の星が新しい並びに移る
+    #[test]
+    fn reads_v2_save() {
+        let mut w = Writer::new();
+        w.bytes(MAGIC);
+        w.u32(2);
+        w.usize(112);
+        for i in 0..112 {
+            w.u8(if i == 50 || i == 99 + crate::life::P_GONDWANA_ICE { 3 } else { 0 });
+            w.bool(false);
+        }
+        w.usize(30);
+        w.f32(300.0);
+        w.f32(10.0);
+        w.f32(-60.0);
+        w.u32(9);
+        w.bool(true);
+        w.bool(false);
+        let p = Progress::from_bytes(&w.buf).unwrap();
+        assert_eq!(p.stars[50], 3);
+        assert_eq!(p.stars[99], 0);
+        assert_eq!(p.stars[n_species() + crate::life::P_GONDWANA_ICE], 3);
+        assert_eq!(p.mission, 30);
+    }
+
     /// カンブリア紀だけの版（版1）の記録を読むと、現象の星が新しい並びに移る
     #[test]
     fn reads_v1_save() {
@@ -171,8 +204,8 @@ mod tests {
         let p = Progress::from_bytes(&w.buf).unwrap();
         assert_eq!(p.stars[16], 2);
         assert_eq!(p.stars[36], 0);
-        assert_eq!(p.stars[crate::life::n_species() + crate::life::P_GONDWANA], 2);
-        assert_eq!(p.stars[crate::life::n_species() + crate::life::P_BARREN], 2);
+        assert_eq!(p.stars[n_species() + crate::life::P_GONDWANA], 2);
+        assert_eq!(p.stars[n_species() + crate::life::P_BARREN], 2);
         assert_eq!(p.mission, 10);
         assert_eq!(p.t, 486.0);
     }

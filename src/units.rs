@@ -49,13 +49,13 @@ pub fn bounds(sp: usize, x: f32, y: f32, len: f32, out: f32) -> [f32; 4] {
 
 /// Keep hard shells steady while tails, limbs and soft tissues move.
 fn deform(art: Art, beh: Beh, u: f32, v: f32, t: f32, activity: f32) -> (f32, f32) {
-    if beh == Beh::Sessile || matches!(art, Art::Trace | Art::Mat | Art::Stromatolite) {
+    if beh == Beh::Sessile || matches!(art, Art::Trace | Art::Mat | Art::Stromatolite | Art::Mollusc(_) | Art::Starfish) {
         return (u, v);
     }
     let wave = (t * (4.0 + activity * 3.0) - u * 10.0).sin();
     match art {
         Art::Fish(_) | Art::Nectocaris | Art::Kerygmachela | Art::Jawless(_) | Art::Placoderm(_)
-        | Art::Shark(_) | Art::LobeFin(_) | Art::Tully | Art::Tetrapod(7) =>
+        | Art::Shark(_) | Art::LobeFin(_) | Art::Tully | Art::Tetrapod(7) | Art::RayFin =>
             (u, v + wave * (1.0-u).powi(2) * 0.16),
         Art::Cephalopod(_) | Art::Graptolite => {
             // 触手・枝の先だけがゆれる
