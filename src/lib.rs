@@ -10,6 +10,9 @@
 #[macro_use]
 mod lang;
 mod art;
+mod artwork;
+mod units;
+mod reveal;
 mod dive;
 mod earth;
 mod game;
