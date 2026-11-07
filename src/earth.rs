@@ -566,11 +566,15 @@ pub static SITES: &[SiteDef] = &[
     SiteDef { name: L("チクシュルーブ", "Chicxulub", "希克苏鲁伯"), now: L("メキシコ・ユカタン半島", "Yucatán, Mexico", "墨西哥尤卡坦半岛"), plate: LAURENTIA, at: (-5.0, -19.0), want: Habitat::Shallow, t0: 66.05, t1: 66.0 },
 ];
 
-/// 大きな噴火（巨大火成岩岩石区）：(産地, 始まり, 終わり)
+/// Global geological events: flood-basalt eruptions and the end-Cretaceous impact.
 pub struct Eruption {
     pub site: usize,
     pub t0: f32,
     pub t1: f32,
+}
+
+impl Eruption {
+    pub fn is_impact(&self) -> bool { self.site == S_CHICXULUB }
 }
 
 pub static ERUPTIONS: &[Eruption] = &[
@@ -578,13 +582,13 @@ pub static ERUPTIONS: &[Eruption] = &[
     Eruption { site: S_SIBTRAPS, t0: 252.6, t1: 251.9 },
     Eruption { site: S_CAMP, t0: 201.8, t1: 201.2 },
     Eruption { site: S_DECCAN, t0: 66.6, t1: 66.05 },
-    // 隕石の衝突（燃えあがる大地と灰。噴火と同じように描く）
+    // 衝突は火山とは別の、火球・衝撃波として描く。
     Eruption { site: S_CHICXULUB, t0: 66.05, t1: 66.0 },
 ];
 
 /// いま噴火しているもの
 pub fn eruption_at(t: f32) -> Option<&'static Eruption> {
-    ERUPTIONS.iter().find(|e| t <= e.t0 + 1e-3 && t >= e.t1 - 1e-3)
+    ERUPTIONS.iter().rev().find(|e| t <= e.t0 + 1e-3 && t >= e.t1 - 1e-3)
 }
 
 /// 地球史の節目（時間旅行でこの時を越えると知らせる）
@@ -897,22 +901,27 @@ pub fn stage_at(t: f32) -> &'static Stage {
 /// 「5億1800万年前」のような表記
 pub fn ma_text(t: f32) -> String {
     let m = (t * 10.0).round() / 10.0;
-    let oku = (m / 100.0).floor() as i32;
-    let man = m - oku as f32 * 100.0;
+    let units = (m * 100.0).round() as i32;
+    let oku = units / 10_000;
+    let man = units % 10_000;
     match crate::lang::lang() {
         crate::lang::Lang::En => format!("{:.1} million years ago", m),
         crate::lang::Lang::Ja => {
-            if (man - man.round()).abs() < 0.05 {
-                format!("{}億{}00万年前", oku, man.round() as i32)
+            if oku == 0 {
+                format!("{}万年前", man)
+            } else if man == 0 {
+                format!("{}億年前", oku)
             } else {
-                format!("{}億{}0万年前", oku, (man * 10.0).round() as i32)
+                format!("{}億{}万年前", oku, man)
             }
         }
         crate::lang::Lang::Zh => {
-            if (man - man.round()).abs() < 0.05 {
-                format!("{}亿{}00万年前", oku, man.round() as i32)
+            if oku == 0 {
+                format!("{}万年前", man)
+            } else if man == 0 {
+                format!("{}亿年前", oku)
             } else {
-                format!("{}亿{}0万年前", oku, (man * 10.0).round() as i32)
+                format!("{}亿{}万年前", oku, man)
             }
         }
     }
@@ -1634,6 +1643,8 @@ mod tests {
         crate::lang::set_lang(crate::lang::Lang::Ja);
         assert_eq!(ma_text(518.0), "5億1800万年前");
         assert_eq!(ma_text(538.8), "5億3880万年前");
+        assert_eq!(ma_text(100.0), "1億年前");
+        assert_eq!(ma_text(66.0), "6600万年前");
     }
 }
 

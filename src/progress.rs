@@ -189,6 +189,60 @@ mod tests {
         assert!(Progress::from_bytes(b"NOPE").is_err());
     }
 
+    /// The Paleozoic release has 212 species followed by 13 phenomena.
+    /// New species must never consume or displace those saved phenomenon records.
+    #[test]
+    fn paleozoic_v3_save_preserves_species_phenomena_and_completed_tasks() {
+        let mut w = Writer::new();
+        w.bytes(MAGIC);
+        w.u32(3);
+        w.usize(212);
+        w.usize(225);
+        for _ in 0..225 {
+            w.u8(1);
+            w.bool(true);
+        }
+        w.usize(35);
+        w.f32(251.9);
+        w.f32(10.0);
+        w.f32(-30.0);
+        w.u32(225);
+        w.bool(true);
+        w.bool(false);
+        let p = Progress::from_bytes(&w.buf).unwrap();
+        assert!(p.stars[..212].iter().all(|&s| s == 1));
+        assert!(p.stars[212..n_species()].iter().all(|&s| s == 0));
+        assert!(p.stars[n_species()..n_species()+13].iter().all(|&s| s == 1));
+        assert!(p.stars[n_species()+13..].iter().all(|&s| s == 0));
+        assert_eq!(p.found(), 225);
+        assert_eq!(p.done_count(), 36);
+        assert_eq!(p.mission, 36);
+        assert!(!p.all_clear());
+        let q = Progress::from_bytes(&p.to_bytes()).unwrap();
+        assert_eq!(q.stars, p.stars);
+        assert_eq!(q.fresh, p.fresh);
+    }
+
+    #[test]
+    fn all_mesozoic_tasks_can_be_completed_and_saved_with_single_photographs() {
+        let mut p = Progress::new();
+        for (i, m) in MISSIONS.iter().enumerate().filter(|(_, m)| m.period >= crate::earth::TRIASSIC) {
+            p.mission = i;
+            for &(target, _) in m.targets {
+                p.record(target.entry(), 1);
+            }
+            assert!(p.is_done(i), "{}", m.title.1);
+        }
+        let q = Progress::from_bytes(&p.to_bytes()).unwrap();
+        assert_eq!(q.stars, p.stars);
+        for (i, m) in MISSIONS.iter().enumerate().filter(|(_, m)| m.period >= crate::earth::TRIASSIC) {
+            assert!(q.is_done(i), "{}", m.title.1);
+        }
+        for e in 0..n_entries() { p.record(e, 1); }
+        assert!(p.all_clear());
+        assert!(Progress::from_bytes(&p.to_bytes()).unwrap().all_clear());
+    }
+
     /// 古生代99種の版（版2）の記録を読むと、現象の星が新しい並びに移る
     #[test]
     fn reads_v2_save() {

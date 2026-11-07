@@ -218,6 +218,12 @@ fn ease(t: f32) -> f32 {
     t * t * (3.0 - 2.0 * t)
 }
 
+/// Keep all nine periods readable, including English labels on small screens.
+fn period_tabs(width: f32) -> (usize, usize, f32) {
+    let cols = ((width / 128.0).floor() as usize).clamp(1, PERIODS.len());
+    (cols, PERIODS.len().div_ceil(cols), width / cols as f32)
+}
+
 fn entry_name(e: usize) -> &'static str {
     if e < n_species() {
         SPECIES[e].name.get()
@@ -1282,7 +1288,7 @@ impl Game {
                 }
             }
         }
-        self.follow = self.follow || matches!(tg, Target::Sp(_));
+        self.follow = !matches!(tg, Target::Ph(p) if matches!(PHENOMS[p].kind, PhKind::Continent(_)));
     }
 
     fn enter_dive(&mut self) {
@@ -1606,13 +1612,19 @@ impl Game {
             g.rect_vgrad(0.0, y55, MAP_W, MAP_H - 2.0 * DEG, [0.92, 0.96, 1.0, 0.0], [0.92, 0.96, 1.0, 0.72]);
             g.rect(0.0, MAP_H - 2.0 * DEG, MAP_W, MAP_H, [0.92, 0.96, 1.0, 0.72]);
         }
-        // 大噴火
+        // 大噴火と小惑星衝突（衝突には飛来する火球と衝撃波）
         if let Some(er) = eruption_at(t) {
             let (lon, lat) = self.earth.site_lonlat(er.site, t);
             let (mx, my) = lonlat_to_map(lon, lat);
             let tm = (er.t0 + er.t1) * 0.5;
             let k = 1.0 - ((t - tm).abs() / ((er.t0 - er.t1) * 0.5)).clamp(0.0, 1.0) * 0.5;
             let g = &mut self.gfx;
+            if er.is_impact() {
+                g.line((mx-150.0, my-130.0), (mx, my), 6.0, [1.0, 0.85, 0.45, 0.85]);
+                g.radial(mx, my, 45.0, 32, [1.0, 1.0, 0.9, 0.95], [1.0, 0.6, 0.12, 0.0]);
+                let wave = 35.0+(self.clock*0.35).fract()*110.0;
+                g.ring(mx, my, wave, wave-3.0, 64, [1.0, 0.9, 0.65, 0.65]);
+            }
             g.radial(mx, my, 90.0 * k, 32, [1.0, 0.35, 0.1, 0.55], [1.0, 0.2, 0.05, 0.0]);
             for i in 0..18 {
                 let a = i as f32 * 2.39996;
@@ -1940,7 +1952,7 @@ impl Game {
         self.add_button(mid + 5.0, by, x1 - 10.0, by + bh, t!("撮影 (Space)", "Photo (Space)", "拍摄 (Space)"), Act::Shoot, true, false);
     }
 
-    /// 年表：上の細い帯が古生代の6つの紀、下の帯がいまの紀の期
+    /// 年表：上の細い帯が古生代・中生代の9つの紀、下の帯がいまの紀の期
     fn render_timeline(&mut self) {
         let (x0, y0, x1, y1) = self.timeline_rect();
         let t = self.prog.t;
@@ -2287,7 +2299,8 @@ impl Game {
     fn guide_layout(&self) -> (f32, f32, f32, f32, usize, f32, f32) {
         let (w, h) = (self.w(), self.h());
         let x0 = 20.0;
-        let y0 = self.top_h() + 96.0;
+        let (_, rows, _) = period_tabs(w - 40.0);
+        let y0 = self.top_h() + 56.0 + rows as f32 * 40.0;
         let x1 = w - 20.0;
         let y1 = h - 16.0;
         let cell_w = if self.compact() { 112.0 } else { 132.0 };
@@ -2444,14 +2457,15 @@ impl Game {
         self.add_button(w - 120.0, self.top_h() + 10.0, w - 20.0, self.top_h() + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         // 巻（紀）のタブ
         let ty = self.top_h() + 52.0;
-        let tw = ((w - 40.0) / PERIODS.len() as f32).min(200.0);
+        let (tab_cols, _, tw) = period_tabs(w - 40.0);
         for (i, p) in PERIODS.iter().enumerate() {
+            let ty = ty + (i / tab_cols) as f32 * 40.0;
             let n = (0..n_entries()).filter(|&e| entry_period(e) == i).count();
             let got = (0..n_entries()).filter(|&e| entry_period(e) == i && self.prog.stars[e] > 0).count();
             let fresh = (0..n_entries()).any(|e| entry_period(e) == i && self.prog.fresh[e]);
             // 紀が多いので、タブがせまいときは名前だけ
             let label = if self.compact() || tw < 150.0 { format!("{}{}", p.name.get(), if fresh { "●" } else { "" }) } else { format!("{} {}/{}{}", p.name.get(), got, n, if fresh { " ●" } else { "" }) };
-            let bx = 20.0 + i as f32 * tw;
+            let bx = 20.0 + (i % tab_cols) as f32 * tw;
             let cur = i == self.guide_period;
             if cur {
                 self.gfx.fill_round(bx, ty, bx + tw - 6.0, ty + 34.0, 8.0, c4(p.col, 0.35));
@@ -2663,12 +2677,13 @@ impl Game {
             y += 6.0;
         }
         // 紀のタブ（紀ごとの合格の数）
-        let tw = (pw - 40.0) / PERIODS.len() as f32;
+        let (tab_cols, tab_rows, tw) = period_tabs(pw - 40.0);
         for (pi, p) in PERIODS.iter().enumerate() {
+            let y = y + (pi / tab_cols) as f32 * 40.0;
             let all = MISSIONS.iter().filter(|m| m.period == pi).count();
             let done = (0..MISSIONS.len()).filter(|&i| MISSIONS[i].period == pi && self.prog.is_done(i)).count();
             let label = if self.compact() || tw < 120.0 { format!("{}{}", if done == all { "✔" } else { "" }, p.name.get()) } else { format!("{}{} {}/{}", if done == all { "✔" } else { "" }, p.name.get(), done, all) };
-            let bx = x0 + 20.0 + pi as f32 * tw;
+            let bx = x0 + 20.0 + (pi % tab_cols) as f32 * tw;
             let sel = pi == self.mission_tab;
             if sel {
                 self.gfx.fill_round(bx, y, bx + tw - 6.0, y + 32.0, 8.0, c4(p.col, 0.35));
@@ -2676,7 +2691,7 @@ impl Game {
             self.add_button(bx, y, bx + tw - 6.0, y + 32.0, &label, Act::MissionTab(pi), true, sel);
             self.gfx.fill_rect(bx + 6.0, y + 28.0, bx + tw - 12.0, y + 31.0, c4(p.col, if sel { 1.0 } else { 0.5 }));
         }
-        y += 40.0;
+        y += tab_rows as f32 * 40.0;
         // その紀の宿題（押すと選べる）
         // いつも2列（1つの紀の宿題が、小さな画面でも収まるように）
         let col2 = false;
@@ -2830,7 +2845,7 @@ impl Game {
         let mm = &MISSIONS[m];
         let mut text = format!("{}\n\n{}", tf!("宿題{}「{}」合格！", "Task {} '{}' passed!", "作业{}“{}”合格！", m + 1, mm.title.get()), mm.done.get());
         if self.prog.all_clear() {
-            text.push_str(t!("\n\nこれで古生代の宿題はすべて合格です！", "\n\nThat completes every Paleozoic task!", "\n\n古生代的作业全部合格了！"));
+            text.push_str(t!("\n\nこれで古生代と中生代、51の宿題すべて合格です！", "\n\nThat completes all 51 Paleozoic and Mesozoic tasks!", "\n\n古生代和中生代的51个作业全部合格了！"));
         } else if !self.prog.is_done(self.prog.mission) {
             text.push_str(&tf!("\n\n次の宿題：{}（宿題の一覧から好きなものを選べます）", "\n\nNext task: {} (pick any task from the task list)", "\n\n下一个作业：{}（可在作业一览中任选）", MISSIONS[self.prog.mission].title.get()));
         }
@@ -3027,5 +3042,73 @@ mod tests {
         g.frame(&[], 0.016, true);
         g.do_act(Act::Shoot);
         g.frame(&[], 0.016, true);
+    }
+
+    #[test]
+    fn mesozoic_assignment_targets_can_be_visited_photographed_and_completed() {
+        let mut g = game();
+        g.do_act(Act::NewGame);
+        g.prog.intro_done = true;
+        g.panel = Panel::None;
+        for (mi, m) in MISSIONS.iter().enumerate().filter(|(_, m)| m.period >= TRIASSIC) {
+            g.prog.mission = mi;
+            for &(target, _) in m.targets {
+                g.close_photo();
+                g.goto(target);
+                for _ in 0..180 { g.update(0.1); }
+                assert!(g.travel.is_none() && g.cap_target.is_none(), "{}", target.name());
+                if let Target::Sp(sp) = target {
+                    g.enter_dive();
+                    let sc = g.scene.as_mut().unwrap();
+                    let cr = sc.creatures.iter_mut().find(|cr| cr.sp == sp).unwrap_or_else(|| panic!("missing {}", SPECIES[sp].slug));
+                    cr.out = 1.0;
+                    let b = crate::units::bounds(sp, cr.x, cr.y, SPECIES[sp].disp_len()*cr.scale, cr.out);
+                    let center = ((b[0]+b[2])*0.5, (b[1]+b[3])*0.5);
+                    g.dcam = center;
+                    sc.cap.x = center.0;
+                    sc.cap.y = center.1;
+                    g.prog.light = true;
+                    g.lens = ((g.w()/(b[2]-b[0])*0.8).min(g.h()/(b[3]-b[1])*0.8)/(g.h()/4.0)).clamp(1.0, 8.0);
+                } else if let Target::Ph(p) = target {
+                    if matches!(PHENOMS[p].kind, PhKind::Scenery(_)) { g.enter_dive(); }
+                }
+                g.shoot();
+                assert_eq!(g.prog.stars[target.entry()], 1, "could not photograph {} for {}", target.name(), m.title.1);
+            }
+            assert!(g.prog.is_done(mi), "{}", m.title.1);
+        }
+        let saved = Progress::from_bytes(&g.prog.to_bytes()).unwrap();
+        for (i, m) in MISSIONS.iter().enumerate().filter(|(_, m)| m.period >= TRIASSIC) {
+            assert!(saved.is_done(i), "{}", m.title.1);
+        }
+    }
+
+    #[test]
+    fn nine_period_tabs_fit_and_remain_clickable() {
+        for width in [480, 800, 1280, 1600] {
+            let mut g = Game::new(Gfx::new(width, 900));
+            g.panel = Panel::Guide;
+            g.render();
+            let tabs: Vec<_> = g.buttons.iter().filter(|b| matches!(b.act, Act::GuideTab(_))).collect();
+            assert_eq!(tabs.len(), PERIODS.len());
+            let (_, grid_y, _, _, _, _, _) = g.guide_layout();
+            for b in tabs {
+                assert!(b.x0 >= 0.0 && b.x1 <= g.w() && b.y1 < grid_y);
+                assert!(b.x1-b.x0 >= 110.0);
+            }
+        }
+    }
+
+    #[test]
+    fn completion_dialog_only_announces_all_51_after_all_tasks_are_done() {
+        let mut g = game();
+        let last = MISSIONS.len()-1;
+        g.panel = Panel::Done(last);
+        g.render();
+        let announces_all = |text: &str| ["51の宿題", "all 51", "51个作业"].iter().any(|phrase| text.contains(phrase));
+        assert!(!announces_all(&g.dialog_voice));
+        for e in 0..n_entries() { g.prog.record(e, 1); }
+        g.render();
+        assert!(announces_all(&g.dialog_voice));
     }
 }

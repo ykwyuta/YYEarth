@@ -1046,9 +1046,9 @@ pub static MISSIONS: &[Mission] = &[
             "最后的课题。6600万年前北美洲的地狱溪。请把霸王龙拍满画面，再拍下三角龙，然后从高空记录印度的大喷发和小行星撞击。",
         ),
         done: L(
-            "地球史図鑑、古生代と中生代の宿題すべて合格です！ 鳥以外の恐竜はここで姿を消し、生きのびた小さな哺乳類と鳥の時代、新生代が始まります。次の旅も楽しみにしていてください。",
-            "Every Paleozoic and Mesozoic assignment passed! The non-bird dinosaurs vanish here, and the age of the surviving mammals and birds — the Cenozoic — begins. Look forward to your next journey.",
-            "古生代和中生代的作业全部合格！非鸟恐龙在此消失，幸存的小型哺乳动物和鸟类的时代——新生代开始了。敬请期待下一段旅程。",
+            "鳥以外の恐竜はここで姿を消し、生きのびた小さな哺乳類と鳥の時代、新生代が始まります。次の旅も楽しみにしていてください。",
+            "The non-bird dinosaurs vanish here, and the age of the surviving mammals and birds — the Cenozoic — begins. Look forward to your next journey.",
+            "非鸟恐龙在此消失，幸存的小型哺乳动物和鸟类的时代——新生代开始了。敬请期待下一段旅程。",
         ),
         targets: &[(Sp(SP_TYRANNOSAURUS), 1), (Sp(SP_TRICERATOPS), 1), (Ph(P_DECCAN), 1), (Ph(P_CHICXULUB), 1)],
     },
@@ -1082,7 +1082,7 @@ mod tests {
         }
         for m in MISSIONS {
             for &(t, n) in m.targets {
-                assert!((1..=3).contains(&n));
+                assert_eq!(n, 1, "a single successful photograph must complete each target");
                 let ok = match t {
                     Target::Sp(i) => SPECIES[i].t0 > PERIODS[m.period].t1 - 1e-3 && SPECIES[i].t1 < PERIODS[m.period].t0 + 1e-3,
                     Target::Ph(i) => PHENOMS[i].t0 > PERIODS[m.period].t1 - 1e-3 && PHENOMS[i].t1 < PERIODS[m.period].t0 + 1e-3,

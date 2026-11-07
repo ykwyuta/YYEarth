@@ -82,6 +82,7 @@ fn pose(sp: &Species) -> &'static str {
     match (sp.beh, sp.art) {
         (_, Art::Plant(_)) => "Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped.",
         (_, Art::Griffinfly) => "Flying, wings spread, three-quarter side view, head pointing RIGHT.",
+        (_, Art::Pterosaur(0) | Art::Pterosaur(1) | Art::Bird(_)) => "Flying with wings spread, clear side view, head pointing RIGHT and tail LEFT.",
         (_, Art::Starfish | Art::Limulid) => "Seen from above at a low angle, lying flat on its underside, front pointing RIGHT.",
         (Beh::Sessile, _) => "Upright natural pose attached to the bottom, base at the bottom edge.",
         (Beh::Crawl | Beh::FlatCrawl, _) => "Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette.",
@@ -108,6 +109,7 @@ fn species_unit_prompt(sp: &Species) -> String {
 fn phenom_prompt(ph: &Phenom) -> String {
     let what = match ph.kind {
         PhKind::Continent(_) => "Cinematic orbital view of an ancient supercontinent/continent on a curved blue ocean planet, no modern recognizable continents, thin atmospheric rim.",
+        PhKind::Eruption(i) if ERUPTIONS[i].is_impact() => "A huge asteroid strikes a shallow Cretaceous sea: brilliant descending fireball, expanding impact plume, circular shock wave and ejecta over the coast, no volcanic cone.",
         PhKind::Eruption(_) => "Cinematic flood-basalt eruption: immense fissures pouring orange lava across dark basalt plains, towering ash clouds and red glow.",
         PhKind::Scenery(_) => "Cinematic wide landscape photograph, no animals.",
     };
@@ -119,8 +121,8 @@ fn phenom_prompt(ph: &Phenom) -> String {
 
 fn backdrop_prompt(subject: &str, period: usize) -> String {
     format!(
-        "Use case: scientific-educational. Asset type: cinematic game environment. Subject: wide cinematic empty {}, generous open centre for gameplay, dark foreground edges, realistic natural history film still. {} Landscape 16:9 framing. {}",
-        subject, STYLE, neg(PERIODS[period].t0 - 0.1)
+        "Use case: scientific-educational. Asset type: cinematic game environment. Subject: wide cinematic empty {}, generous open centre for gameplay, dark foreground edges, realistic natural history film still. Empty scenery only: no fish, marine reptiles, squid, living ammonites, dinosaurs, birds or other moving animals; game creatures are drawn separately. {} Landscape 16:9 framing. {}",
+        subject, STYLE, neg((PERIODS[period].t0 + PERIODS[period].t1) * 0.5)
     )
 }
 
@@ -240,19 +242,17 @@ pub fn write() -> (String, String) {
 
 #[cfg(test)]
 mod tests {
-    /// Every Paleozoic entry and period backdrop has its requested image.
+    /// Every released entry and period backdrop has its requested image.
     #[test]
-    fn paleozoic_image_requests_are_complete() {
-        use crate::earth::PERMIAN;
-        use crate::life::{entry_period, n_species};
-        for (_, sp) in crate::life::SPECIES.iter().enumerate().filter(|(i, _)| entry_period(*i) <= PERMIAN) {
+    fn all_image_requests_are_complete() {
+        for sp in crate::life::SPECIES {
             assert!(crate::artwork::find(sp.slug).is_some(), "missing guide image: {}", sp.slug);
             assert!(crate::artwork::find_unit(sp.slug).is_some(), "missing unit sprite: {}", sp.slug);
         }
-        for (_, ph) in crate::life::PHENOMS.iter().enumerate().filter(|(i, _)| entry_period(n_species() + i) <= PERMIAN) {
+        for ph in crate::life::PHENOMS {
             assert!(crate::artwork::find(ph.slug).is_some(), "missing phenomenon: {}", ph.slug);
         }
-        for backdrop in super::BACKDROPS.iter().filter(|b| b.1 <= PERMIAN) {
+        for backdrop in super::BACKDROPS {
             assert!(crate::artwork::find(backdrop.0).is_some(), "missing backdrop: {}", backdrop.0);
         }
     }
