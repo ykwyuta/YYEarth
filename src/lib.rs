@@ -23,6 +23,7 @@ mod mission;
 mod progress;
 mod rng;
 mod save;
+mod speech;
 
 #[cfg(not(windows))]
 mod gfx;

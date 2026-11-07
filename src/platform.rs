@@ -219,6 +219,7 @@ pub fn crumb(_s: String) {}
 
 /// Empty text stops current speech. Browser implementation waits for a user gesture.
 pub fn speak(text: &str) {
+    let text = crate::speech::text_for_speech(text, crate::lang::lang());
     #[cfg(target_arch = "wasm32")]
     unsafe { js::js_speak(text.as_ptr(), text.len()); }
     #[cfg(not(target_arch = "wasm32"))]

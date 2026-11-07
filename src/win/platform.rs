@@ -288,6 +288,8 @@ pub fn speak(text: &str) {
             });
             tx
         });
-        let _ = sender.send((text.to_string(), crate::lang::lang()));
+        let lang = crate::lang::lang();
+        let text = crate::speech::text_for_speech(text, lang);
+        let _ = sender.send((text.into_owned(), lang));
     }
 }
