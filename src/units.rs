@@ -49,7 +49,7 @@ pub fn bounds(sp: usize, x: f32, y: f32, len: f32, out: f32) -> [f32; 4] {
 
 /// Keep hard shells steady while tails, limbs and soft tissues move.
 fn deform(art: Art, beh: Beh, u: f32, v: f32, t: f32, activity: f32) -> (f32, f32) {
-    if beh == Beh::Sessile || matches!(art, Art::Trace | Art::Mat | Art::Stromatolite | Art::Mollusc(_) | Art::Starfish) {
+    if beh == Beh::Sessile || matches!(art, Art::Trace | Art::Mat | Art::Stromatolite | Art::Mollusc(_) | Art::Starfish | Art::Urchin) {
         return (u, v);
     }
     let wave = (t * (4.0 + activity * 3.0) - u * 10.0).sin();

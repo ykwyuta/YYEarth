@@ -104,6 +104,8 @@ pub enum Art {
     RayFin,
     /// カブトガニの仲間
     Limulid,
+    /// ウニ
+    Urchin,
 }
 
 impl Art {
@@ -2840,6 +2842,593 @@ pub static SPECIES: &[Species] = &[
         ),
         fact: L("花の咲く植物とは別に、同じような葉のつくりを独自に生み出した。", "It evolved broad netted leaves independently of flowering plants.", "它独立于开花植物，演化出了类似的叶片结构。"),
     },
+    // ======================================================== さらに追加した生きもの
+    // ---- カンブリア紀
+    Species {
+        slug: "canadaspis",
+        name: L("カナダスピス", "Canadaspis", "加拿大盾虾"),
+        sci: "Canadaspis perfecta",
+        group: L("節足動物", "Arthropod", "节肢动物"),
+        len_cm: 5.0, t0: 510.0, t1: 505.0, hab: SHELF, regions: &[Site(S_BURGESS)],
+        beh: Beh::Crawl, art: Art::Isoxys, col: [0.56, 0.48, 0.36], col2: [0.80, 0.66, 0.48], rarity: 3.0, shy: 0.0, speed: 0.05,
+        desc: L("2枚の殻で体をおおった節足動物。海底を歩き、泥の中の餌をかき集めた。", "An arthropod covered by a two-part shell that walked the sea floor, raking up food from the mud.", "身体被两片壳覆盖的节肢动物，在海底行走，从泥中搜集食物。"),
+        fact: L("バージェスで2番目に多く見つかる節足動物。", "It is the second most common arthropod in the Burgess Shale.", "是伯吉斯页岩中数量第二多的节肢动物。"),
+    },
+    Species {
+        slug: "waptia",
+        name: L("ワプティア", "Waptia", "瓦普塔虾"),
+        sci: "Waptia fieldensis",
+        group: L("節足動物", "Arthropod", "节肢动物"),
+        len_cm: 8.0, t0: 510.0, t1: 505.0, hab: SHELF, regions: &[Site(S_BURGESS)],
+        beh: Beh::Swim, art: Art::Isoxys, col: [0.66, 0.58, 0.46], col2: [0.86, 0.74, 0.58], rarity: 2.5, shy: 1.0, speed: 0.3,
+        desc: L("エビに似た姿で泳いだ節足動物。殻の下に卵を抱えた化石が見つかっている。", "A shrimp-like swimming arthropod; fossils have been found carrying eggs beneath the shell.", "外形似虾的游泳节肢动物，发现过在壳下抱卵的化石。"),
+        fact: L("子育ての証拠が残る、最古の動物の一つ。", "One of the oldest animals with evidence of caring for its eggs.", "是留有育幼证据的最古老动物之一。"),
+    },
+    Species {
+        slug: "yohoia",
+        name: L("ヨホイア", "Yohoia", "约霍虾"),
+        sci: "Yohoia tenuis",
+        group: L("節足動物（大付属肢類）", "Arthropod (great-appendage)", "节肢动物（大附肢类）"),
+        len_cm: 2.5, t0: 510.0, t1: 505.0, hab: SHELF, regions: &[Site(S_BURGESS)],
+        beh: Beh::NearFloor, art: Art::Leanchoilia, col: [0.62, 0.52, 0.42], col2: [0.84, 0.70, 0.52], rarity: 3.0, shy: 0.8, speed: 0.2,
+        desc: L("頭の前に、はさみのついた大きな腕を一対持つ小さな節足動物。腕で獲物をつかんだ。", "A small arthropod with one pair of large clawed arms at the front of its head for grabbing prey.", "头前长有一对带钳大附肢的小型节肢动物，用附肢抓捕猎物。"),
+        fact: L("クモやサソリの祖先に近いとも考えられている。", "It may be close to the ancestors of spiders and scorpions.", "也有观点认为它接近蜘蛛和蝎子的祖先。"),
+    },
+    Species {
+        slug: "eldonia",
+        name: L("エルドニア", "Eldonia", "伊尔东钵"),
+        sci: "Eldonia ludwigi",
+        group: L("所属不明（円盤形の動物）", "Disc-shaped animal of uncertain affinity", "分类不明（盘状动物）"),
+        len_cm: 10.0, t0: 520.0, t1: 505.0, hab: SHELF | SHALLOW, regions: &[Site(S_BURGESS), Site(S_CHENGJIANG)],
+        beh: Beh::Drift, art: Art::Jelly, col: [0.74, 0.66, 0.56], col2: [0.56, 0.46, 0.38], rarity: 2.0, shy: 0.0, speed: 0.03,
+        desc: L("円盤の形をした体に、うずまき形の腸が見える動物。クラゲのように見えるが、別の仲間らしい。", "A disc-shaped animal with a coiled gut visible inside. It looks like a jellyfish but probably was not one.", "身体呈圆盘状、可见螺旋形肠道的动物。外形像水母，但似乎属于别的类群。"),
+        fact: L("海底に横たわっていたのか、ただよっていたのか、まだ議論がある。", "Scientists still argue whether it drifted or lay on the sea floor.", "它是漂浮还是躺在海底，至今仍有争论。"),
+    },
+    Species {
+        slug: "chancelloria",
+        name: L("チャンセロリア", "Chancelloria", "开腔骨"),
+        sci: "Chancelloria",
+        group: L("所属不明（トゲの動物）", "Spiny animal of uncertain affinity", "分类不明（多刺动物）"),
+        len_cm: 15.0, t0: 520.0, t1: 490.0, hab: SHALLOW | SHELF, regions: &[Global],
+        beh: Beh::Sessile, art: Art::Sponge(0), col: [0.80, 0.74, 0.62], col2: [0.94, 0.88, 0.74], rarity: 3.0, shy: 0.0, speed: 0.0,
+        desc: L("星形のトゲがびっしり生えた、袋のような形の動物。海底に立って、海水から餌をこした。", "A sack-shaped animal studded with star-shaped spines, standing on the sea floor and filtering food.", "身体呈袋状、长满星形刺的动物，立在海底滤食。"),
+        fact: L("トゲのかけらは、世界中のカンブリア紀の地層から見つかる。", "Its spine pieces are found in Cambrian rocks all over the world.", "其骨刺碎片在世界各地的寒武纪地层中都有发现。"),
+    },
+    Species {
+        slug: "elrathia",
+        name: L("エルラシア", "Elrathia", "耳材虫"),
+        sci: "Elrathia kingii",
+        group: L("三葉虫", "Trilobite", "三叶虫"),
+        len_cm: 3.0, t0: 507.0, t1: 500.0, hab: SHELF, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Trilobite { w: 0.75, spine: 0.08, pyg: 0.2, segs: 13 }, col: [0.40, 0.38, 0.34], col2: [0.26, 0.24, 0.22], rarity: 3.5, shy: 0.0, speed: 0.04,
+        desc: L("酸素の少ない泥の海底にたくさんいた小さな三葉虫。", "A small trilobite that was abundant on oxygen-poor muddy sea floors.", "大量生活在缺氧泥质海底的小型三叶虫。"),
+        fact: L("アメリカ・ユタ州で大量に見つかり、世界でいちばん有名な三葉虫の化石の一つ。", "Found by the thousands in Utah, USA — one of the world's best-known trilobite fossils.", "在美国犹他州大量发现，是世界上最有名的三叶虫化石之一。"),
+    },
+    Species {
+        slug: "gogia",
+        name: L("ゴギア", "Gogia", "古吉海林檎"),
+        sci: "Gogia",
+        group: L("棘皮動物（始海百合類）", "Echinoderm (eocrinoid)", "棘皮动物（始海百合类）"),
+        len_cm: 6.0, t0: 510.0, t1: 500.0, hab: SHALLOW | SHELF, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Sessile, art: Art::Crinoid, col: [0.78, 0.66, 0.54], col2: [0.92, 0.82, 0.68], rarity: 2.5, shy: 0.0, speed: 0.0,
+        desc: L("短い茎の上に、板でできた袋のような体と細い腕を持つ棘皮動物。", "An echinoderm with a sack-like body of plates on a short stalk, and slender feeding arms.", "短茎顶端有由骨板构成的袋状身体和细腕的棘皮动物。"),
+        fact: L("のちのウミユリに似た暮らし方を、カンブリア紀にもうしていた。", "It already lived like the later crinoids during the Cambrian.", "早在寒武纪就过着类似后来海百合的生活。"),
+    },
+    Species {
+        slug: "myllokunmingia",
+        name: L("ミロクンミンギア", "Myllokunmingia", "昆明鱼"),
+        sci: "Myllokunmingia fengjiaoa",
+        group: L("脊椎動物（最古の魚の仲間）", "Vertebrate (early fish)", "脊椎动物（最早的鱼类）"),
+        len_cm: 3.0, t0: 520.0, t1: 515.0, hab: SHELF | SHALLOW, regions: &[Site(S_CHENGJIANG)],
+        beh: Beh::Swim, art: Art::Fish(0), col: [0.66, 0.66, 0.60], col2: [0.84, 0.84, 0.78], rarity: 2.0, shy: 1.5, speed: 0.4,
+        desc: L("背びれとえらを持つ、小さな魚の仲間。ハイコウイクチスと並ぶ、最古の脊椎動物の一つ。", "A tiny fish-like animal with a dorsal fin and gills — with Haikouichthys, one of the oldest vertebrates.", "长有背鳍和鳃的小型鱼类，与海口鱼并列为最古老的脊椎动物之一。"),
+        fact: L("名前は「昆明の魚」。雲南省の省都・昆明にちなむ。", "Its name means 'Kunming fish', after the capital of Yunnan.", "名字意为“昆明的鱼”，以云南省省会昆明命名。"),
+    },
+    // ---- オルドビス紀
+    Species {
+        slug: "pentecopterus",
+        name: L("ペンテコプテルス", "Pentecopterus", "五十鲎"),
+        sci: "Pentecopterus decorahensis",
+        group: L("ウミサソリ", "Sea scorpion (eurypterid)", "板足鲎（海蝎）"),
+        len_cm: 170.0, t0: 467.0, t1: 465.0, hab: SHALLOW, regions: &[Plate(LAURENTIA)],
+        beh: Beh::NearFloor, art: Art::Eurypterid(2), col: [0.46, 0.34, 0.26], col2: [0.72, 0.54, 0.38], rarity: 0.8, shy: 2.5, speed: 0.3,
+        desc: L("体長1.7mの、知られている中で最古のウミサソリ。とげだらけの前脚で獲物を捕らえた。", "At 1.7 m long, the oldest known sea scorpion, catching prey with spiky front legs.", "体长1.7米，是已知最古老的海蝎，用多刺的前肢捕捉猎物。"),
+        fact: L("名前は、古代ギリシャの軍船「ペンテコンター」にちなむ。", "It is named after the pentekonter, an ancient Greek warship.", "名字来自古希腊战船“五十桨船”。"),
+    },
+    Species {
+        slug: "lunataspis",
+        name: L("ルナタスピス", "Lunataspis", "月盾鲎"),
+        sci: "Lunataspis aurora",
+        group: L("カブトガニ類", "Horseshoe crab", "鲎类"),
+        len_cm: 4.0, t0: 446.0, t1: 443.8, hab: TIDAL | SHALLOW, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Limulid, col: [0.46, 0.40, 0.30], col2: [0.66, 0.58, 0.44], rarity: 2.5, shy: 0.4, speed: 0.04,
+        desc: L("半月形の甲羅を持つ、知られている中で最古のカブトガニの仲間。", "The oldest known horseshoe crab, with a half-moon-shaped head shield.", "长着半月形头甲，是已知最古老的鲎类。"),
+        fact: L("姿は、4億年以上たったいまのカブトガニとほとんど変わらない。", "It looks remarkably like horseshoe crabs alive 445 million years later.", "外形与4亿多年后的现代鲎几乎没有区别。"),
+    },
+    Species {
+        slug: "echinosphaerites",
+        name: L("エキノスファエリテス（ウミリンゴ）", "Echinosphaerites (cystoid)", "球海林檎"),
+        sci: "Echinosphaerites aurantium",
+        group: L("棘皮動物（ウミリンゴ類）", "Echinoderm (cystoid)", "棘皮动物（海林檎类）"),
+        len_cm: 4.0, t0: 470.0, t1: 458.0, hab: SHALLOW | SHELF, regions: &[Site(S_STPETERSBURG), Plate(BALTICA)],
+        beh: Beh::Sessile, art: Art::Crinoid, col: [0.84, 0.66, 0.48], col2: [0.94, 0.80, 0.62], rarity: 3.5, shy: 0.0, speed: 0.0,
+        desc: L("オレンジのような丸い体の棘皮動物。小さな穴の開いた板で体ができていた。", "An orange-like round echinoderm built from plates pierced by tiny pores.", "身体圆如橙子的棘皮动物，由带小孔的骨板构成。"),
+        fact: L("学名の aurantium は、ラテン語で「オレンジ」。", "Its species name aurantium is Latin for 'orange'.", "种名 aurantium 在拉丁语中意为“橙子”。"),
+    },
+    Species {
+        slug: "bothriocidaris",
+        name: L("ボスリオシダリス（古いウニ）", "Bothriocidaris (early sea urchin)", "穴头海胆"),
+        sci: "Bothriocidaris",
+        group: L("棘皮動物（ウニ）", "Echinoderm (sea urchin)", "棘皮动物（海胆）"),
+        len_cm: 2.0, t0: 460.0, t1: 445.0, hab: SHALLOW, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Urchin, col: [0.64, 0.46, 0.40], col2: [0.84, 0.70, 0.60], rarity: 2.5, shy: 0.0, speed: 0.01,
+        desc: L("小さなトゲにおおわれた、丸い体の古いウニ。海底の藻などをかじって食べた。", "An early round sea urchin covered with small spines that grazed algae on the sea floor.", "全身覆盖小刺的圆形早期海胆，啃食海底的藻类。"),
+        fact: L("ウニの仲間の、知られている中でも古いものの一つ。", "One of the oldest known sea urchins.", "是已知最古老的海胆之一。"),
+    },
+    Species {
+        slug: "lituites",
+        name: L("リツイテス", "Lituites", "喇叭角石"),
+        sci: "Lituites",
+        group: L("頭足類（オウムガイの仲間）", "Cephalopod (nautiloid)", "头足类（鹦鹉螺类）"),
+        len_cm: 30.0, t0: 470.0, t1: 458.0, hab: SHALLOW | SHELF, regions: &[Plate(BALTICA)],
+        beh: Beh::Swim, art: Art::Cephalopod(1), col: [0.80, 0.68, 0.54], col2: [0.58, 0.40, 0.30], rarity: 2.0, shy: 1.5, speed: 0.2,
+        desc: L("はじめはうずまきに巻き、途中からまっすぐにのびる殻を持つオウムガイの仲間。", "A nautiloid whose shell began as a tight coil and then grew out straight.", "外壳起初盘卷、后来笔直伸长的鹦鹉螺类。"),
+        fact: L("司教の杖のような形から、スウェーデンでは昔から知られていた。", "Its shape, like a bishop's crook, made it familiar in Sweden for centuries.", "其形状如主教的权杖，在瑞典自古为人所知。"),
+    },
+    Species {
+        slug: "selenopeltis",
+        name: L("セレノペルティス", "Selenopeltis", "月盾虫"),
+        sci: "Selenopeltis",
+        group: L("三葉虫", "Trilobite", "三叶虫"),
+        len_cm: 10.0, t0: 470.0, t1: 455.0, hab: SHELF, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Trilobite { w: 0.85, spine: 0.9, pyg: 0.2, segs: 10 }, col: [0.50, 0.42, 0.34], col2: [0.30, 0.24, 0.20], rarity: 2.0, shy: 0.0, speed: 0.04,
+        desc: L("体の節ごとに、長いトゲが左右にのびた三葉虫。冷たいゴンドワナの海で暮らした。", "A trilobite with a long spine sticking out from each side of every segment, living in Gondwana's cold seas.", "身体每节两侧都伸出长刺的三叶虫，生活在冈瓦纳寒冷的海洋中。"),
+        fact: L("長いトゲは、やわらかい泥に沈まないための「かんじき」だったのかもしれない。", "Its long spines may have worked like snowshoes on soft mud.", "长刺可能像雪鞋一样，防止它陷入软泥。"),
+    },
+    Species {
+        slug: "astraspis",
+        name: L("アストラスピス", "Astraspis", "星甲鱼"),
+        sci: "Astraspis desiderata",
+        group: L("無顎類（甲冑魚）", "Jawless armoured fish", "无颌类（甲胄鱼）"),
+        len_cm: 13.0, t0: 458.0, t1: 450.0, hab: SHALLOW | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Swim, art: Art::Jawless(0), col: [0.56, 0.54, 0.48], col2: [0.80, 0.76, 0.66], rarity: 2.5, shy: 1.4, speed: 0.3,
+        desc: L("星形の小さなこぶがならぶ骨の板で体をおおった、あごのない魚。", "A jawless fish armoured with bony plates covered in tiny star-shaped bumps.", "身披布满星形小瘤的骨板的无颌鱼。"),
+        fact: L("名前は「星の盾」という意味。", "Its name means 'star shield'.", "名字意为“星之盾”。"),
+    },
+    Species {
+        slug: "halysites",
+        name: L("ハリシテス（クサリサンゴ）", "Halysites (chain coral)", "链珊瑚"),
+        sci: "Halysites",
+        group: L("床板サンゴ", "Tabulate coral", "床板珊瑚"),
+        len_cm: 25.0, t0: 455.0, t1: 420.0, hab: SHALLOW, regions: &[Tropics],
+        beh: Beh::Sessile, art: Art::Coral(1), col: [0.82, 0.74, 0.60], col2: [0.60, 0.48, 0.40], rarity: 3.5, shy: 0.0, speed: 0.0,
+        desc: L("細い管が鎖のようにつながって、網目の模様をつくるサンゴの群体。", "A coral colony whose slender tubes link up like chains, forming a net-like pattern.", "细管如锁链般相连、形成网状花纹的珊瑚群体。"),
+        fact: L("断面の模様が鎖そっくりなので「クサリサンゴ」と呼ばれる。", "It is called the chain coral because its cross-section looks like a chain.", "因截面花纹酷似锁链而被称为“链珊瑚”。"),
+    },
+    Species {
+        slug: "receptaculites",
+        name: L("レセプタクリテス（ヒマワリサンゴ）", "Receptaculites (sunflower coral)", "托盘类"),
+        sci: "Receptaculites",
+        group: L("所属不明（緑藻の仲間か）", "Uncertain (probably a green alga)", "分类不明（可能是绿藻）"),
+        len_cm: 25.0, t0: 470.0, t1: 370.0, hab: SHALLOW, regions: &[Tropics],
+        beh: Beh::Sessile, art: Art::Sponge(2), col: [0.66, 0.70, 0.52], col2: [0.84, 0.80, 0.62], rarity: 3.0, shy: 0.0, speed: 0.0,
+        desc: L("ひまわりの種のようならせん模様を持つ、皿のような生きもの。サンゴではなく、藻の仲間らしい。", "A dish-shaped organism with spirals like a sunflower's seeds. Despite its nickname it was probably an alga, not a coral.", "具有向日葵籽般螺旋花纹的盘状生物。虽俗称“向日葵珊瑚”，其实可能是藻类。"),
+        fact: L("正体は100年以上なぞのままだった。", "What it was remained a mystery for over a century.", "它的真实身份一百多年来一直是个谜。"),
+    },
+    // ---- シルル紀
+    Species {
+        slug: "brontoscorpio",
+        name: L("ブロントスコルピオ", "Brontoscorpio", "雷蝎"),
+        sci: "Brontoscorpio anglicus",
+        group: L("サソリ", "Scorpion", "蝎子"),
+        len_cm: 90.0, t0: 421.0, t1: 419.2, hab: TIDAL | SHALLOW, regions: &[Plate(AVALONIA)],
+        beh: Beh::NearFloor, art: Art::Arthro(2), col: [0.34, 0.28, 0.22], col2: [0.56, 0.44, 0.32], rarity: 1.0, shy: 2.0, speed: 0.15,
+        desc: L("体長1mにもなったと考えられる、水の中で暮らした巨大なサソリ。", "A giant water-dwelling scorpion that may have reached 1 m long.", "体长可能达1米、生活在水中的巨型蝎子。"),
+        fact: L("見つかっているのは、大きなはさみの一部だけ。", "Only part of its huge claw has been found.", "目前只发现了它巨大螯的一部分。"),
+    },
+    Species {
+        slug: "carcinosoma",
+        name: L("カルキノソーマ", "Carcinosoma", "蟹体鲎"),
+        sci: "Carcinosoma",
+        group: L("ウミサソリ", "Sea scorpion (eurypterid)", "板足鲎（海蝎）"),
+        len_cm: 70.0, t0: 430.0, t1: 420.0, hab: SHALLOW | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::NearFloor, art: Art::Eurypterid(2), col: [0.48, 0.38, 0.28], col2: [0.70, 0.56, 0.40], rarity: 1.5, shy: 2.0, speed: 0.25,
+        desc: L("とげの並んだ前脚と、サソリのようにそり上がった尾を持つウミサソリ。", "A sea scorpion with spiny front legs and a scorpion-like upturned tail.", "前肢带刺、尾部如蝎子般上翘的海蝎。"),
+        fact: L("名前は「カニの体」という意味。", "Its name means 'crab body'.", "名字意为“蟹的身体”。"),
+    },
+    Species {
+        slug: "jamoytius",
+        name: L("ジャモイティウス", "Jamoytius", "雅莫鱼"),
+        sci: "Jamoytius kerwoodi",
+        group: L("無顎類", "Jawless fish", "无颌类"),
+        len_cm: 26.0, t0: 435.0, t1: 428.0, hab: SHALLOW, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Swim, art: Art::Jawless(1), col: [0.44, 0.46, 0.44], col2: [0.70, 0.72, 0.68], rarity: 2.5, shy: 1.2, speed: 0.4,
+        desc: L("ヤツメウナギに似た細長い体の、あごのない魚。丸い口で吸いついて食べたらしい。", "A slender, lamprey-like jawless fish that probably fed by sucking with its round mouth.", "身体细长、形似七鳃鳗的无颌鱼，可能用圆口吸附进食。"),
+        fact: L("いまのヤツメウナギの遠い親戚かもしれない。", "It may be a distant relative of today's lampreys.", "可能是现代七鳃鳗的远亲。"),
+    },
+    Species {
+        slug: "heliolites",
+        name: L("ヘリオリテス（日石サンゴ）", "Heliolites", "日射珊瑚群体"),
+        sci: "Heliolites",
+        group: L("床板サンゴ", "Tabulate coral", "床板珊瑚"),
+        len_cm: 20.0, t0: 445.0, t1: 380.0, hab: SHALLOW, regions: &[Tropics],
+        beh: Beh::Sessile, art: Art::Coral(1), col: [0.86, 0.78, 0.64], col2: [0.66, 0.52, 0.42], rarity: 3.0, shy: 0.0, speed: 0.0,
+        desc: L("小さな太陽のような花形の穴が並ぶ、こぶ形のサンゴの群体。", "A lumpy coral colony dotted with tiny sun-like star-shaped pits.", "表面排列着小太阳般星形孔的瘤状珊瑚群体。"),
+        fact: L("シルル紀の礁の、ありふれた住人だった。", "It was a common resident of Silurian reefs.", "是志留纪礁中常见的居民。"),
+    },
+    Species {
+        slug: "encrinurus",
+        name: L("エンクリヌルス（イチゴ頭の三葉虫）", "Encrinurus ('strawberry-head')", "彗星虫"),
+        sci: "Encrinurus",
+        group: L("三葉虫", "Trilobite", "三叶虫"),
+        len_cm: 5.0, t0: 440.0, t1: 420.0, hab: SHALLOW | SHELF, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Trilobite { w: 0.75, spine: 0.1, pyg: 0.45, segs: 11 }, col: [0.54, 0.44, 0.36], col2: [0.34, 0.26, 0.22], rarity: 2.5, shy: 0.0, speed: 0.04,
+        desc: L("頭にイチゴのようなつぶつぶがある三葉虫。眼は短い柄の上についていた。", "A trilobite with strawberry-like bumps on its head and eyes on short stalks.", "头部布满草莓般颗粒、眼睛长在短柄上的三叶虫。"),
+        fact: L("英語では「イチゴ頭の三葉虫」と呼ばれる。", "In English it is nicknamed the 'strawberry-headed trilobite'.", "英文俗称“草莓头三叶虫”。"),
+    },
+    Species {
+        slug: "ophioceras",
+        name: L("オフィオセラス", "Ophioceras", "蛇角石"),
+        sci: "Ophioceras",
+        group: L("頭足類（オウムガイの仲間）", "Cephalopod (nautiloid)", "头足类（鹦鹉螺类）"),
+        len_cm: 6.0, t0: 430.0, t1: 425.0, hab: SHALLOW, regions: &[Plate(BALTICA)],
+        beh: Beh::Swim, art: Art::Cephalopod(1), col: [0.76, 0.66, 0.52], col2: [0.54, 0.40, 0.30], rarity: 2.5, shy: 1.2, speed: 0.2,
+        desc: L("ゆるくうずまきに巻いた殻を持つ、小さなオウムガイの仲間。", "A small nautiloid with a loosely coiled shell.", "外壳松散盘卷的小型鹦鹉螺类。"),
+        fact: L("ゴトランド島の礁のまわりで、たくさん見つかる。", "It is common around the reefs of Gotland.", "在哥得兰岛的礁周围大量发现。"),
+    },
+    Species {
+        slug: "atrypa",
+        name: L("アトリパ", "Atrypa", "无洞贝"),
+        sci: "Atrypa",
+        group: L("腕足動物", "Brachiopod", "腕足动物"),
+        len_cm: 3.0, t0: 440.0, t1: 370.0, hab: SHALLOW | SHELF, regions: &[Global],
+        beh: Beh::Sessile, art: Art::Brachiopod, col: [0.74, 0.66, 0.54], col2: [0.88, 0.80, 0.66], rarity: 4.0, shy: 0.0, speed: 0.0,
+        desc: L("細かいすじと成長の輪がある、丸い殻の腕足動物。とても長いあいだ世界中に栄えた。", "A round-shelled brachiopod with fine ribs and growth rings that thrived worldwide for a very long time.", "外壳圆润、带细肋和生长纹的腕足动物，长期遍布世界各地。"),
+        fact: L("7000万年近く生きつづけた、とても長生きの属。", "The genus lasted for nearly 70 million years.", "这个属延续了近7000万年。"),
+    },
+    Species {
+        slug: "pterygotus",
+        name: L("プテリゴトゥス", "Pterygotus", "翼肢鲎"),
+        sci: "Pterygotus",
+        group: L("ウミサソリ", "Sea scorpion (eurypterid)", "板足鲎（海蝎）"),
+        len_cm: 160.0, t0: 428.0, t1: 412.0, hab: SHALLOW | TIDAL, regions: &[Plate(LAURENTIA), Plate(AVALONIA)],
+        beh: Beh::NearFloor, art: Art::Eurypterid(1), col: [0.50, 0.38, 0.28], col2: [0.74, 0.58, 0.40], rarity: 1.0, shy: 2.5, speed: 0.35,
+        desc: L("長い腕の先に大きなはさみを持つ、巨大なウミサソリ。大きな眼で獲物を見つけて襲った。", "A huge sea scorpion with big claws on long arms, hunting with large eyes.", "长臂末端长着大螯的巨型海蝎，用大眼睛寻找并袭击猎物。"),
+        fact: L("平たい尾は、泳ぐときのかじの役目をした。", "Its flat tail worked like a rudder when it swam.", "扁平的尾巴在游泳时起舵的作用。"),
+    },
+    // ---- デボン紀
+    Species {
+        slug: "drepanophycus",
+        name: L("ドレパノフィクス", "Drepanophycus", "镰蕨"),
+        sci: "Drepanophycus spinaeformis",
+        group: L("ヒカゲノカズラ類", "Lycopsid (clubmoss)", "石松类"),
+        len_cm: 40.0, t0: 420.0, t1: 385.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Sessile, art: Art::Plant(11), col: [0.30, 0.48, 0.26], col2: [0.44, 0.58, 0.30], rarity: 3.5, shy: 0.0, speed: 0.0,
+        desc: L("トゲのような小さな葉がついた茎が、地面をはうようにのびた植物。", "A clubmoss whose stems, covered in small thorn-like leaves, crept along the ground.", "长着刺状小叶的茎贴地蔓延的石松类植物。"),
+        fact: L("世界中で見つかり、デボン紀前期の水辺の代表的な植物。", "Found worldwide, it was a typical waterside plant of the Early Devonian.", "在世界各地都有发现，是早泥盆世水边的代表植物。"),
+    },
+    Species {
+        slug: "aglaophyton",
+        name: L("アグラオフィトン", "Aglaophyton", "光蕨"),
+        sci: "Aglaophyton majus",
+        group: L("初期の陸上植物", "Early land plant", "早期陆生植物"),
+        len_cm: 18.0, t0: 411.0, t1: 405.0, hab: LAND | TIDAL, regions: &[Site(S_RHYNIE)],
+        beh: Beh::Sessile, art: Art::Plant(0), col: [0.36, 0.52, 0.28], col2: [0.62, 0.50, 0.30], rarity: 4.0, shy: 0.0, speed: 0.0,
+        desc: L("ライニーの温泉湿地に茂った、葉のない茎だけの植物。根もとで菌類と助け合っていた。", "A leafless stemmed plant of the Rhynie hot springs that partnered with fungi in its roots.", "生长在莱尼温泉湿地、只有茎没有叶的植物，在根部与真菌互助共生。"),
+        fact: L("植物と菌類の「共生」を示す、最古の証拠の一つ。", "One of the oldest pieces of evidence for plants and fungi living in partnership.", "是植物与真菌共生的最古老证据之一。"),
+    },
+    Species {
+        slug: "rhyniognatha",
+        name: L("リニオグナタ", "Rhyniognatha", "莱尼颚虫"),
+        sci: "Rhyniognatha hirsti",
+        group: L("昆虫（最古の昆虫か）", "Insect (perhaps the oldest)", "昆虫（可能是最古老的）"),
+        len_cm: 0.5, t0: 411.0, t1: 405.0, hab: LAND, regions: &[Site(S_RHYNIE)],
+        beh: Beh::Crawl, art: Art::Arthro(4), col: [0.34, 0.28, 0.22], col2: [0.56, 0.46, 0.34], rarity: 2.5, shy: 0.3, speed: 0.02,
+        desc: L("あごの化石だけが見つかっている、とても小さな虫。最古の昆虫と考えられている。", "A tiny creature known only from its jaws, thought to be the oldest insect.", "只发现了颚部化石的微小虫子，被认为是最古老的昆虫。"),
+        fact: L("あごの形から、はねがあったかもしれないとも言われる。", "The shape of its jaws hints that it may even have had wings.", "从颚的形状推测，它甚至可能有翅膀。"),
+    },
+    Species {
+        slug: "drepanaspis",
+        name: L("ドレパナスピス", "Drepanaspis", "镰甲鱼"),
+        sci: "Drepanaspis gemuendenensis",
+        group: L("無顎類（異甲類）", "Jawless fish (heterostracan)", "无颌类（异甲鱼）"),
+        len_cm: 35.0, t0: 410.0, t1: 400.0, hab: SHALLOW | SHELF, regions: &[Site(S_HUNSRUCK), Plate(AVALONIA), Plate(BALTICA)],
+        beh: Beh::NearFloor, art: Art::Jawless(0), col: [0.50, 0.48, 0.42], col2: [0.70, 0.66, 0.56], rarity: 2.0, shy: 1.2, speed: 0.2,
+        desc: L("せんべいのように平たい、あごのない魚。口は上向きで、海底の泥の中の餌を食べた。", "A pancake-flat jawless fish with an upturned mouth that fed on mud on the sea floor.", "身体扁平如煎饼的无颌鱼，口朝上，以海底泥中的食物为食。"),
+        fact: L("ドイツのフンスリュック粘板岩から、きれいな化石が見つかる。", "Beautiful fossils come from Germany's Hunsrück Slate.", "德国洪斯吕克板岩中出产精美化石。"),
+    },
+    Species {
+        slug: "holoptychius",
+        name: L("ホロプティキウス", "Holoptychius", "全褶鱼"),
+        sci: "Holoptychius",
+        group: L("肉鰭類", "Lobe-finned fish", "肉鳍鱼类"),
+        len_cm: 70.0, t0: 380.0, t1: 360.0, hab: TIDAL | SHALLOW, regions: &[Global],
+        beh: Beh::Swim, art: Art::LobeFin(0), col: [0.46, 0.44, 0.36], col2: [0.66, 0.60, 0.44], rarity: 2.5, shy: 2.0, speed: 0.4,
+        desc: L("大きな波もようのうろこを持つ、川の捕食者の肉鰭類。", "A lobe-finned river predator with large, wavy-patterned scales.", "长着大型波纹鳞片的河流捕食性肉鳍鱼。"),
+        fact: L("世界中のデボン紀後期の地層から見つかる。", "It is found in Late Devonian rocks worldwide.", "在世界各地的晚泥盆世地层中都有发现。"),
+    },
+    Species {
+        slug: "titanichthys",
+        name: L("ティタニクティス", "Titanichthys", "巨鱼"),
+        sci: "Titanichthys",
+        group: L("板皮類（節頸類）", "Placoderm (arthrodire)", "盾皮鱼类（节颈鱼）"),
+        len_cm: 500.0, t0: 370.0, t1: 360.0, hab: SHELF | DEEP, regions: &[Plate(LAURENTIA), Plate(GONDWANA)],
+        beh: Beh::Swim, art: Art::Placoderm(1), col: [0.44, 0.46, 0.48], col2: [0.68, 0.66, 0.60], rarity: 0.6, shy: 2.5, speed: 0.3,
+        desc: L("ダンクルオステウスと同じくらい大きいが、歯のないあごで小さな生きものをこして食べた、おだやかな巨大魚。", "A giant as big as Dunkleosteus, but a gentle one: its toothless jaws filtered small creatures from the water.", "体型与邓氏鱼相当，却用无齿的颌滤食小生物的温和巨鱼。"),
+        fact: L("いまのジンベエザメのような暮らし方をしていたらしい。", "It probably lived like a modern whale shark.", "它的生活方式可能类似现代的鲸鲨。"),
+    },
+    Species {
+        slug: "panderichthys",
+        name: L("パンデリクティス", "Panderichthys", "潘氏鱼"),
+        sci: "Panderichthys rhombolepis",
+        group: L("肉鰭類（魚と四肢動物の間）", "Lobe-finned 'fishapod'", "肉鳍鱼类（鱼与四足动物之间）"),
+        len_cm: 100.0, t0: 385.0, t1: 380.0, hab: TIDAL | SHALLOW, regions: &[Plate(BALTICA)],
+        beh: Beh::NearFloor, art: Art::LobeFin(1), col: [0.46, 0.44, 0.34], col2: [0.66, 0.58, 0.42], rarity: 1.5, shy: 2.0, speed: 0.25,
+        desc: L("平たい頭と、背びれのない体を持つ魚。浅い水の中で、四肢動物に近い暮らしをしていた。", "A flat-headed fish without dorsal fins that lived in shallow water much like an early tetrapod.", "头部扁平、没有背鳍的鱼，在浅水中过着接近四足动物的生活。"),
+        fact: L("胸びれの先に、指のもとになる骨が見つかっている。", "The tips of its pectoral fins contain bones like the beginnings of fingers.", "其胸鳍末端发现了类似手指雏形的骨头。"),
+    },
+    Species {
+        slug: "clymenia",
+        name: L("クリメニア", "Clymenia", "海神石"),
+        sci: "Clymenia",
+        group: L("頭足類（アンモノイド）", "Cephalopod (ammonoid)", "头足类（菊石类）"),
+        len_cm: 6.0, t0: 368.0, t1: 359.0, hab: SHALLOW | SHELF, regions: &[Global],
+        beh: Beh::Swim, art: Art::Cephalopod(1), col: [0.74, 0.62, 0.48], col2: [0.50, 0.36, 0.26], rarity: 2.5, shy: 1.2, speed: 0.2,
+        desc: L("デボン紀の終わりに栄えたアンモノイド。体の管が、ほかのアンモノイドと反対の側を通っていた。", "An ammonoid of the latest Devonian whose internal tube ran along the opposite side from other ammonoids.", "繁盛于泥盆纪末的菊石类，体管位于与其他菊石相反的一侧。"),
+        fact: L("デボン紀末の絶滅で、ほとんどが姿を消した。", "Almost all of them vanished in the end-Devonian extinction.", "在泥盆纪末的灭绝中几乎全部消失。"),
+    },
+    Species {
+        slug: "helianthaster",
+        name: L("ヘリアンタスター", "Helianthaster", "日光海星"),
+        sci: "Helianthaster rhenanus",
+        group: L("棘皮動物（ヒトデの仲間）", "Echinoderm (starfish relative)", "棘皮动物（海星类）"),
+        len_cm: 25.0, t0: 408.0, t1: 404.0, hab: SHELF, regions: &[Site(S_HUNSRUCK)],
+        beh: Beh::Crawl, art: Art::Starfish, col: [0.72, 0.52, 0.44], col2: [0.88, 0.72, 0.60], rarity: 2.0, shy: 0.0, speed: 0.01,
+        desc: L("16本もの長い腕を持つ、太陽のような形のヒトデの仲間。", "A sun-shaped starfish relative with as many as 16 long arms.", "长着多达16条长腕、形如太阳的海星类。"),
+        fact: L("フンスリュック粘板岩の、黄鉄鉱に置きかわった美しい化石が有名。", "It is famous from beautiful pyrite-replaced fossils in the Hunsrück Slate.", "洪斯吕克板岩中被黄铁矿置换的精美化石很有名。"),
+    },
+    Species {
+        slug: "calamophyton",
+        name: L("カラモフィトン", "Calamophyton", "芦蕨"),
+        sci: "Calamophyton",
+        group: L("クラドキシロン類（初期の木）", "Cladoxylopsid (early tree)", "枝蕨类（早期树木）"),
+        len_cm: 300.0, t0: 390.0, t1: 380.0, hab: LAND, regions: &[Global],
+        beh: Beh::Sessile, art: Art::Plant(3), col: [0.46, 0.38, 0.28], col2: [0.34, 0.50, 0.26], rarity: 3.0, shy: 0.0, speed: 0.0,
+        desc: L("高さ2〜3mの、ヤシに似た初期の木。枝を落としながら育ち、最古の森の一部をつくった。", "A palm-like early tree 2–3 m tall that shed its branches as it grew, part of the oldest forests.", "高2至3米、形似棕榈的早期树木，边生长边落枝，是最古老森林的组成部分。"),
+        fact: L("落とした枝が積もって、森の土を豊かにした。", "Its fallen branches enriched the forest soil.", "落下的枝条堆积起来，使森林土壤变得肥沃。"),
+    },
+    Species {
+        slug: "attercopus",
+        name: L("アッテルコプス", "Attercopus", "毒蛛"),
+        sci: "Attercopus fimbriunguis",
+        group: L("クモ形類（クモの祖先の仲間）", "Arachnid (spider relative)", "蛛形类（蜘蛛祖先类）"),
+        len_cm: 0.5, t0: 387.0, t1: 381.0, hab: LAND, regions: &[Site(S_GILBOA), Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Arthro(3), col: [0.30, 0.24, 0.20], col2: [0.50, 0.40, 0.32], rarity: 2.5, shy: 0.3, speed: 0.02,
+        desc: L("糸を出すことができた、クモの祖先に近い小さな生きもの。まだ網は張らなかったらしい。", "A tiny spider relative that could already make silk, though it probably did not spin webs.", "已能吐丝的微小蜘蛛近亲，但可能还不会结网。"),
+        fact: L("名前は古い英語で「毒の頭」、つまりクモのこと。", "Its name comes from an Old English word for spider.", "名字来自古英语中“蜘蛛”一词。"),
+    },
+    // ---- 石炭紀
+    Species {
+        slug: "falcatus",
+        name: L("ファルカトゥス", "Falcatus", "镰鳍鲨"),
+        sci: "Falcatus falcatus",
+        group: L("軟骨魚類（サメの仲間）", "Shark relative", "软骨鱼类（鲨类）"),
+        len_cm: 30.0, t0: 325.0, t1: 318.0, hab: SHALLOW, regions: &[Site(S_BEARGULCH)],
+        beh: Beh::Swim, art: Art::Shark(1), col: [0.42, 0.44, 0.46], col2: [0.20, 0.20, 0.22], rarity: 2.5, shy: 1.6, speed: 0.5,
+        desc: L("オスの頭の上に、刀のような長いトゲが前向きについていた小さなサメの仲間。", "A small shark relative; males had a long sword-like spine curving forward over the head.", "小型鲨类，雄性头顶有一根向前弯曲的长刀状棘刺。"),
+        fact: L("メスがオスのトゲをくわえた姿の化石があり、求愛のようすとも言われる。", "A fossil of a female holding a male's spine may show courtship.", "有雌性咬住雄性棘刺的化石，被认为可能是求偶的情景。"),
+    },
+    Species {
+        slug: "edestus",
+        name: L("エデスタス", "Edestus", "剪齿鲨"),
+        sci: "Edestus",
+        group: L("軟骨魚類（ギンザメの仲間）", "Ratfish relative", "软骨鱼类（银鲛类）"),
+        len_cm: 600.0, t0: 315.0, t1: 300.0, hab: SHELF | DEEP, regions: &[Global],
+        beh: Beh::Swim, art: Art::Shark(2), col: [0.42, 0.44, 0.48], col2: [0.84, 0.82, 0.76], rarity: 0.7, shy: 3.0, speed: 0.45,
+        desc: L("上下のあごに、はさみのように並んだ歯の列を持つ大きな魚。獲物を切りさいた。", "A large fish with rows of teeth on both jaws that worked like shears to slice prey.", "上下颌都有剪刀般齿列的大型鱼类，用来切割猎物。"),
+        fact: L("ヘリコプリオンの親戚で、「はさみの歯を持つサメ」と呼ばれる。", "A relative of Helicoprion, nicknamed the 'scissor-toothed shark'.", "是旋齿鲨的亲戚，被称为“剪刀齿鲨”。"),
+    },
+    Species {
+        slug: "rhizodus",
+        name: L("リゾドゥス", "Rhizodus", "根齿鱼"),
+        sci: "Rhizodus hibberti",
+        group: L("肉鰭類", "Lobe-finned fish", "肉鳍鱼类"),
+        len_cm: 600.0, t0: 345.0, t1: 320.0, hab: TIDAL | SHALLOW, regions: &[Plate(LAURENTIA), Plate(BALTICA), Plate(AVALONIA)],
+        beh: Beh::Swim, art: Art::LobeFin(0), col: [0.40, 0.38, 0.30], col2: [0.62, 0.56, 0.40], rarity: 0.7, shy: 3.0, speed: 0.45,
+        desc: L("長さ6mにもなる、史上最大級の淡水魚。長さ22cmの牙で、大きな獲物も襲った。", "One of the largest freshwater fish ever, up to 6 m long, with fangs 22 cm long.", "体长可达6米，是史上最大的淡水鱼之一，长着22厘米长的獠牙。"),
+        fact: L("初期の四肢動物にとって、最もおそろしい敵だった。", "It was the most fearsome enemy of early tetrapods.", "是早期四足动物最可怕的敌人。"),
+    },
+    Species {
+        slug: "crassigyrinus",
+        name: L("クラッシギリヌス", "Crassigyrinus", "厚蛙螈"),
+        sci: "Crassigyrinus scoticus",
+        group: L("四肢動物", "Early tetrapod", "四足动物"),
+        len_cm: 200.0, t0: 335.0, t1: 325.0, hab: TIDAL | SHALLOW, regions: &[Plate(LAURENTIA)],
+        beh: Beh::NearFloor, art: Art::Tetrapod(0), col: [0.38, 0.40, 0.32], col2: [0.58, 0.56, 0.42], rarity: 1.2, shy: 2.0, speed: 0.25,
+        desc: L("小さな手足と大きな口を持つ、水の中で待ちぶせした四肢動物。", "A tetrapod with tiny limbs and a huge mouth that ambushed prey in the water.", "四肢短小、嘴巴巨大，在水中伏击猎物的四足动物。"),
+        fact: L("一度陸に近づいた仲間が、また水の暮らしにもどったと考えられている。", "Its ancestors may have returned to water after moving toward land.", "人们认为它的祖先曾走向陆地，后来又回到了水中。"),
+    },
+    Species {
+        slug: "westlothiana",
+        name: L("ウェストロティアナ", "Westlothiana", "西洛锡安螈"),
+        sci: "Westlothiana lizziae",
+        group: L("爬形類", "Reptiliomorph", "爬行形类"),
+        len_cm: 20.0, t0: 337.0, t1: 333.0, hab: LAND | TIDAL, regions: &[Site(S_EASTKIRKTON)],
+        beh: Beh::Crawl, art: Art::Tetrapod(2), col: [0.48, 0.42, 0.32], col2: [0.66, 0.58, 0.42], rarity: 2.5, shy: 1.0, speed: 0.1,
+        desc: L("トカゲに似た細長い体の、小さな四肢動物。爬虫類に近い仲間と考えられる。", "A small, slender, lizard-like tetrapod, thought to be close to the reptiles.", "身体细长、形似蜥蜴的小型四足动物，被认为接近爬行动物。"),
+        fact: L("発見者は愛称で「リジー」と呼んだ。", "Its finder nicknamed it 'Lizzie'.", "发现者给它起了昵称“丽兹”。"),
+    },
+    Species {
+        slug: "balanerpeton",
+        name: L("バラネルペトン", "Balanerpeton", "巴兰螈"),
+        sci: "Balanerpeton woodi",
+        group: L("両生類（分椎類）", "Amphibian (temnospondyl)", "两栖类（离片椎类）"),
+        len_cm: 50.0, t0: 337.0, t1: 333.0, hab: LAND | TIDAL, regions: &[Site(S_EASTKIRKTON)],
+        beh: Beh::Crawl, art: Art::Tetrapod(3), col: [0.42, 0.42, 0.34], col2: [0.60, 0.58, 0.44], rarity: 2.5, shy: 1.2, speed: 0.08,
+        desc: L("陸を歩くのに向いた手足と、大きな耳の膜を持つ両生類。", "An amphibian with limbs suited to walking on land and a large eardrum.", "四肢适合在陆地行走、长有大鼓膜的两栖动物。"),
+        fact: L("空気中の音を聞くための耳を持った、最古の動物の一つ。", "One of the oldest animals with ears for hearing sounds in air.", "是拥有能听到空气中声音的耳朵的最古老动物之一。"),
+    },
+    Species {
+        slug: "megarachne",
+        name: L("メガラクネ", "Megarachne", "巨蛛鲎"),
+        sci: "Megarachne servinei",
+        group: L("ウミサソリ", "Sea scorpion (eurypterid)", "板足鲎（海蝎）"),
+        len_cm: 54.0, t0: 300.0, t1: 299.0, hab: TIDAL | SHALLOW, regions: &[Plate(GONDWANA)],
+        beh: Beh::NearFloor, art: Art::Eurypterid(0), col: [0.42, 0.34, 0.26], col2: [0.62, 0.52, 0.38], rarity: 1.5, shy: 1.5, speed: 0.15,
+        desc: L("はじめは「史上最大のクモ」と思われた、川辺のウミサソリの仲間。", "A river-dwelling sea scorpion relative first mistaken for the largest spider ever.", "最初被误认为“史上最大蜘蛛”的河边海蝎类。"),
+        fact: L("よい化石が見つかって、2005年にクモではないとわかった。", "A better fossil showed in 2005 that it was not a spider after all.", "2005年发现了更好的化石，才确认它并不是蜘蛛。"),
+    },
+    Species {
+        slug: "petrolacosaurus",
+        name: L("ペトロラコサウルス", "Petrolacosaurus", "林蜥龙"),
+        sci: "Petrolacosaurus kansensis",
+        group: L("爬虫類（双弓類）", "Reptile (diapsid)", "爬行动物（双孔类）"),
+        len_cm: 40.0, t0: 302.0, t1: 299.0, hab: LAND, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(2), col: [0.52, 0.44, 0.32], col2: [0.70, 0.60, 0.44], rarity: 2.0, shy: 1.2, speed: 0.16,
+        desc: L("首と尾の長い、すばしこい小型の爬虫類。頭の後ろに穴が2つずつあった。", "A quick little reptile with a long neck and tail, and two openings on each side of the skull.", "颈和尾都很长、行动敏捷的小型爬行动物，头骨两侧各有两个孔。"),
+        fact: L("恐竜やトカゲ、鳥へとつながる「双弓類」の最古の仲間の一つ。", "One of the oldest diapsids — the group that later gave rise to dinosaurs, lizards and birds.", "是后来演化出恐龙、蜥蜴和鸟类的“双孔类”中最古老的成员之一。"),
+    },
+    Species {
+        slug: "archaeothyris",
+        name: L("アーケオシリス", "Archaeothyris", "始祖单弓兽"),
+        sci: "Archaeothyris florensis",
+        group: L("単弓類", "Synapsid", "合弓纲"),
+        len_cm: 50.0, t0: 307.0, t1: 304.0, hab: LAND, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(2), col: [0.50, 0.42, 0.32], col2: [0.68, 0.58, 0.42], rarity: 2.0, shy: 1.2, speed: 0.12,
+        desc: L("トカゲに似た姿だが、わたしたち哺乳類につながる単弓類の、最古の仲間の一つ。", "Lizard-like in shape, but one of the oldest synapsids — the line that leads to mammals like us.", "外形似蜥蜴，却是通向我们哺乳动物的合弓纲中最古老的成员之一。"),
+        fact: L("頭の後ろの穴が1つずつ。この特徴は、いまのわたしたちの頭にも残っている。", "It had one opening behind each eye — a feature still found in our own skulls.", "眼后两侧各有一个孔，这一特征至今仍保留在我们的头骨中。"),
+    },
+    Species {
+        slug: "essexella",
+        name: L("エセクセラ", "Essexella", "埃塞克斯水母"),
+        sci: "Essexella asherae",
+        group: L("刺胞動物（クラゲ）", "Cnidarian (jellyfish)", "刺胞动物（水母）"),
+        len_cm: 12.0, t0: 310.0, t1: 306.0, hab: SHALLOW | TIDAL, regions: &[Site(S_MAZON)],
+        beh: Beh::Drift, art: Art::Jelly, col: [0.80, 0.86, 0.90], col2: [0.62, 0.72, 0.80], rarity: 3.0, shy: 0.0, speed: 0.03,
+        desc: L("ふちから幕のようなスカートを垂らしたクラゲ。三角州の入り江にたくさんいた。", "A jellyfish with a curtain-like skirt hanging from its rim, abundant in the delta's bays.", "伞缘垂下帘幕般裙边的水母，在三角洲海湾中数量很多。"),
+        fact: L("メゾンクリークで最も多く見つかる化石。", "It is the most common fossil at Mazon Creek.", "是梅森溪发现最多的化石。"),
+    },
+    Species {
+        slug: "lyginopteris",
+        name: L("リギノプテリス（種子シダ）", "Lyginopteris (seed fern)", "皱羊齿"),
+        sci: "Lyginopteris",
+        group: L("種子シダ類", "Seed fern", "种子蕨类"),
+        len_cm: 500.0, t0: 330.0, t1: 310.0, hab: LAND, regions: &[Tropics],
+        beh: Beh::Sessile, art: Art::Plant(6), col: [0.40, 0.32, 0.24], col2: [0.34, 0.52, 0.26], rarity: 3.0, shy: 0.0, speed: 0.0,
+        desc: L("ほかの木によりかかってのびる、つる性の種子シダ。シダのような葉に種をつけた。", "A scrambling seed fern that leaned on other trees, bearing seeds on fern-like fronds.", "倚靠其他树木攀援生长的种子蕨，在蕨状叶上结种子。"),
+        fact: L("「シダなのに種がある」ことがわかった、記念すべき植物。", "It was the plant that showed some 'ferns' actually made seeds.", "是证明某些“蕨类”其实会结种子的里程碑式植物。"),
+    },
+    // ---- ペルム紀
+    Species {
+        slug: "ophiacodon",
+        name: L("オフィアコドン", "Ophiacodon", "蛇齿龙"),
+        sci: "Ophiacodon",
+        group: L("単弓類（盤竜類）", "Synapsid (pelycosaur)", "合弓纲（盘龙类）"),
+        len_cm: 250.0, t0: 300.0, t1: 280.0, hab: TIDAL | LAND, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(5), col: [0.46, 0.40, 0.32], col2: [0.66, 0.58, 0.44], rarity: 1.5, shy: 1.8, speed: 0.1,
+        desc: L("長い頭を持つ、水辺の大型の単弓類。魚などを捕らえて食べたらしい。", "A large waterside synapsid with a long head that probably caught fish.", "头部很长的水边大型合弓纲动物，可能捕鱼为食。"),
+        fact: L("ディメトロドンより前に栄えた、帆のない仲間。", "A sail-less relative that flourished before Dimetrodon.", "是比异齿龙更早繁盛、没有背帆的亲戚。"),
+    },
+    Species {
+        slug: "cacops",
+        name: L("カコプス", "Cacops", "蛙螈"),
+        sci: "Cacops aspidephorus",
+        group: L("両生類（分椎類）", "Amphibian (temnospondyl)", "两栖类（离片椎类）"),
+        len_cm: 40.0, t0: 280.0, t1: 275.0, hab: LAND, regions: &[Site(S_TEXAS), Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(3), col: [0.50, 0.40, 0.30], col2: [0.68, 0.56, 0.40], rarity: 2.0, shy: 1.2, speed: 0.1,
+        desc: L("背中に骨の板が並んだ、がっしりした両生類。乾いた陸でも暮らせた。", "A sturdy amphibian with a row of bony plates along its back, able to live on dry land.", "背部排列着骨板的粗壮两栖动物，能在干燥的陆地上生活。"),
+        fact: L("大きな耳の膜で、夜に音を聞いて獲物を探したのかもしれない。", "Its large eardrum may have helped it hunt by sound at night.", "大鼓膜或许能帮它在夜间凭声音寻找猎物。"),
+    },
+    Species {
+        slug: "varanops",
+        name: L("ヴァラノプス", "Varanops", "巨蜥龙"),
+        sci: "Varanops brevirostris",
+        group: L("単弓類（盤竜類）", "Synapsid (pelycosaur)", "合弓纲（盘龙类）"),
+        len_cm: 120.0, t0: 279.0, t1: 272.0, hab: LAND, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(2), col: [0.52, 0.42, 0.32], col2: [0.72, 0.60, 0.44], rarity: 1.8, shy: 1.6, speed: 0.16,
+        desc: L("オオトカゲに似た、すばしこい肉食の単弓類。", "A quick, meat-eating synapsid shaped like a monitor lizard.", "外形似巨蜥、行动敏捷的肉食性合弓纲动物。"),
+        fact: L("ほかの動物にかじられた跡のある化石があり、食べ合いのようすがわかる。", "A fossil with bite marks from scavengers shows who ate whom.", "有带被啃咬痕迹的化石，可以看出动物间的捕食关系。"),
+    },
+    Species {
+        slug: "estemmenosuchus",
+        name: L("エステメノスクス", "Estemmenosuchus", "冠鳄兽"),
+        sci: "Estemmenosuchus uralensis",
+        group: L("単弓類（恐頭類）", "Synapsid (dinocephalian)", "合弓纲（恐头兽类）"),
+        len_cm: 300.0, t0: 267.0, t1: 264.0, hab: LAND, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(9), col: [0.56, 0.46, 0.36], col2: [0.42, 0.34, 0.26], rarity: 1.5, shy: 1.5, speed: 0.08,
+        desc: L("頭に角のような大きなこぶがいくつもついた、大型の単弓類。", "A big synapsid with several large horn-like bosses on its head.", "头上长着数个角状大瘤的大型合弓纲动物。"),
+        fact: L("名前は「冠をかぶったワニ」という意味。", "Its name means 'crowned crocodile'.", "名字意为“戴冠的鳄鱼”。"),
+    },
+    Species {
+        slug: "titanophoneus",
+        name: L("ティタノフォネウス", "Titanophoneus", "巨型兽"),
+        sci: "Titanophoneus potens",
+        group: L("単弓類（恐頭類）", "Synapsid (dinocephalian)", "合弓纲（恐头兽类）"),
+        len_cm: 250.0, t0: 266.0, t1: 262.0, hab: LAND, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(8), col: [0.50, 0.42, 0.32], col2: [0.78, 0.70, 0.56], rarity: 1.2, shy: 2.0, speed: 0.16,
+        desc: L("長い犬歯を持つ、ペルム紀中ごろの大型の捕食者。", "A large predator of the Middle Permian with long canine teeth.", "长着长犬齿的中二叠世大型捕食者。"),
+        fact: L("名前は「巨大な殺し屋」という意味。", "Its name means 'titanic murderer'.", "名字意为“巨大的杀手”。"),
+    },
+    Species {
+        slug: "coelurosauravus",
+        name: L("コエルロサウラヴス", "Coelurosauravus", "空尾蜥"),
+        sci: "Coelurosauravus",
+        group: L("爬虫類（滑空する爬虫類）", "Gliding reptile", "爬行动物（滑翔爬行动物）"),
+        len_cm: 40.0, t0: 260.0, t1: 255.0, hab: LAND, regions: &[Plate(GONDWANA), Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(2), col: [0.48, 0.42, 0.32], col2: [0.80, 0.66, 0.46], rarity: 2.0, shy: 1.5, speed: 0.18,
+        desc: L("体の横に広げられる膜の翼を持ち、木から木へ滑空した爬虫類。", "A reptile with membrane wings it could spread from its sides to glide between trees.", "身体两侧能展开膜翼、在树间滑翔的爬行动物。"),
+        fact: L("空を飛んだ（滑空した）、最古の背骨のある動物。", "The oldest known vertebrate that could glide through the air.", "是已知最早能在空中滑翔的脊椎动物。"),
+    },
+    Species {
+        slug: "prionosuchus",
+        name: L("プリオノスクス", "Prionosuchus", "锯齿螈"),
+        sci: "Prionosuchus plummeri",
+        group: L("両生類（分椎類）", "Amphibian (temnospondyl)", "两栖类（离片椎类）"),
+        len_cm: 550.0, t0: 272.0, t1: 268.0, hab: TIDAL | SHALLOW, regions: &[Plate(GONDWANA)],
+        beh: Beh::Swim, art: Art::Tetrapod(7), col: [0.42, 0.42, 0.34], col2: [0.62, 0.60, 0.46], rarity: 0.8, shy: 2.5, speed: 0.35,
+        desc: L("ワニのような細長いあごを持つ、最大級の両生類。川や湖で魚を捕らえた。", "One of the largest amphibians ever, with long crocodile-like jaws for catching fish in rivers and lakes.", "长着鳄鱼般细长颌部、史上最大的两栖动物之一，在河湖中捕鱼。"),
+        fact: L("ブラジルで見つかり、長さは5m以上と考えられている。", "Found in Brazil, it may have been over 5 m long.", "发现于巴西，体长估计超过5米。"),
+    },
+    Species {
+        slug: "dorypterus",
+        name: L("ドリプテルス", "Dorypterus", "矛鳍鱼"),
+        sci: "Dorypterus hoffmanni",
+        group: L("条鰭類（硬骨魚）", "Ray-finned fish", "辐鳍鱼类"),
+        len_cm: 15.0, t0: 259.0, t1: 256.0, hab: SHALLOW, regions: &[Plate(BALTICA)],
+        beh: Beh::Swim, art: Art::RayFin, col: [0.50, 0.48, 0.42], col2: [0.80, 0.74, 0.58], rarity: 2.5, shy: 1.2, speed: 0.4,
+        desc: L("背中に旗のような長いひれを持つ、体高の高い変わった魚。", "An odd, deep-bodied fish with a long, flag-like fin on its back.", "身体高耸、背上长着旗状长鳍的奇特鱼类。"),
+        fact: L("いまのマンボウのような形の魚が、ペルム紀にもいた。", "Strangely shaped fish like this lived in the Permian, too.", "二叠纪也有这样形状奇特的鱼。"),
+    },
+    Species {
+        slug: "meganeuropsis",
+        name: L("メガネウロプシス", "Meganeuropsis", "二叠拟巨脉蜓"),
+        sci: "Meganeuropsis permiana",
+        group: L("昆虫（オオトンボ類）", "Insect (griffinfly)", "昆虫（原蜻蜓类）"),
+        len_cm: 43.0, t0: 280.0, t1: 272.0, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Swim, art: Art::Griffinfly, col: [0.30, 0.34, 0.30], col2: [0.82, 0.86, 0.90], rarity: 1.2, shy: 2.0, speed: 0.8,
+        desc: L("はねを広げると71cm。知られている中で最大の昆虫。", "With a 71 cm wingspan, the largest insect known.", "翼展71厘米，是已知最大的昆虫。"),
+        fact: L("メガネウラよりもわずかに大きかった。", "It was slightly bigger than Meganeura.", "比巨脉蜻蜓还要稍大一些。"),
+    },
+    Species {
+        slug: "euchambersia",
+        name: L("エウチャンベルシア", "Euchambersia", "真钱伯斯兽"),
+        sci: "Euchambersia mirabilis",
+        group: L("単弓類（獣頭類）", "Synapsid (therocephalian)", "合弓纲（兽头类）"),
+        len_cm: 40.0, t0: 259.0, t1: 255.0, hab: LAND, regions: &[Site(S_KAROO), Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(8), col: [0.54, 0.44, 0.34], col2: [0.78, 0.70, 0.56], rarity: 1.5, shy: 1.5, speed: 0.14,
+        desc: L("顔のくぼみと溝のある牙から、毒を持っていたかもしれないと考えられる小型の捕食者。", "A small predator whose grooved fangs and facial pit suggest it may have been venomous.", "从脸部凹陷和带沟的獠牙推测，可能有毒的小型捕食者。"),
+        fact: L("毒を持っていたとすれば、最古の毒を持つ単弓類になる。", "If venomous, it would be the oldest venomous synapsid.", "如果确实有毒，它将是最古老的有毒合弓纲动物。"),
+    },
+    Species {
+        slug: "voltzia",
+        name: L("ボルチア", "Voltzia", "伏脂杉"),
+        sci: "Voltzia",
+        group: L("針葉樹", "Conifer", "针叶树"),
+        len_cm: 1000.0, t0: 260.0, t1: 252.0, hab: LAND, regions: &[Plate(BALTICA), Plate(LAURENTIA)],
+        beh: Beh::Sessile, art: Art::Plant(8), col: [0.36, 0.30, 0.24], col2: [0.24, 0.40, 0.22], rarity: 2.5, shy: 0.0, speed: 0.0,
+        desc: L("乾いた土地に育った、ペルム紀の終わりの針葉樹。", "A conifer of the latest Permian that grew on dry land.", "生长在干燥土地上的二叠纪末针叶树。"),
+        fact: L("大絶滅を生きのび、三畳紀にも森をつくった。", "It survived the great extinction and formed forests in the Triassic too.", "在大灭绝中幸存，三叠纪也形成了森林。"),
+    },
 ];
 
 /// 陸に降りて撮る景色の種類
@@ -3251,6 +3840,83 @@ pub fn phenom_where_when(i: usize, earth: &Earth, now: f32, near: (f32, f32)) ->
     }
 }
 
+/// レーダー：その時代に、図鑑の項目（生きもの・現象）に会える場所（経緯度）の一覧。
+/// 地球全体を3度ごとに調べ、産地のあるものは産地のまわりを細かく調べる。その時代にいなければ空
+pub fn radar_spots(e: usize, earth: &Earth, t: f32) -> Vec<(f32, f32)> {
+    let ns = SPECIES.len();
+    let mut out = Vec::new();
+    let mut fine: Vec<(f32, f32)> = Vec::new();
+    if e < ns {
+        let sp = &SPECIES[e];
+        if !sp.alive_at(t) {
+            return out;
+        }
+        for r in sp.regions {
+            if let Region::Site(s) = *r {
+                if t <= SITES[s].t0 + 0.5 && t >= SITES[s].t1 - 0.5 {
+                    fine.push(earth.site_lonlat(s, t));
+                }
+            }
+        }
+    } else {
+        let ph = &PHENOMS[e - ns];
+        if !ph.at(t) {
+            return out;
+        }
+        if let PhKind::Eruption(i) = ph.kind {
+            out.push(earth.site_lonlat(ERUPTIONS[i].site, t));
+            return out;
+        }
+    }
+    let ok = |lon: f32, lat: f32| -> bool {
+        let spot = earth.sample(lon, lat, t);
+        if e < ns {
+            return lives_here(&SPECIES[e], earth, &spot, t);
+        }
+        match PHENOMS[e - ns].kind {
+            PhKind::Scenery(k) => scenery_at(&spot, t) == Some(k),
+            PhKind::Continent(plates) => spot.hab == Habitat::Land && spot.plate.map_or(false, |p| plates.contains(&p)),
+            PhKind::Eruption(_) => false,
+        }
+    };
+    let mut lat = -88.5;
+    while lat < 89.0 {
+        let mut lon = -178.5;
+        while lon < 180.0 {
+            if ok(lon, lat) {
+                out.push((lon, lat));
+            }
+            lon += 3.0;
+        }
+        lat += 3.0;
+    }
+    // 産地のまわりは細かく（干潟や小さな入り江も見のがさない）
+    for (cx, cy) in fine {
+        let mut dy = -6.0;
+        while dy <= 6.0 {
+            let mut dx = -6.0;
+            while dx <= 6.0 {
+                let (lon, lat) = (cx + dx, cy + dy);
+                if lat.abs() < 89.5 && ok(lon, lat) && !out.iter().any(|q| (q.0 - lon).abs() < 1.4 && (q.1 - lat).abs() < 1.4) {
+                    out.push((lon, lat));
+                }
+                dx += 1.0;
+            }
+            dy += 1.0;
+        }
+    }
+    out
+}
+
+/// 図鑑の項目がいた時代（百万年前、古い方から）
+pub fn entry_span(e: usize) -> (f32, f32) {
+    if e < SPECIES.len() {
+        (SPECIES[e].t0, SPECIES[e].t1)
+    } else {
+        (PHENOMS[e - SPECIES.len()].t0, PHENOMS[e - SPECIES.len()].t1)
+    }
+}
+
 /// 図鑑の項目が載る巻（紀）。現れてから少しのあいだ（最大1000万年）の真ん中の時代で決める
 pub fn entry_period(e: usize) -> usize {
     let (t0, t1) = if e < SPECIES.len() { (SPECIES[e].t0, SPECIES[e].t1) } else { (PHENOMS[e - SPECIES.len()].t0, PHENOMS[e - SPECIES.len()].t1) };
@@ -3284,6 +3950,25 @@ mod tests {
                 let (t, (lon, lat)) = where_when(i, &e, now, (40.0, 5.0));
                 let spot = e.sample(lon, lat, t);
                 assert!(lives_here(sp, &e, &spot, t), "{} not found at {:.1},{:.1} t={} ({:?}) now={}", sp.name.1, lon, lat, t, spot.hab, now);
+            }
+        }
+    }
+
+    /// レーダーは、会いに行く時代にはかならず場所を示す。いない時代には何も示さない
+    #[test]
+    fn radar_finds_every_entry() {
+        let e = Earth::new();
+        for i in 0..n_entries() {
+            let (t, _) = if i < SPECIES.len() { where_when(i, &e, 535.0, (40.0, 5.0)) } else { phenom_where_when(i - SPECIES.len(), &e, 535.0, (40.0, 5.0)) };
+            let spots = radar_spots(i, &e, t);
+            assert!(!spots.is_empty(), "{} at t={}", entry_slug(i), t);
+            if i < SPECIES.len() {
+                let (lon, lat) = spots[0];
+                assert!(lives_here(&SPECIES[i], &e, &e.sample(lon, lat, t), t), "{}", entry_slug(i));
+            }
+            let (t0, _) = entry_span(i);
+            if t0 + 5.0 < T_START {
+                assert!(radar_spots(i, &e, t0 + 5.0).is_empty(), "{}", entry_slug(i));
             }
         }
     }

@@ -48,7 +48,7 @@ def main():
                     checked[kind]+=1
             except Exception as error:
                 invalid.append({'slug':request['slug'],'kind':kind,'error':str(error)})
-    for period in ['Ordovician','Silurian','Devonian','Carboniferous','Permian']:
+    for period in ['Cambrian','Ordovician','Silurian','Devonian','Carboniferous','Permian']:
         for kind in ('artwork','unit'):
             entries=[r for r in requests if r.get('period')==period and kind in r and (ROOT/r[kind]['path']).exists()
                      and (selected is None or r['slug'] in selected)]

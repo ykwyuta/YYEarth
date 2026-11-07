@@ -17,7 +17,7 @@ pub struct Progress {
     pub stars: Vec<u8>,
     /// まだ図鑑で見ていない新しい項目
     pub fresh: Vec<bool>,
-    /// いまの宿題（これより前はすべて達成）
+    /// 選んでいる宿題（どの順番でも取り組める。合格したかは写真の星から決まる）
     pub mission: usize,
     /// いまの時代（百万年前）
     pub t: f32,
@@ -51,18 +51,44 @@ impl Progress {
         }
     }
 
-    /// 宿題を進める。達成した宿題の番号を返す
-    pub fn advance(&mut self) -> Vec<usize> {
-        let mut done = Vec::new();
-        while self.mission < MISSIONS.len() && mission_done(&MISSIONS[self.mission], &self.stars) {
-            done.push(self.mission);
-            self.mission += 1;
+    /// その宿題に合格しているか（写真の星は減らないので、一度合格すればずっと合格）
+    pub fn is_done(&self, i: usize) -> bool {
+        mission_done(&MISSIONS[i], &self.stars)
+    }
+
+    /// 宿題ごとの合格（写真を撮る前に取っておき、`advance` に渡す）
+    pub fn done_flags(&self) -> Vec<bool> {
+        (0..MISSIONS.len()).map(|i| self.is_done(i)).collect()
+    }
+
+    pub fn done_count(&self) -> usize {
+        (0..MISSIONS.len()).filter(|&i| self.is_done(i)).count()
+    }
+
+    /// 写真のあとで呼ぶ。新しく合格した宿題（どの順番でも）を返す。
+    /// 選んでいた宿題が合格したら、次のまだ合格していない宿題を選ぶ
+    pub fn advance(&mut self, before: &[bool]) -> Vec<usize> {
+        let done: Vec<usize> = (0..MISSIONS.len()).filter(|&i| !before.get(i).copied().unwrap_or(false) && self.is_done(i)).collect();
+        if self.is_done(self.mission) {
+            self.select_next(1);
         }
         done
     }
 
+    /// まだ合格していない宿題を、いまの宿題から d の向き（1 次、-1 前）に探して選ぶ。無ければそのまま
+    pub fn select_next(&mut self, d: i32) {
+        let n = MISSIONS.len() as i32;
+        for k in 1..=n {
+            let i = (self.mission as i32 + d.signum() * k).rem_euclid(n) as usize;
+            if !self.is_done(i) {
+                self.mission = i;
+                return;
+            }
+        }
+    }
+
     pub fn all_clear(&self) -> bool {
-        self.mission >= MISSIONS.len()
+        self.done_count() >= MISSIONS.len()
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
@@ -111,13 +137,17 @@ impl Progress {
                 p.fresh[j] = f;
             }
         }
-        p.mission = r.usize()?.min(MISSIONS.len());
+        // 前の版では「ここまで合格」の番号だった。合格済みなら、次のまだ合格していない宿題を選ぶ
+        p.mission = r.usize()?.min(MISSIONS.len() - 1);
         p.t = r.f32()?.clamp(crate::earth::T_END, crate::earth::T_START);
         p.lon = r.f32()?.clamp(-180.0, 180.0);
         p.lat = r.f32()?.clamp(-89.0, 89.0);
         p.photos = r.u32()?;
         p.intro_done = r.bool()?;
         p.light = r.bool()?;
+        if p.is_done(p.mission) {
+            p.select_next(1);
+        }
         if !p.t.is_finite() || !p.lon.is_finite() || !p.lat.is_finite() {
             return Err(t!("記録が壊れている", "The save is damaged", "存档已损坏").into());
         }
@@ -126,7 +156,7 @@ impl Progress {
 
     /// 記録の見出し
     pub fn meta(&self) -> String {
-        let m = if self.all_clear() { t!("全課題クリア", "All clear", "全部完成").to_string() } else { tf!("宿題{}", "Task {}", "作业{}", self.mission + 1) };
+        let m = if self.all_clear() { t!("全課題クリア", "All clear", "全部完成").to_string() } else { tf!("宿題 {}/{}合格", "Tasks {}/{}", "作业 {}/{}合格", self.done_count(), MISSIONS.len()) };
         let era = crate::earth::PERIODS[crate::earth::period_at(self.t)].name.get();
         tf!("{}・{}・図鑑 {}/{}", "{} · {} · Guide {}/{}", "{}·{}·图鉴 {}/{}", era, m, self.found(), n_entries())
     }
@@ -213,11 +243,35 @@ mod tests {
     #[test]
     fn missions_advance() {
         let mut p = Progress::new();
-        assert!(p.advance().is_empty());
+        let before = p.done_flags();
+        assert!(p.advance(&before).is_empty());
         for &(t, n) in MISSIONS[0].targets {
             p.record(t.entry(), n);
         }
-        assert_eq!(p.advance(), vec![0]);
+        assert_eq!(p.advance(&before), vec![0]);
         assert_eq!(p.mission, 1);
+    }
+
+    /// 宿題はどの順番でも合格できる。選んでいない宿題に合格しても、選んでいる宿題はそのまま
+    #[test]
+    fn missions_in_any_order() {
+        let mut p = Progress::new();
+        let last = MISSIONS.len() - 1;
+        let before = p.done_flags();
+        for &(t, n) in MISSIONS[last].targets {
+            p.record(t.entry(), n);
+        }
+        assert_eq!(p.advance(&before), vec![last]);
+        assert_eq!(p.mission, 0);
+        assert!(p.is_done(last) && !p.is_done(0));
+        p.mission = 5;
+        p.select_next(1);
+        assert_eq!(p.mission, 6);
+        p.mission = 0;
+        p.select_next(-1);
+        assert_eq!(p.mission, last - 1);
+        // 記録を読み直しても、合格は星から決まる
+        let q = Progress::from_bytes(&p.to_bytes()).unwrap();
+        assert!(q.is_done(last) && !q.all_clear());
     }
 }
