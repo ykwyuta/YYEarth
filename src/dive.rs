@@ -149,16 +149,9 @@ pub struct ShotResult {
     pub eruption: bool,
 }
 
-pub fn stars_of(score: f32) -> u8 {
-    if score >= 78.0 {
-        3
-    } else if score >= 55.0 {
-        2
-    } else if score >= 30.0 {
-        1
-    } else {
-        0
-    }
+/// 図鑑に収録できる写りか（ある程度の大きさ・位置・明るさで写っている）
+pub fn captured(score: f32) -> bool {
+    score >= 30.0
 }
 
 impl Scene {

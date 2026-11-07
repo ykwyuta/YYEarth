@@ -30,8 +30,8 @@ pub struct Mission {
     pub brief: L,
     /// 達成したときの先生のことば
     pub done: L,
-    /// (撮る対象, 必要な星の数)
-    pub targets: &'static [(Target, u8)],
+    /// 撮る対象
+    pub targets: &'static [Target],
 }
 
 use Target::*;
@@ -86,7 +86,7 @@ pub static MISSIONS: &[Mission] = &[
             "Well done! Not a single blade of grass grows on Cambrian land; nearly all life is in the sea.",
             "做得好！寒武纪的陆地上寸草不生，几乎所有生命都在海里。",
         ),
-        targets: &[(Ph(P_GONDWANA), 1), (Ph(P_BARREN), 1), (Sp(SP_STROMATOLITE), 1)],
+        targets: &[Ph(P_GONDWANA), Ph(P_BARREN), Sp(SP_STROMATOLITE)],
     },
     Mission {
         title: L("カンブリア紀の夜明け", "Dawn of the Cambrian", "寒武纪的黎明"),
@@ -100,7 +100,7 @@ pub static MISSIONS: &[Mission] = &[
             "These burrows are the very marker of the start of the Cambrian.",
             "这些潜穴痕迹正是寒武纪开始的标志。",
         ),
-        targets: &[(Sp(SP_TREPTICHNUS), 1), (Sp(SP_ANABARITES), 1), (Sp(SP_MAT), 1)],
+        targets: &[Sp(SP_TREPTICHNUS), Sp(SP_ANABARITES), Sp(SP_MAT)],
     },
     Mission {
         title: L("古杯類の礁", "The archaeocyath reefs", "古杯类礁"),
@@ -114,7 +114,7 @@ pub static MISSIONS: &[Mission] = &[
             "A splendid reef! But it will vanish when the seas lose their oxygen.",
             "真是壮观的礁啊。但这片礁将因海洋缺氧事件而消失。",
         ),
-        targets: &[(Sp(SP_ARCHAEOCYATH), 2), (Sp(SP_LINGULELLA), 1), (Sp(SP_HALKIERIA), 1)],
+        targets: &[Sp(SP_ARCHAEOCYATH), Sp(SP_LINGULELLA), Sp(SP_HALKIERIA)],
     },
     Mission {
         title: L("澄江の海", "The Chengjiang sea", "澄江之海"),
@@ -128,7 +128,7 @@ pub static MISSIONS: &[Mission] = &[
             "Wonderful! The Chengjiang fossils are a treasure that shows us the Cambrian explosion.",
             "太棒了！澄江化石是揭示寒武纪大爆发的宝藏。",
         ),
-        targets: &[(Sp(SP_HAIKOUICHTHYS), 1), (Sp(SP_FUXIANHUIA), 1), (Sp(SP_ISOXYS), 1), (Sp(SP_HALLUCIGENIA), 1), (Sp(SP_AMPLECTOBELUA), 1)],
+        targets: &[Sp(SP_HAIKOUICHTHYS), Sp(SP_FUXIANHUIA), Sp(SP_ISOXYS), Sp(SP_HALLUCIGENIA), Sp(SP_AMPLECTOBELUA)],
     },
     Mission {
         title: L("北の海 シリウス・パセット", "Sirius Passet in the north", "北方的天狼星帕塞特"),
@@ -142,7 +142,7 @@ pub static MISSIONS: &[Mission] = &[
             "Those strange armed animals are relatives of Anomalocaris, caught in the middle of evolving.",
             "那些长着臂的奇异动物是奇虾的亲戚，正处于演化的中途。",
         ),
-        targets: &[(Ph(P_LAURENTIA), 1), (Sp(SP_KERYGMACHELA), 1), (Sp(SP_TAMISIOCARIS), 1)],
+        targets: &[Ph(P_LAURENTIA), Sp(SP_KERYGMACHELA), Sp(SP_TAMISIOCARIS)],
     },
     Mission {
         title: L("大噴火の時代", "The age of eruptions", "大喷发的时代"),
@@ -156,7 +156,7 @@ pub static MISSIONS: &[Mission] = &[
             "The gases warmed the planet and stole oxygen from the seas. The story of life is bound up with the story of the Earth.",
             "喷发的气体使地球变暖、夺走了海洋中的氧气。生命的历史与地球的事件紧密相连。",
         ),
-        targets: &[(Ph(P_ERUPTION), 1), (Sp(SP_REDLICHIA), 1), (Sp(SP_ANOMALOCARIS), 1)],
+        targets: &[Ph(P_ERUPTION), Sp(SP_REDLICHIA), Sp(SP_ANOMALOCARIS)],
     },
     Mission {
         title: L("バージェス頁岩の海", "The Burgess Shale sea", "伯吉斯页岩之海"),
@@ -170,14 +170,14 @@ pub static MISSIONS: &[Mission] = &[
             "A superb record! Scientists have been amazed by these fossils for more than a century.",
             "出色的观察记录！一百多年来，科学家们一直为这些化石惊叹。",
         ),
-        targets: &[(Sp(SP_MARRELLA), 1), (Sp(SP_OPABINIA), 1), (Sp(SP_WIWAXIA), 1), (Sp(SP_PIKAIA), 1), (Sp(SP_OTTOIA), 1), (Sp(SP_VAUXIA), 1), (Sp(SP_OLENOIDES), 1)],
+        targets: &[Sp(SP_MARRELLA), Sp(SP_OPABINIA), Sp(SP_WIWAXIA), Sp(SP_PIKAIA), Sp(SP_OTTOIA), Sp(SP_VAUXIA), Sp(SP_OLENOIDES)],
     },
     Mission {
         title: L("バージェスのもっと奥へ", "Deeper into the Burgess", "深入伯吉斯"),
         brief: L(
-            "バージェスにはまだまだ仲間がいます。そして最後に、海の王者アノマロカリスを、画面いっぱいに大きく撮影してきてください（★3）。",
-            "There are more Burgess animals to find. Finally, fill the frame with the king of the seas, Anomalocaris (★3).",
-            "伯吉斯还有更多动物。最后，请把海洋霸主奇虾拍得满满一画面（★3）。",
+            "バージェスにはまだまだ仲間がいます。海をただよう不思議なクラゲも探してみてください。",
+            "There are more Burgess animals to find. Look for the strange jellyfish drifting in the water, too.",
+            "伯吉斯还有更多动物。也找找在海中漂浮的奇特水母吧。",
         ),
         done: L(
             "大迫力の写真！ 学校のみんなもびっくりするでしょう。",
@@ -185,13 +185,12 @@ pub static MISSIONS: &[Mission] = &[
             "震撼的照片！学校的同学们一定会大吃一惊。",
         ),
         targets: &[
-            (Sp(SP_AYSHEAIA), 1),
-            (Sp(SP_SIDNEYIA), 1),
-            (Sp(SP_NECTOCARIS), 1),
-            (Sp(SP_LEANCHOILIA), 1),
-            (Sp(SP_CAMBRORASTER), 1),
-            (Sp(SP_JELLY), 1),
-            (Sp(SP_ANOMALOCARIS), 3),
+            Sp(SP_AYSHEAIA),
+            Sp(SP_SIDNEYIA),
+            Sp(SP_NECTOCARIS),
+            Sp(SP_LEANCHOILIA),
+            Sp(SP_CAMBRORASTER),
+            Sp(SP_JELLY),
         ],
     },
     Mission {
@@ -206,7 +205,7 @@ pub static MISSIONS: &[Mission] = &[
             "Observing the deep sea too? You are a real explorer.",
             "连深海都观察到了，真是了不起的探险家。",
         ),
-        targets: &[(Sp(SP_PARADOXIDES), 1), (Sp(SP_RADIOLARIAN), 1), (Sp(SP_GLASS_SPONGE), 1)],
+        targets: &[Sp(SP_PARADOXIDES), Sp(SP_RADIOLARIAN), Sp(SP_GLASS_SPONGE)],
     },
     Mission {
         title: L("カンブリア紀の終わりへ", "Towards the end of the Cambrian", "走向寒武纪的终结"),
@@ -220,13 +219,13 @@ pub static MISSIONS: &[Mission] = &[
             "Every Cambrian assignment passed! Look forward to your next journey, into the Ordovician.",
             "寒武纪的作业全部合格！敬请期待下一段奥陶纪之旅。",
         ),
-        targets: &[(Sp(SP_OLENUS), 1), (Sp(SP_AGNOSTUS), 1), (Sp(SP_CLIMACTICHNITES), 1), (Sp(SP_CONODONT), 1)],
+        targets: &[Sp(SP_OLENUS), Sp(SP_AGNOSTUS), Sp(SP_CLIMACTICHNITES), Sp(SP_CONODONT)],
     },
 ];
 
 /// 宿題を達成したか
-pub fn mission_done(m: &Mission, stars: &[u8]) -> bool {
-    m.targets.iter().all(|&(t, n)| stars.get(t.entry()).copied().unwrap_or(0) >= n)
+pub fn mission_done(m: &Mission, got: &[bool]) -> bool {
+    m.targets.iter().all(|&t| got.get(t.entry()).copied().unwrap_or(false))
 }
 
 #[cfg(test)]

@@ -1,4 +1,4 @@
-//! 進み具合（図鑑の星・宿題・時と場所）と、その記録の読み書き
+//! 進み具合（図鑑の収録・宿題・時と場所）と、その記録の読み書き
 use crate::life::n_entries;
 use crate::mission::{mission_done, MISSIONS};
 use crate::save::{RResult, Reader, Writer};
@@ -8,8 +8,8 @@ const VERSION: u32 = 1;
 
 #[derive(Clone)]
 pub struct Progress {
-    /// 図鑑の項目ごとの、いちばんよい写真の星（0 は未収録）
-    pub stars: Vec<u8>,
+    /// 図鑑の項目ごとの、収録済みか
+    pub got: Vec<bool>,
     /// まだ図鑑で見ていない新しい項目
     pub fresh: Vec<bool>,
     /// いまの宿題（これより前はすべて達成）
@@ -25,31 +25,27 @@ pub struct Progress {
 
 impl Progress {
     pub fn new() -> Progress {
-        Progress { stars: vec![0; n_entries()], fresh: vec![false; n_entries()], mission: 0, t: 535.0, lon: 40.0, lat: 5.0, photos: 0, intro_done: false, light: false }
+        Progress { got: vec![false; n_entries()], fresh: vec![false; n_entries()], mission: 0, t: 535.0, lon: 40.0, lat: 5.0, photos: 0, intro_done: false, light: false }
     }
 
     pub fn found(&self) -> usize {
-        self.stars.iter().filter(|&&s| s > 0).count()
+        self.got.iter().filter(|&&g| g).count()
     }
 
-    /// 写真を図鑑に収録する。新しい項目か、星が増えたら true
-    pub fn record(&mut self, entry: usize, stars: u8) -> (bool, bool) {
-        let old = self.stars[entry];
-        if stars > old {
-            self.stars[entry] = stars;
-            if old == 0 {
-                self.fresh[entry] = true;
-            }
-            (old == 0, true)
-        } else {
-            (false, false)
+    /// 写真を図鑑に収録する。新しい項目なら true
+    pub fn record(&mut self, entry: usize) -> bool {
+        if self.got[entry] {
+            return false;
         }
+        self.got[entry] = true;
+        self.fresh[entry] = true;
+        true
     }
 
     /// 宿題を進める。達成した宿題の番号を返す
     pub fn advance(&mut self) -> Vec<usize> {
         let mut done = Vec::new();
-        while self.mission < MISSIONS.len() && mission_done(&MISSIONS[self.mission], &self.stars) {
+        while self.mission < MISSIONS.len() && mission_done(&MISSIONS[self.mission], &self.got) {
             done.push(self.mission);
             self.mission += 1;
         }
@@ -64,9 +60,9 @@ impl Progress {
         let mut w = Writer::new();
         w.bytes(MAGIC);
         w.u32(VERSION);
-        w.usize(self.stars.len());
-        for (i, &s) in self.stars.iter().enumerate() {
-            w.u8(s);
+        w.usize(self.got.len());
+        for (i, &g) in self.got.iter().enumerate() {
+            w.u8(g as u8);
             w.bool(self.fresh[i]);
         }
         w.usize(self.mission);
@@ -91,10 +87,11 @@ impl Progress {
         let mut p = Progress::new();
         let n = r.len(4096)?;
         for i in 0..n {
-            let s = r.u8()?.min(3);
+            // 以前の版の記録は星の数（1〜3）なので、0 でなければ収録済み
+            let g = r.u8()? > 0;
             let f = r.bool()?;
-            if i < p.stars.len() {
-                p.stars[i] = s;
+            if i < p.got.len() {
+                p.got[i] = g;
                 p.fresh[i] = f;
             }
         }
@@ -125,8 +122,9 @@ mod tests {
     #[test]
     fn roundtrip() {
         let mut p = Progress::new();
-        p.record(3, 2);
-        p.record(n_entries() - 1, 1);
+        assert!(p.record(3));
+        assert!(!p.record(3));
+        p.record(n_entries() - 1);
         p.t = 508.0;
         p.lon = -100.5;
         p.lat = 12.25;
@@ -134,7 +132,7 @@ mod tests {
         p.intro_done = true;
         let b = p.to_bytes();
         let q = Progress::from_bytes(&b).unwrap();
-        assert_eq!(q.stars, p.stars);
+        assert_eq!(q.got, p.got);
         assert_eq!(q.fresh, p.fresh);
         assert_eq!(q.t, 508.0);
         assert_eq!(q.lon, -100.5);
@@ -148,8 +146,8 @@ mod tests {
     fn missions_advance() {
         let mut p = Progress::new();
         assert!(p.advance().is_empty());
-        for &(t, n) in MISSIONS[0].targets {
-            p.record(t.entry(), n);
+        for &t in MISSIONS[0].targets {
+            p.record(t.entry());
         }
         assert_eq!(p.advance(), vec![0]);
         assert_eq!(p.mission, 1);

@@ -1,7 +1,7 @@
 //! 画面と操作：タイトル、地図（上空）、観察（潜る・降りる）、図鑑、宿題、記録（両方の版で共通）
 //!
 //! 地図は正距円筒図法の地球。カプセルを動かして場所を選び、下の年表で時代を選ぶ（時間旅行）。
-//! 観察の場面では生きものを撮影し、写りのよさ（★1〜3）とともに図鑑に収録する。
+//! 観察の場面では生きものを撮影し、よく写っていれば図鑑に収録する。
 
 use crate::art;
 use crate::dive::*;
@@ -108,8 +108,8 @@ struct Travel {
 }
 
 struct PhotoCard {
-    /// (図鑑の項目, 星, 新しい, 星が増えた)
-    lines: Vec<(usize, u8, bool, bool)>,
+    /// (図鑑の項目, 新しく収録した)
+    lines: Vec<(usize, bool)>,
     /// 写りが悪かったときの助言
     advice: Option<&'static str>,
     left: f32,
@@ -172,13 +172,6 @@ fn mix4(a: [f32; 4], b: [f32; 4], t: f32) -> [f32; 4] {
     [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t, a[3] + (b[3] - a[3]) * t]
 }
 
-fn stars_text(n: u8) -> String {
-    let mut s = String::new();
-    for i in 0..3 {
-        s.push(if i < n { '★' } else { '☆' });
-    }
-    s
-}
 
 fn ease(t: f32) -> f32 {
     let t = t.clamp(0.0, 1.0);
@@ -1108,7 +1101,7 @@ impl Game {
             }
             Screen::Map => {
                 found = self.map_shoot();
-                if found.iter().all(|f| stars_of(f.1) == 0) {
+                if !found.iter().any(|f| captured(f.1)) {
                     advice = Some(t!(
                         "上空からは大陸の全体や大噴火が撮れる。生きものは潜って（Enter）撮ろう",
                         "From the sky you can shoot whole continents or eruptions. Dive (Enter) to photograph life.",
@@ -1122,13 +1115,13 @@ impl Game {
         self.prog.photos += 1;
         let mut lines = Vec::new();
         for (e, score) in found {
-            let st = stars_of(score);
-            if st == 0 {
+            if !captured(score) {
                 continue;
             }
-            let (new, better) = self.prog.record(e, st);
-            lines.push((e, st, new, better));
+            let new = self.prog.record(e);
+            lines.push((e, new));
         }
+        // 新しく収録したものを先に
         lines.sort_by(|a, b| b.1.cmp(&a.1));
         lines.truncate(6);
         if lines.is_empty() && advice.is_none() {
@@ -1590,7 +1583,7 @@ impl Game {
         }
         let mi = self.prog.mission;
         let m = &MISSIONS[mi];
-        let done_n = m.targets.iter().filter(|&&(t, n)| self.prog.stars[t.entry()] >= n).count();
+        let done_n = m.targets.iter().filter(|&&t| self.prog.got[t.entry()]).count();
         let head = tf!("宿題{} {}（{}/{}）", "Task {} {} ({}/{})", "作业{} {}（{}/{}）", mi + 1, m.title.get(), done_n, m.targets.len());
         self.gfx.text(&head, x0 + 12.0, y0 + 8.0, x1 - x0 - 50.0, 20.0, Font::Normal, ACCENT);
         let open = self.mission_open;
@@ -1601,14 +1594,12 @@ impl Game {
         let rh = if self.compact() { 26.0 } else { 28.0 };
         let mut y = y0 + 38.0;
         let present: Vec<usize> = self.scene.as_ref().map(|s| s.present.clone()).unwrap_or_default();
-        for &(tg, need) in m.targets {
-            let have = self.prog.stars[tg.entry()];
-            let ok = have >= need;
+        for &tg in m.targets {
+            let ok = self.prog.got[tg.entry()];
             let mark = if ok { "✔" } else { "○" };
             let here = matches!(tg, Target::Sp(i) if present.contains(&i)) && !ok;
             let col = if ok { GOOD } else if here { GOLD } else { TEXT };
-            let need_s = if need > 1 { format!(" {}", stars_text(need)) } else { String::new() };
-            let label = format!("{} {}{}", mark, tg.name(), need_s);
+            let label = format!("{} {}", mark, tg.name());
             self.gfx.text(&label, x0 + 12.0, y + 3.0, x1 - x0 - 90.0, 20.0, Font::Normal, col);
             if here {
                 self.gfx.text(t!("ここにいる！", "Here!", "就在这里！"), x1 - 120.0, y + 4.0, 70.0, 18.0, Font::Small, GOLD);
@@ -1629,15 +1620,15 @@ impl Game {
         let depth_s = sc.depth_text(sc.cap.y);
         let hab = sc.hab;
         let present = sc.present.clone();
-        let have = present.iter().filter(|&&i| self.prog.stars[i] > 0).count();
+        let have = present.iter().filter(|&&i| self.prog.got[i]).count();
         // 宿題の対象が画面の外にいれば、端に印を出す
         let v = self.dive_view();
         let mut marks: Vec<(f32, f32)> = Vec::new();
         if !self.prog.all_clear() {
             let m = &MISSIONS[self.prog.mission];
-            for &(tg, need) in m.targets {
+            for &tg in m.targets {
                 if let Target::Sp(i) = tg {
-                    if self.prog.stars[i] >= need {
+                    if self.prog.got[i] {
                         continue;
                     }
                     let mut best: Option<(f32, f32, f32)> = None;
@@ -1788,7 +1779,7 @@ impl Game {
             if cy0 + ch < y0 - 4.0 || cy0 > y1 {
                 continue;
             }
-            let found = self.prog.stars[e] > 0;
+            let found = self.prog.got[e];
             let hover = self.mouse.0 >= cx0 && self.mouse.0 <= cx0 + cw && self.mouse.1 >= cy0 && self.mouse.1 <= cy0 + ch && !self.touch;
             let bg = if found { [0.10, 0.26, 0.34, 1.0] } else { [0.06, 0.12, 0.17, 1.0] };
             let bg = if hover { mix4(bg, [0.3, 0.5, 0.55, 1.0], 0.3) } else { bg };
@@ -1877,15 +1868,12 @@ impl Game {
             if cy0 + ch < y0 || cy0 > y1 - 10.0 {
                 continue;
             }
-            let st = self.prog.stars[e];
-            let name = if st > 0 { entry_name(e).to_string() } else { "？？？".to_string() };
+            let got = self.prog.got[e];
+            let name = if got { entry_name(e).to_string() } else { "？？？".to_string() };
             let vis_y0 = cy0.max(y0);
             let vis_y1 = (cy0 + ch).min(y1);
             if cy0 + ch - 26.0 >= y0 && cy0 + ch <= y1 + 1.0 {
-                self.gfx.text(&name, cx0 + 4.0, cy0 + ch - 26.0, cw - 8.0, 16.0, Font::NormalCenter, if st > 0 { TEXT } else { DIM });
-                if st > 0 {
-                    self.gfx.text(&stars_text(st), cx0 + 4.0, cy0 + ch - 12.0, cw - 8.0, 12.0, Font::NormalCenter, GOLD);
-                }
+                self.gfx.text(&name, cx0 + 4.0, cy0 + ch - 22.0, cw - 8.0, 16.0, Font::NormalCenter, if got { TEXT } else { DIM });
             }
             if self.prog.fresh[e] && cy0 >= y0 {
                 self.gfx.fill_round(cx0 + 4.0, cy0 + 4.0, cx0 + 46.0, cy0 + 20.0, 6.0, ACCENT);
@@ -1932,7 +1920,7 @@ impl Game {
                 self.gfx.rect_vgrad(ax0, gy, ax1, ay1, [0.56, 0.52, 0.44, 1.0], [0.30, 0.28, 0.26, 1.0]);
             }
         }
-        let found = self.prog.stars[e] > 0;
+        let found = self.prog.got[e];
         let pad = 20.0;
         let (bx0, by0, bx1, by1) = if e < ns && matches!(SPECIES[e].beh, Beh::Sessile | Beh::Burrow | Beh::Crawl | Beh::FlatCrawl) {
             let gy = ay1 - (ay1 - ay0) * 0.22;
@@ -1948,8 +1936,7 @@ impl Game {
         let w = self.w();
         let (_x0, y0, x1, y1, split) = self.entry_layout();
         let ns = n_species();
-        let st = self.prog.stars[e];
-        let found = st > 0;
+        let found = self.prog.got[e];
         let top = self.top_h();
         self.gfx.text(&tf!("図鑑 No.{:02}", "Guide No.{:02}", "图鉴 No.{:02}", e + 1), 24.0, top + 14.0, 300.0, 24.0, Font::Big, DIM);
         self.add_button(w - 120.0, top + 10.0, w - 20.0, top + 44.0, t!("一覧へ", "Back", "返回"), Act::Close, true, false);
@@ -1966,9 +1953,7 @@ impl Game {
             y += 40.0;
             if found {
                 self.gfx.text(&format!("{}　/　{}", sp.sci, sp.group.get()), tx, y, tw, 20.0, Font::Normal, DIM);
-                y += 26.0;
-                self.gfx.text(&tf!("写真 {}", "Photo {}", "照片 {}", stars_text(st)), tx, y, tw, 22.0, Font::Big, GOLD);
-                y += 30.0;
+                y += 32.0;
             }
             let rows: Vec<(&str, String)> = vec![
                 (t!("時代", "When", "时代"), span_text(sp.t0, sp.t1)),
@@ -2007,8 +1992,6 @@ impl Game {
             self.gfx.text(if found { ph.name.get() } else { "？？？" }, tx, y, tw, 34.0, Font::TitleMid, TEXT);
             y += 40.0;
             if found {
-                self.gfx.text(&tf!("写真 {}", "Photo {}", "照片 {}", stars_text(st)), tx, y, tw, 22.0, Font::Big, GOLD);
-                y += 30.0;
                 let d = ph.desc.get();
                 let hh = self.gfx.measure_h(d, Font::Normal, tw);
                 self.gfx.text(d, tx, y, tw, hh, Font::Normal, TEXT);
@@ -2041,10 +2024,9 @@ impl Game {
             let hh = self.gfx.measure_h(&b, Font::Normal, pw - 40.0);
             self.gfx.text(&b, x0 + 20.0, y, pw - 40.0, hh, Font::Normal, TEXT);
             y += hh + 10.0;
-            for &(tg, need) in m.targets {
-                let have = self.prog.stars[tg.entry()];
-                let ok = have >= need;
-                let s = format!("{} {}　{}", if ok { "✔" } else { "○" }, tg.name(), if need > 1 { tf!("（{}以上）", "({} or better)", "（{}以上）", stars_text(need)) } else { String::new() });
+            for &tg in m.targets {
+                let ok = self.prog.got[tg.entry()];
+                let s = format!("{} {}", if ok { "✔" } else { "○" }, tg.name());
                 self.gfx.text(&s, x0 + 32.0, y + 4.0, pw - 200.0, 20.0, Font::Normal, if ok { GOOD } else { TEXT });
                 if !ok {
                     self.add_button(x0 + pw - 140.0, y, x0 + pw - 24.0, y + 28.0, t!("行く", "Go", "前往"), Act::Goto(tg), true, false);
@@ -2096,7 +2078,7 @@ impl Game {
                 (t!("時代", "Time", "时代"), t!("下の年表をクリック、または ,（読点）と .（句点）キーで期を移る", "Click the timeline, or use , and . to change stage", "点击下方年表，或用 , 和 . 键切换期")),
                 (t!("潜る", "Dive", "下潜"), t!("Enter：その場所の海に潜る（陸・干潟なら降りる）", "Enter: dive into the sea here (or land)", "Enter：潜入该处的海洋（陆地·潮坪则降落）")),
                 (t!("観察", "Observe", "观察"), t!("WASD・矢印・マウスを押した方へ進む／Shift で加速／ホイール・Q/E でズーム／L でライト", "WASD, arrows or hold the mouse to move / Shift to boost / wheel or Q,E to zoom / L for light", "WASD·方向键·按住鼠标前进／Shift加速／滚轮·Q/E变焦／L开灯")),
-                (t!("撮影", "Photo", "拍摄"), t!("Space（または右クリック）：大きく・真ん中に・明るく写すほど星が増える", "Space (or right-click): bigger, centred and brighter shots earn more stars", "Space（或右键）：拍得越大、越居中、越明亮，星越多")),
+                (t!("撮影", "Photo", "拍摄"), t!("Space（または右クリック）：ある程度大きく・真ん中に・明るく写すと図鑑に収録できる", "Space (or right-click): a reasonably big, centred and bright shot goes into the guide", "Space（或右键）：拍得够大、居中、明亮，就能收录进图鉴")),
                 (t!("画面", "Screens", "画面"), t!("F1 宿題　F2 図鑑　F3 この説明　Esc 浮上・閉じる　Ctrl＋＋/－ 文字の大きさ　F11 全画面", "F1 tasks  F2 guide  F3 help  Esc surface/close  Ctrl +/- text size  F11 fullscreen", "F1 作业　F2 图鉴　F3 说明　Esc 上浮·关闭　Ctrl＋＋/－ 字号　F11 全屏")),
             ]
         };
@@ -2176,9 +2158,9 @@ impl Game {
                 "用地图下方的年表选择时代，在地图上选择地点。大陆在缓慢移动，所以不同时代的形状和位置都会变化。按“下潜”进入海中，按快门拍照。",
             ),
             L(
-                "生きものは、大きく・真ん中に・明るく撮るほど★が増えます。右上の宿題のカードの「行く」を押せば、カプセルが目的の時代と場所へ向かいます。では、いってらっしゃい！",
-                "The bigger, more centred and brighter your shot, the more ★ you earn. Press 'Go' on the task card at the top right and the capsule heads to the right time and place. Off you go!",
-                "生物拍得越大、越居中、越明亮，★就越多。点击右上角作业卡上的“前往”，观测舱就会驶向目标时代和地点。出发吧！",
+                "生きものは、大きく・真ん中に・明るく撮れば図鑑に収録されます。右上の宿題のカードの「行く」を押せば、カプセルが目的の時代と場所へ向かいます。では、いってらっしゃい！",
+                "A big, centred, bright shot goes straight into your guide. Press 'Go' on the task card at the top right and the capsule heads to the right time and place. Off you go!",
+                "生物拍得够大、居中、明亮，就会收录进图鉴。点击右上角作业卡上的“前往”，观测舱就会驶向目标时代和地点。出发吧！",
             ),
         ];
         let text = pages[(n as usize).min(3)].get();
@@ -2211,17 +2193,16 @@ impl Game {
         // ポラロイド風の白い枠
         self.gfx.fill_round(x0 - 6.0, y0 - 6.0, x0 + pw + 6.0, y0 + ph + 6.0, 8.0, [0.96, 0.95, 0.90, 0.97]);
         self.gfx.fill_round(x0 + 6.0, y0 + 6.0, x0 + pw - 6.0, y0 + ph - 6.0, 6.0, [0.06, 0.14, 0.20, 1.0]);
-        let head = if lines.iter().any(|l| l.2) { t!("撮影成功！ 図鑑に収録", "Got it! Added to the guide", "拍摄成功！已收录图鉴") } else if !lines.is_empty() { t!("撮影した！", "Snap!", "拍到了！") } else { t!("うまく撮れなかった…", "Not a good shot…", "没拍好……") };
+        let head = if lines.iter().any(|l| l.1) { t!("撮影成功！ 図鑑に収録", "Got it! Added to the guide", "拍摄成功！已收录图鉴") } else if !lines.is_empty() { t!("撮影した！", "Snap!", "拍到了！") } else { t!("うまく撮れなかった…", "Not a good shot…", "没拍好……") };
         self.gfx.text(head, x0 + 16.0, y0 + 16.0, pw - 32.0, 26.0, Font::Big, TEXT);
         let mut y = y0 + 52.0;
-        for (e, st, new, better) in lines {
-            self.gfx.text(entry_name(e), x0 + 18.0, y, pw - 150.0, 22.0, Font::Normal, TEXT);
-            self.gfx.text(&stars_text(st), x0 + pw - 140.0, y, 60.0, 22.0, Font::Normal, GOLD);
+        for (e, new) in lines {
+            self.gfx.text(entry_name(e), x0 + 18.0, y, pw - 110.0, 22.0, Font::Normal, TEXT);
             if new {
                 self.gfx.fill_round(x0 + pw - 72.0, y + 1.0, x0 + pw - 18.0, y + 19.0, 6.0, ACCENT);
                 self.gfx.text("NEW", x0 + pw - 72.0, y + 1.0, 54.0, 18.0, Font::NormalCenter, [0.1, 0.05, 0.0, 1.0]);
-            } else if better {
-                self.gfx.text(t!("★更新", "★ up", "★提升"), x0 + pw - 72.0, y + 1.0, 60.0, 18.0, Font::Small, GOOD);
+            } else {
+                self.gfx.text(t!("収録済み", "Logged", "已收录"), x0 + pw - 90.0, y + 2.0, 76.0, 18.0, Font::Small, GOOD);
             }
             y += 30.0;
         }
@@ -2315,7 +2296,7 @@ mod tests {
         g.goto(Target::Ph(P_GONDWANA));
         let r = g.map_shoot();
         let s = r.iter().find(|x| x.0 == n_species() + P_GONDWANA).map(|x| x.1).unwrap_or(0.0);
-        assert!(stars_of(s) >= 1, "score {}", s);
+        assert!(captured(s), "score {}", s);
     }
 
     #[test]
