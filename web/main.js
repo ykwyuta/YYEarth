@@ -525,6 +525,9 @@ const env = {
     }
   },
   js_is_fullscreen: () => (document.fullscreenElement ? 1 : 0),
+  js_reload_clear: () => {
+    reloadClearingCache();
+  },
 };
 
 // BGRA（乗算済みアルファ）→ RGBA（非乗算）
@@ -867,6 +870,43 @@ function checkSize() {
     wasm.yy_event(8, c ? 1 : 0, 0, 0);
   }
   if (fit()) wasm.yy_event(6, pw, ph, 0);
+}
+
+// ------------------------------------------------------------------ キャッシュを消して再読み込み
+// 古い main.js や wasm がブラウザに残って新しい版にならないときのため。
+// Service Worker と Cache Storage を消し、主なファイルを取り直してから、目印の付いた URL で読み込み直す。
+// 記録（IndexedDB）と言語の設定（localStorage）は消さない
+async function reloadClearingCache() {
+  // 直前の自動記録（IndexedDB）の書き込みが終わるのを少し待つ
+  await new Promise((r) => setTimeout(r, 400));
+  try {
+    const regs = (await navigator.serviceWorker?.getRegistrations?.()) || [];
+    await Promise.all(regs.map((r) => r.unregister()));
+  } catch {}
+  try {
+    if (self.caches) await Promise.all((await caches.keys()).map((k) => caches.delete(k)));
+  } catch {}
+  // ブラウザの HTTP キャッシュは直接消せないので、取り直して新しいものに置き換える
+  const files = ['./', './index.html', './main.js', './wasm-manifest.json', './yyearth.wasm', './manifest.webmanifest'];
+  try {
+    const res = await fetch(new URL('./wasm-manifest.json', import.meta.url), { cache: 'reload' });
+    if (res.ok) {
+      const m = await res.json();
+      if (Array.isArray(m?.parts)) files.push(...m.parts.filter((p) => typeof p === 'string').map((p) => './' + p));
+    }
+  } catch {}
+  await Promise.all(files.map((f) => fetch(new URL(f, import.meta.url), { cache: 'reload' }).catch(() => {})));
+  const url = new URL(location.href);
+  url.searchParams.set('v', Date.now().toString(36));
+  location.replace(url.toString());
+}
+// 再読み込みの目印（?v=）は、読み込んだあと URL から外す
+if (QS.has('v')) {
+  try {
+    const url = new URL(location.href);
+    url.searchParams.delete('v');
+    history.replaceState(null, '', url.toString());
+  } catch {}
 }
 
 // ------------------------------------------------------------------ 起動

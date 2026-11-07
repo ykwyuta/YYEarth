@@ -42,6 +42,8 @@ pub mod js {
 
         pub fn js_fullscreen_toggle();
         pub fn js_is_fullscreen() -> u32;
+
+        pub fn js_reload_clear();
     }
 }
 
@@ -177,6 +179,18 @@ pub fn export_slot(slot: u8) {
     }
     #[cfg(not(target_arch = "wasm32"))]
     let _ = slot;
+}
+
+/// 「キャッシュを消して再読み込み」を出せるか（ブラウザ版だけ）
+pub const CAN_RELOAD: bool = true;
+
+/// ブラウザのキャッシュ（Cache Storage・Service Worker・古いファイル）を消して、ページを読み込み直す。
+/// 記録（IndexedDB）と表示言語の設定は消さない
+pub fn reload_clear() {
+    #[cfg(target_arch = "wasm32")]
+    unsafe {
+        js::js_reload_clear()
+    }
 }
 
 /// 記録ファイルを選んで読み込む

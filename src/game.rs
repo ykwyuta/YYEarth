@@ -66,6 +66,8 @@ enum Panel {
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 enum Act {
+    /// キャッシュを消して再読み込み（ブラウザ版）
+    Reload,
     NewGame,
     Continue,
     Import,
@@ -185,6 +187,8 @@ pub struct Game {
     mission_open: bool,
     have_save: bool,
     confirm_new: f32,
+    /// 「キャッシュを消して再読み込み」の確認（もう一度押すまでの残り秒）
+    confirm_reload: f32,
     save_cool: f32,
     save_dirty: bool,
     title_t: f32,
@@ -318,6 +322,7 @@ impl Game {
             mission_open: true,
             have_save: platform::slot_info(0).is_some(),
             confirm_new: 0.0,
+            confirm_reload: 0.0,
             save_cool: 0.0,
             save_dirty: false,
             title_t: 0.0,
@@ -525,6 +530,7 @@ impl Game {
 
     fn update(&mut self, dt: f32) {
         self.confirm_new = (self.confirm_new - dt).max(0.0);
+        self.confirm_reload = (self.confirm_reload - dt).max(0.0);
         self.flash = (self.flash - dt * 2.2).max(0.0);
         for n in &mut self.notices {
             n.1 -= dt;
@@ -984,6 +990,20 @@ impl Game {
             Act::Continue => platform::load_slot(0),
             Act::Import => platform::import_file(),
             Act::Export => platform::export_slot(0),
+            Act::Reload => {
+                if self.confirm_reload <= 0.0 {
+                    self.confirm_reload = 4.0;
+                    return;
+                }
+                self.confirm_reload = 0.0;
+                // 読み込み直す前に、いまの進み具合を記録しておく
+                if self.screen != Screen::Title {
+                    self.autosave(true);
+                    self.save_tick(0.0);
+                }
+                self.notify_text(t!("キャッシュを消して読み込み直しています…", "Clearing the cache and reloading…", "正在清除缓存并重新加载……").to_string());
+                platform::reload_clear();
+            }
             Act::Lang => {
                 let l = lang::lang().next();
                 lang::set_lang(l);
@@ -2154,6 +2174,11 @@ impl Game {
         self.add_button(bx + half + 10.0, by, bx + bw, by + 36.0, t!("全画面", "Fullscreen", "全屏"), Act::Fullscreen, true, false);
         by += 46.0;
         self.add_button(bx, by, bx + bw, by + 36.0, t!("記録ファイルを読み込む", "Load a save file", "读取存档文件"), Act::Import, true, false);
+        if platform::CAN_RELOAD {
+            by += 46.0;
+            let label = self.reload_label();
+            self.add_button(bx, by, bx + bw, by + 36.0, label, Act::Reload, true, self.confirm_reload > 0.0);
+        }
         let foot = t!(
             "西暦2650年。時間旅行学校の宿題で、5億年前から2億5000万年前の地球へ。",
             "The year 2650. A time-travel school assignment takes you from 500 to 250 million years into the past.",
@@ -2616,8 +2641,22 @@ impl Game {
         self.gfx.text(platform::storage_note(), x0 + 20.0, y, pw - 40.0, 40.0, Font::Small, DIM);
         y += 44.0;
         if y + 36.0 < y1 {
-            self.add_button(x0 + 20.0, y, x0 + 260.0, y + 34.0, t!("記録をファイルに書き出す", "Export save to a file", "导出存档文件"), Act::Export, self.have_save, false);
-            self.add_button(x0 + 270.0, y, x0 + 510.0, y + 34.0, t!("記録ファイルを読み込む", "Load a save file", "读取存档文件"), Act::Import, true, false);
+            let n = if platform::CAN_RELOAD { 3.0 } else { 2.0 };
+            let bw = ((pw - 40.0 - 10.0 * (n - 1.0)) / n).min(240.0);
+            self.add_button(x0 + 20.0, y, x0 + 20.0 + bw, y + 34.0, t!("記録をファイルに書き出す", "Export save to a file", "导出存档文件"), Act::Export, self.have_save, false);
+            self.add_button(x0 + 30.0 + bw, y, x0 + 30.0 + bw * 2.0, y + 34.0, t!("記録ファイルを読み込む", "Load a save file", "读取存档文件"), Act::Import, true, false);
+            if platform::CAN_RELOAD {
+                let label = self.reload_label();
+                self.add_button(x0 + 40.0 + bw * 2.0, y, x0 + 40.0 + bw * 3.0, y + 34.0, label, Act::Reload, true, self.confirm_reload > 0.0);
+            }
+        }
+    }
+
+    fn reload_label(&self) -> &'static str {
+        if self.confirm_reload > 0.0 {
+            t!("もう一度押すと再読み込み（記録は残る）", "Press again to reload (saves are kept)", "再按一次重新加载（存档保留）")
+        } else {
+            t!("キャッシュを消して再読み込み", "Clear cache and reload", "清除缓存并重新加载")
         }
     }
 
