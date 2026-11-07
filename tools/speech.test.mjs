@@ -1,13 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createNarrator } from '../web/speech.mjs';
+import { createNarrator, bindNarratorGestures } from '../web/speech.mjs';
 function setup() {
   const played = [];
+  const primed = [];
   let cancelled = 0;
   class Utterance { constructor(text) { this.text = text; } }
   const voices = [{ lang: 'en-US' }, { lang: 'ja-JP' }, { lang: 'zh-TW' }];
-  const synth = { cancel() { cancelled++; }, getVoices: () => voices, speak: u => played.push(u) };
-  return { narrator: createNarrator(synth, Utterance), played, voices, cancels: () => cancelled };
+  const synth = { cancel() { cancelled++; }, getVoices: () => voices,
+    speak: u => (u.volume === 0 ? primed : played).push(u) };
+  return { narrator: createNarrator(synth, Utterance), played, primed, voices, cancels: () => cancelled };
 }
 test('waits for interaction and retains only the newest guide', () => {
   const { narrator, played } = setup();
@@ -36,7 +38,7 @@ test('replay interrupts previous speech without appending stale guides', () => {
   narrator.say('guide', 'en-US');
   narrator.say('guide', 'en-US');
   assert.equal(played.length, 2);
-  assert.equal(cancels(), 2);
+  assert.equal(cancels(), 3);
 });
 test('turning off before interaction discards pending speech', () => {
   const { narrator, played } = setup();
@@ -51,7 +53,7 @@ test('stop cancels current speech and clears pending content', () => {
   narrator.say('guide', 'ja-JP');
   narrator.stop();
   narrator.unlock();
-  assert.equal(cancels(), 2);
+  assert.equal(cancels(), 3);
   assert.equal(played.length, 1);
 });
 test('unsupported speech is harmless', () => {
@@ -60,4 +62,52 @@ test('unsupported speech is harmless', () => {
   narrator.say('guide', 'ja-JP');
   narrator.unlock();
   narrator.stop();
+});
+
+test('an early tap primes iOS speech before a guide exists', () => {
+  let inGesture = false;
+  let allowed = false;
+  const heard = [];
+  class Utterance { constructor(text) { this.text = text; } }
+  const synth = {
+    cancel() {}, getVoices: () => [],
+    speak(u) {
+      if (inGesture) allowed = true;
+      if (allowed && u.text) heard.push(u.text);
+    },
+  };
+  const narrator = createNarrator(synth, Utterance);
+  inGesture = true;
+  narrator.unlock();
+  inGesture = false;
+  narrator.say('Guide from the next animation frame', 'ja-JP');
+  assert.deepEqual(heard, ['Guide from the next animation frame']);
+});
+
+test('silent initialization happens once and never interrupts later guides', () => {
+  const { narrator, played, primed } = setup();
+  narrator.unlock();
+  narrator.unlock();
+  assert.equal(primed.length, 1);
+  assert.equal(primed[0].text, '');
+  assert.equal(played.length, 0);
+  narrator.say('guide', 'ja-JP');
+  narrator.unlock();
+  assert.equal(played.length, 1);
+});
+
+test('trusted touch release unlocks speech without relying on pointerdown', () => {
+  const listeners = new Map();
+  const { narrator, played } = setup();
+  bindNarratorGestures({ addEventListener(type, fn) { listeners.set(type, fn); } }, narrator);
+  assert.equal(listeners.has('pointerdown'), false);
+  narrator.say('iPad guide', 'ja-JP');
+  listeners.get('touchend')({ isTrusted: false });
+  assert.equal(played.length, 0);
+  listeners.get('touchend')({ isTrusted: true });
+  assert.equal(played[0].text, 'iPad guide');
+  for (const type of ['mousedown', 'keydown', 'click']) {
+    listeners.get(type)({ isTrusted: true });
+  }
+  assert.equal(played.length, 1);
 });
