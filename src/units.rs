@@ -62,7 +62,8 @@ fn deform(art: Art, beh: Beh, u: f32, v: f32, t: f32, activity: f32) -> (f32, f3
             let tip = ((u - 0.6) / 0.4).clamp(0.0, 1.0);
             (u, v + wave * tip * 0.05)
         }
-        Art::Griffinfly => {
+        Art::Marine(_) => (u, v + wave * (1.0-u).powi(2) * 0.1),
+        Art::Pterosaur(0) | Art::Pterosaur(1) | Art::Bird(_) | Art::Griffinfly => {
             // はねを上下に羽ばたく（体の中心から離れるほど大きく）
             let flap = (t * 22.0).sin();
             (u, 0.5 + (v - 0.5) * (1.0 - 0.45 * flap.abs()))

@@ -259,15 +259,15 @@ fn backdrop_slug(sc: &Scene, t: f32) -> Option<&'static str> {
         if sc.icy {
             return first(&["backdrop-ice-land"]);
         }
-        let own = ["barren-land", "backdrop-ordovician-land", "backdrop-silurian-land", "backdrop-devonian-land", "backdrop-carboniferous-land", "backdrop-permian-land"][p];
+        let own = ["barren-land", "backdrop-ordovician-land", "backdrop-silurian-land", "backdrop-devonian-land", "backdrop-carboniferous-land", "backdrop-permian-land", "backdrop-triassic-land", "backdrop-jurassic-land", "backdrop-cretaceous-land"][p];
         // 植物のない大地の絵は、陸に植物が広がる前（シルル紀の前半まで）だけ使う
         return if veg_at(t) < 0.05 { first(&[own, "barren-land"]) } else { first(&[own]) };
     }
     if sc.depth > 100.0 {
-        let own = ["deep-sea", "backdrop-ordovician-deep", "backdrop-silurian-deep", "backdrop-devonian-deep", "backdrop-carboniferous-deep", "backdrop-permian-deep"][p];
+        let own = ["deep-sea", "backdrop-ordovician-deep", "backdrop-silurian-deep", "backdrop-devonian-deep", "backdrop-carboniferous-deep", "backdrop-permian-deep", "backdrop-triassic-deep", "backdrop-jurassic-deep", "backdrop-cretaceous-deep"][p];
         first(&[own, "deep-sea"])
     } else {
-        let own = ["shallow-sea", "backdrop-ordovician-sea", "backdrop-silurian-sea", "backdrop-devonian-sea", "backdrop-carboniferous-sea", "backdrop-permian-sea"][p];
+        let own = ["shallow-sea", "backdrop-ordovician-sea", "backdrop-silurian-sea", "backdrop-devonian-sea", "backdrop-carboniferous-sea", "backdrop-permian-sea", "backdrop-triassic-sea", "backdrop-jurassic-sea", "backdrop-cretaceous-sea"][p];
         first(&[own, "shallow-sea"])
     }
 }
@@ -1562,7 +1562,7 @@ impl Game {
         let sy = -2.0 * z / h;
         self.gfx.set_xform(sx, sy, -self.cam.0 * sx, -self.cam.1 * sy);
         // タイトル画面では大陸がゆっくり動き続ける
-        let t = if self.screen == Screen::Title { 395.0 - (self.title_t * 0.05).sin() * 140.0 } else { self.prog.t };
+        let t = if self.screen == Screen::Title { 302.0 - (self.title_t * 0.04).sin() * 230.0 } else { self.prog.t };
         let g = &mut self.gfx;
         g.draw_textured(&self.ocean_tex, 0.0, 0.0, MAP_W, MAP_H, [1.0, 1.0, 1.0, 1.0], true);
         // 経緯線
@@ -1690,13 +1690,14 @@ impl Game {
         // 大陸の名前
         if z < 1.6 {
             for (i, d) in PLATES.iter().enumerate() {
-                if !d.label {
+                // まだゴンドワナから離れていないかけらは、名前を出さない
+                if !d.label || still_joined(i, t) {
                     continue;
                 }
-                let (lon, lat, _) = self.earth.pose(i, t);
+                let (lon, lat) = self.earth.plate_center(i, t);
                 let (mx, my) = lonlat_to_map(lon, lat);
                 let (sx, sy) = self.map_to_screen(mx, my);
-                let s = d.name.get();
+                let s = plate_name(i, t);
                 let a = (1.6 - z).clamp(0.0, 1.0) * 0.85;
                 self.gfx.text_shadow(s, sx - 120.0, sy - 12.0, 240.0, 24.0, Font::BigCenter, [1.0, 0.96, 0.86, a]);
             }
@@ -1868,7 +1869,7 @@ impl Game {
                     let (ax, ay) = (sx - mx, sy - my);
                     let l = (ax * ax + ay * ay).sqrt().max(1.0);
                     let ex = sx.clamp(40.0, w - 40.0);
-                    // 左下の情報のカード・右下のレーダーとシャッターに重ならないように
+                    // 左上の情報のカード・右下のレーダーとシャッターに重ならないように
                     let bottom = if ex < 330.0 || ex > w - 160.0 { h - 175.0 } else { h - 40.0 };
                     let ey = sy.clamp(top + 40.0, bottom);
                     self.gfx.fill_circle(ex, ey, 17.0, [1.0, 0.84, 0.3, 0.95]);
@@ -1888,7 +1889,7 @@ impl Game {
         let t = self.prog.t;
         let spot = self.earth.sample(lon, lat, t);
         self.panel_box(x0, y0, x1, y1);
-        let plate = spot.plate.map(|p| PLATES[p].name.get()).unwrap_or(t!("パンサラサ海（外洋）", "Panthalassic Ocean", "泛大洋（远洋）"));
+        let plate = spot.plate.map(|p| if still_joined(p, t) { plate_name(GONDWANA, t) } else { plate_name(p, t) }).unwrap_or(t!("パンサラサ海（外洋）", "Panthalassic Ocean", "泛大洋（远洋）"));
         let where_s = if spot.plate.is_some() && spot.hab == Habitat::Deep { tf!("{}の沖", "Off {}", "{}外海", plate) } else { plate.to_string() };
         self.gfx.text(&where_s, x0 + 12.0, y0 + 8.0, x1 - x0 - 24.0, 20.0, Font::Big, TEXT);
         if let Some(p) = spot.plate {
@@ -2079,7 +2080,7 @@ impl Game {
         let Some((x0, y0, x1, y1)) = self.mission_rect() else { return };
         self.panel_box(x0, y0, x1, y1);
         if self.prog.all_clear() {
-            self.gfx.text(t!("古生代の宿題：すべて合格！", "Paleozoic tasks: all passed!", "古生代作业：全部合格！"), x0 + 12.0, y0 + 7.0, x1 - x0 - 24.0, 20.0, Font::Normal, GOLD);
+            self.gfx.text(t!("宿題：すべて合格！", "All tasks passed!", "作业：全部合格！"), x0 + 12.0, y0 + 7.0, x1 - x0 - 24.0, 20.0, Font::Normal, GOLD);
             return;
         }
         let mi = self.prog.mission;
@@ -2236,7 +2237,7 @@ impl Game {
         self.gfx.stroke_round(x0, y0, x0 + cw, y0 + 150.0, 18.0, 1.5, EDGE);
         self.gfx.text(t!("地球史図鑑", "YYEarth", "地球史图鉴"), x0, y0 + 14.0, cw, 56.0, Font::Title, [0.80, 1.0, 0.96, 1.0]);
         self.gfx.text(t!("時をめぐる観察カプセル", "A Field Guide Through Deep Time", "时光观测舱"), x0, y0 + 72.0, cw, 26.0, Font::BigCenter, TEXT);
-        self.gfx.text(t!("第1〜6巻　古生代（カンブリア紀〜ペルム紀）", "Volumes 1–6: The Paleozoic (Cambrian to Permian)", "第1—6卷　古生代（寒武纪至二叠纪）"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
+        self.gfx.text(t!("第1〜9巻　古生代・中生代（カンブリア紀〜白亜紀）", "Volumes 1–9: Paleozoic & Mesozoic (Cambrian to Cretaceous)", "第1—9卷　古生代·中生代（寒武纪至白垩纪）"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
         let bw = if self.compact() { 300.0 } else { 340.0 };
         let bh = if self.compact() { 40.0 } else { 44.0 };
         let bx = x0 + (cw - bw) * 0.5;
@@ -2255,9 +2256,9 @@ impl Game {
         by += 46.0;
         self.add_button(bx, by, bx + bw, by + 36.0, t!("記録ファイルを読み込む", "Load a save file", "读取存档文件"), Act::Import, true, false);
         let foot = t!(
-            "西暦2650年。時間旅行学校の宿題で、5億年前から2億5000万年前の地球へ。",
-            "The year 2650. A time-travel school assignment takes you from 500 to 250 million years into the past.",
-            "公元2650年。为了完成时间旅行学校的作业，你将前往5亿年前至2亿5000万年前的地球。"
+            "西暦2650年。時間旅行学校の宿題で、5億年前から恐竜の時代の終わりまでの地球へ。",
+            "The year 2650. A time-travel school assignment takes you from 500 million years ago to the end of the age of dinosaurs.",
+            "公元2650年。为了完成时间旅行学校的作业，你将前往从5亿年前到恐龙时代结束的地球。"
         );
         self.gfx.text_shadow(foot, 20.0, h - 34.0, w - 40.0, 24.0, Font::NormalCenter, [0.9, 0.96, 0.96, 0.9]);
     }
@@ -2339,7 +2340,7 @@ impl Game {
                     let t = (ph.t0 + ph.t1) * 0.5;
                     // 大陸の絵（まわりの浅い海を含む）全体が枠に収まるように
                     let (mut mx0, mut my0, mut mx1, mut my1) = (f32::MAX, f32::MAX, f32::MIN, f32::MIN);
-                    for &pi in plates {
+                    for &pi in &expand_plates(plates) {
                         for (x, y) in self.earth.plate_quad(pi, t) {
                             mx0 = mx0.min(x);
                             my0 = my0.min(y);
@@ -2352,7 +2353,7 @@ impl Game {
                     let (ox, oy) = ((x0 + x1) * 0.5 - (mx0 + mx1) * 0.5 * k, (y0 + y1) * 0.5 - (my0 + my1) * 0.5 * k);
                     self.gfx.rect(x0, y0, x1, y1, [0.06, 0.18, 0.36, a]);
                     let veg = veg_at(t);
-                    for &pi in plates {
+                    for &pi in &expand_plates(plates) {
                         let q = self.earth.plate_quad(pi, t).map(|(x, y)| (ox + x * k, oy + y * k));
                         let uv = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)];
                         self.gfx.draw_textured_quad(&self.plate_tex[pi], q, uv, [1.0, 1.0, 1.0, a], true);
@@ -2384,6 +2385,8 @@ impl Game {
                         Scenery::Forest => ([0.42, 0.62, 0.80], [0.30, 0.42, 0.26], [0.40, 0.42, 0.26], [0.22, 0.40, 0.20]),
                         Scenery::CoalForest => ([0.50, 0.62, 0.66], [0.20, 0.32, 0.20], [0.24, 0.28, 0.18], [0.16, 0.34, 0.16]),
                         Scenery::Desert => ([0.56, 0.70, 0.86], [0.80, 0.50, 0.30], [0.86, 0.58, 0.36], [0.70, 0.42, 0.26]),
+                        Scenery::GymnoForest => ([0.44, 0.62, 0.78], [0.24, 0.38, 0.22], [0.36, 0.38, 0.24], [0.18, 0.34, 0.18]),
+                        Scenery::FlowerForest => ([0.46, 0.66, 0.84], [0.30, 0.46, 0.26], [0.40, 0.44, 0.28], [0.32, 0.52, 0.26]),
                     };
                     self.gfx.rect_vgrad(x0, y0, x1, y1, c4(sky, a), [0.82, 0.86, 0.88, a]);
                     let gy = y0 + bh * 0.62;
@@ -2397,7 +2400,7 @@ impl Game {
                         self.gfx.tri((x0 + bw * fa, gy), (x0 + bw * fb, gy - bh * hb), (x0 + bw * fa, gy - bh * ha), c4(hill, a));
                     }
                     self.gfx.rect_vgrad(x0, gy, x1, y1, c4(ground, a), c4([ground[0] * 0.72, ground[1] * 0.72, ground[2] * 0.72], a));
-                    let trees = matches!(k, Scenery::Forest | Scenery::CoalForest);
+                    let trees = matches!(k, Scenery::Forest | Scenery::CoalForest | Scenery::GymnoForest | Scenery::FlowerForest);
                     for i in 0..6 {
                         let rx = x0 + bw * (0.1 + i as f32 * 0.16);
                         let ry = gy + bh * (0.12 + (i % 3) as f32 * 0.06);
@@ -2417,7 +2420,7 @@ impl Game {
     fn render_guide_ui(&mut self) {
         let w = self.w();
         let (x0, y0, _x1, y1, cols, cw, ch) = self.guide_layout();
-        let title = tf!("古生代の図鑑　{}/{}", "Paleozoic field guide  {}/{}", "古生代图鉴　{}/{}", self.prog.found(), n_entries());
+        let title = tf!("地球史図鑑　{}/{}", "Earth history field guide  {}/{}", "地球史图鉴　{}/{}", self.prog.found(), n_entries());
         self.gfx.text(&title, 24.0, self.top_h() + 12.0, w - 200.0, 30.0, Font::Big, TEXT);
         self.add_button(w - 120.0, self.top_h() + 10.0, w - 20.0, self.top_h() + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         // 巻（紀）のタブ
@@ -2427,7 +2430,8 @@ impl Game {
             let n = (0..n_entries()).filter(|&e| entry_period(e) == i).count();
             let got = (0..n_entries()).filter(|&e| entry_period(e) == i && self.prog.stars[e] > 0).count();
             let fresh = (0..n_entries()).any(|e| entry_period(e) == i && self.prog.fresh[e]);
-            let label = if self.compact() { p.name.get().to_string() } else { format!("{} {}/{}{}", p.name.get(), got, n, if fresh { " ●" } else { "" }) };
+            // 紀が多いので、タブがせまいときは名前だけ
+            let label = if self.compact() || tw < 150.0 { format!("{}{}", p.name.get(), if fresh { "●" } else { "" }) } else { format!("{} {}/{}{}", p.name.get(), got, n, if fresh { " ●" } else { "" }) };
             let bx = 20.0 + i as f32 * tw;
             let cur = i == self.guide_period;
             if cur {
@@ -2608,14 +2612,14 @@ impl Game {
         let y0 = self.top_h() + 16.0;
         let y1 = h - 16.0;
         self.panel_box(x0, y0, x0 + pw, y1);
-        self.gfx.text(t!("学校の宿題：古生代の図鑑づくり", "School assignment: a Paleozoic field guide", "学校作业：制作古生代图鉴"), x0 + 20.0, y0 + 14.0, pw - 160.0, 26.0, Font::Big, TEXT);
+        self.gfx.text(t!("学校の宿題：地球史図鑑づくり", "School assignment: an Earth-history field guide", "学校作业：制作地球史图鉴"), x0 + 20.0, y0 + 14.0, pw - 160.0, 26.0, Font::Big, TEXT);
         self.add_button(x0 + pw - 120.0, y0 + 12.0, x0 + pw - 16.0, y0 + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         let mut y = y0 + 56.0;
         let cur = self.prog.mission;
         let total = self.prog.done_count();
         self.gfx.text(&tf!("合格 {}/{}　好きな順番で取り組めます", "Passed {}/{}  Do them in any order", "合格 {}/{}　可按任意顺序完成", total, MISSIONS.len()), x0 + 20.0, y0 + 40.0, pw - 160.0, 16.0, Font::Small, DIM);
         if self.prog.all_clear() {
-            self.gfx.text(t!("すべての宿題に合格！ 次は中生代（準備中）。", "All tasks passed! Next: the Mesozoic (coming soon).", "全部作业合格！下一站：中生代（准备中）。"), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, GOLD);
+            self.gfx.text(t!("すべての宿題に合格！ 次は新生代（準備中）。", "All tasks passed! Next: the Cenozoic (coming soon).", "全部作业合格！下一站：新生代（准备中）。"), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, GOLD);
             y += 30.0;
         }
         {
@@ -2649,7 +2653,7 @@ impl Game {
         for (pi, p) in PERIODS.iter().enumerate() {
             let all = MISSIONS.iter().filter(|m| m.period == pi).count();
             let done = (0..MISSIONS.len()).filter(|&i| MISSIONS[i].period == pi && self.prog.is_done(i)).count();
-            let label = if self.compact() || pw < 700.0 { format!("{}{}", if done == all { "✔" } else { "" }, p.name.get()) } else { format!("{}{} {}/{}", if done == all { "✔" } else { "" }, p.name.get(), done, all) };
+            let label = if self.compact() || tw < 120.0 { format!("{}{}", if done == all { "✔" } else { "" }, p.name.get()) } else { format!("{}{} {}/{}", if done == all { "✔" } else { "" }, p.name.get(), done, all) };
             let bx = x0 + 20.0 + pi as f32 * tw;
             let sel = pi == self.mission_tab;
             if sel {
@@ -2778,9 +2782,9 @@ impl Game {
                 "第一站是5亿多年前的古生代寒武纪。那是“寒武纪大爆发”的时代，海中一下子出现了长着眼睛、外壳和腿的动物。陆地上还没有植物。",
             ),
             L(
-                "地図の下の年表で時代を選び、地図で場所を選びます。年表の上の帯でオルドビス紀・シルル紀・デボン紀・石炭紀・ペルム紀へも行けます。大陸はゆっくり動いて、やがて一つの超大陸になりますよ。「潜る」で海の中へ、撮影ボタンで写真を撮ります。",
-                "Choose a time with the timeline under the map and a place on the map. The strip above the timeline takes you on to the Ordovician, Silurian, Devonian, Carboniferous and Permian. The continents drift slowly and finally join into one supercontinent. 'Dive' takes you under the sea; the shutter takes a photo.",
-                "用地图下方的年表选择时代，在地图上选择地点。年表上方的色带可以前往奥陶纪、志留纪、泥盆纪、石炭纪和二叠纪。大陆缓慢移动，最终连成一个超大陆。按“下潜”进入海中，按快门拍照。",
+                "地図の下の年表で時代を選び、地図で場所を選びます。年表の上の帯で、古生代の6つの紀と、恐竜の時代・中生代の3つの紀へ行けます。大陸はゆっくり動いて一つの超大陸になり、やがてまた分かれていきますよ。「潜る」で海の中へ、撮影ボタンで写真を撮ります。",
+                "Choose a time with the timeline under the map and a place on the map. The strip above the timeline takes you to the six Paleozoic periods and the three Mesozoic periods, the age of dinosaurs. The continents drift together into one supercontinent, then break apart again. 'Dive' takes you under the sea; the shutter takes a photo.",
+                "用地图下方的年表选择时代，在地图上选择地点。年表上方的色带可以前往古生代的六个纪和恐龙时代——中生代的三个纪。大陆缓慢移动，连成一个超大陆，后来又分裂开来。按“下潜”进入海中，按快门拍照。",
             ),
             L(
                 "生きものは、大きく・真ん中に・明るく撮るほど★が増えます。右上の宿題のカードの「行く」を押せば、カプセルが目的の時代と場所へ向かいます。では、いってらっしゃい！",
