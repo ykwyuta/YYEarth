@@ -81,6 +81,17 @@ enum Act {
     Close,
     Entry(usize),
     Goto(Target),
+    /// 宿題を選ぶ（どの順番でも）
+    SelectMission(usize),
+    /// まだ合格していない次・前の宿題へ
+    CycleMission(i32),
+    /// 宿題の一覧の紀のタブ
+    MissionTab(usize),
+    /// レーダーで図鑑の項目を探す
+    Radar(usize),
+    RadarOff,
+    /// レーダーの光る場所のうち、いちばん近いところへ
+    RadarGo,
     GuideTab(usize),
     StepStage(i32),
     TimeAt(f32),
@@ -164,6 +175,13 @@ pub struct Game {
     guide_max: f32,
     /// 図鑑で開いている巻（紀）
     guide_period: usize,
+    /// 宿題の一覧で開いている紀
+    mission_tab: usize,
+    /// レーダーで探している図鑑の項目
+    radar: Option<usize>,
+    /// その時代に会える場所（経緯度）と、それを調べたときの（項目, 時代×2）
+    radar_cells: Vec<(f32, f32)>,
+    radar_key: Option<(usize, i32)>,
     mission_open: bool,
     have_save: bool,
     confirm_new: f32,
@@ -299,6 +317,10 @@ impl Game {
             clock: 0.0,
             guide_scroll: 0.0,
             guide_period: 0,
+            mission_tab: 0,
+            radar: None,
+            radar_cells: Vec::new(),
+            radar_key: None,
             guide_max: 0.0,
             mission_open: true,
             have_save: platform::slot_info(0).is_some(),
@@ -536,7 +558,10 @@ impl Game {
                 self.cam = (MAP_W * 0.5 + (self.title_t * 0.05).sin() * 120.0, MAP_H * 0.52);
                 self.clamp_cam();
             }
-            Screen::Map => self.update_map(dt),
+            Screen::Map => {
+                self.update_map(dt);
+                self.update_radar();
+            }
             Screen::Dive => self.update_dive(dt),
         }
     }
@@ -628,6 +653,27 @@ impl Game {
         if !self.prog.intro_done && self.panel == Panel::None {
             self.panel = Panel::Intro(0);
         }
+    }
+
+    /// レーダーの光る場所を、時代か項目が変わったときだけ調べ直す（時間旅行の途中は止める）
+    fn update_radar(&mut self) {
+        let Some(e) = self.radar else { return };
+        if self.travel.is_some() {
+            self.radar_key = None;
+            self.radar_cells.clear();
+            return;
+        }
+        let key = (e, (self.prog.t * 2.0).round() as i32);
+        if self.radar_key != Some(key) {
+            self.radar_key = Some(key);
+            self.radar_cells = radar_spots(e, &self.earth, self.prog.t);
+        }
+    }
+
+    /// カプセルからいちばん近い、レーダーの光る場所
+    fn radar_nearest(&self) -> Option<(f32, f32)> {
+        let here = map_to_lonlat(self.cap.0, self.cap.1);
+        self.radar_cells.iter().copied().min_by(|a, b| deg_dist(here, *a).partial_cmp(&deg_dist(here, *b)).unwrap())
     }
 
     fn update_dive(&mut self, dt: f32) {
@@ -974,6 +1020,7 @@ impl Game {
             }
             Act::Missions => {
                 self.panel = if self.panel == Panel::Missions { Panel::None } else { Panel::Missions };
+                self.mission_tab = MISSIONS[self.prog.mission].period;
             }
             Act::Help => {
                 self.panel = if self.panel == Panel::Help { Panel::None } else { Panel::Help };
@@ -991,6 +1038,52 @@ impl Game {
                 }
             }
             Act::Goto(tg) => self.goto(tg),
+            Act::SelectMission(i) => {
+                if i < MISSIONS.len() {
+                    self.prog.mission = i;
+                    self.mission_open = true;
+                    self.autosave(true);
+                }
+            }
+            Act::CycleMission(d) => {
+                self.prog.select_next(d);
+                self.mission_tab = MISSIONS[self.prog.mission].period;
+                self.autosave(true);
+            }
+            Act::MissionTab(i) => self.mission_tab = i.min(PERIODS.len() - 1),
+            Act::Radar(e) => {
+                if e < n_entries() {
+                    self.radar = Some(e);
+                    self.radar_key = None;
+                    self.panel = Panel::None;
+                    // 潜っていて、ここにいないなら地図に戻る
+                    let here = self.scene.as_ref().map_or(false, |sc| e < n_species() && sc.present.contains(&e));
+                    if self.screen == Screen::Dive && !here {
+                        self.do_act(Act::Surface);
+                    }
+                    if self.screen == Screen::Map {
+                        self.zoom = self.min_zoom().max(self.zoom.min(0.6));
+                        self.follow = true;
+                    }
+                    self.notify(&tf!("レーダー：{} を探す", "Radar: searching for {}", "雷达：寻找 {}", entry_name(e)));
+                }
+            }
+            Act::RadarOff => {
+                self.radar = None;
+                self.radar_cells.clear();
+                self.radar_key = None;
+            }
+            Act::RadarGo => {
+                if let Some(e) = self.radar {
+                    if let Some(c) = self.radar_nearest() {
+                        self.cap_target = Some(lonlat_to_map(c.0, c.1));
+                        self.follow = true;
+                        self.zoom = self.zoom.max(1.0);
+                    } else {
+                        self.goto(if e < n_species() { Target::Sp(e) } else { Target::Ph(e - n_species()) });
+                    }
+                }
+            }
             Act::GuideTab(i) => {
                 self.guide_period = i.min(PERIODS.len() - 1);
                 self.guide_scroll = 0.0;
@@ -1168,6 +1261,7 @@ impl Game {
             Screen::Title => return,
         }
         self.flash = 1.0;
+        let before_done = self.prog.done_flags();
         self.prog.photos += 1;
         let mut lines = Vec::new();
         for (e, score) in found {
@@ -1183,7 +1277,7 @@ impl Game {
         if lines.is_empty() && advice.is_none() {
             advice = Some(t!("写りが悪かった。もっと大きく、真ん中に", "Poor shot. Make the subject bigger and centred.", "拍得不好。拍大一点、放在中间。"));
         }
-        let done = self.prog.advance();
+        let done = self.prog.advance(&before_done);
         if !lines.is_empty() || !done.is_empty() {
             self.autosave(true);
         }
@@ -1426,6 +1520,24 @@ impl Game {
                 g.circle(px, py, 10.0 + f * 40.0, 16, [0.25, 0.22, 0.22, 0.4 * (1.0 - f)]);
             }
         }
+        // レーダーの光る場所
+        if self.screen == Screen::Map && self.radar.is_some() {
+            let pulse = (self.clock * 2.4).sin() * 0.5 + 0.5;
+            // 場所が多いときは光を弱めて、地図が見えるように
+            let k = if self.radar_cells.len() > 200 { 0.45 } else { 1.0 };
+            // 場所が少ないときは大きく光らせて、見つけやすく
+            let few = self.radar_cells.len() < 40;
+            let (rad, ms) = (if few { 5.0 } else { 2.6 }, 1.0 / self.zoom);
+            let g = &mut self.gfx;
+            for &(lon, lat) in &self.radar_cells {
+                let (mx, my) = lonlat_to_map(lon, lat);
+                if few {
+                    g.ring(mx, my, (10.0 + pulse * 8.0) * ms, 2.0 * ms, 20, [1.0, 0.86, 0.3, 0.8 - pulse * 0.5]);
+                }
+                g.radial(mx, my, rad * DEG, 14, [1.0, 0.86, 0.3, (0.30 + 0.25 * pulse) * k], [1.0, 0.8, 0.3, 0.0]);
+                g.circle(mx, my, 0.45 * DEG, 8, [1.0, 0.92, 0.55, 0.85]);
+            }
+        }
         // 雲（横に流れる）
         let ca = if self.screen == Screen::Title { 0.45 } else { (0.4 - (z - 0.5) * 0.3).clamp(0.08, 0.36) };
         let off = (self.clock * 6.0) % MAP_W;
@@ -1515,18 +1627,164 @@ impl Game {
         }
         self.render_loc_card();
         self.render_timeline();
+        self.render_radar_card();
         if let Some((i, left)) = self.banner.first().copied() {
             let m = &MILESTONES[i];
             let a = (left / 0.6).min(1.0).min((6.5 - left) / 0.4).clamp(0.0, 1.0);
             let w = self.w();
             let bw = (w * 0.6).clamp(420.0, 760.0);
             let x0 = (w - bw) * 0.5;
-            let y0 = self.top_h() + 70.0;
+            let y0 = self.top_h() + if self.radar.is_some() { 144.0 } else { 70.0 };
             self.gfx.fill_round(x0, y0, x0 + bw, y0 + 86.0, 12.0, [0.02, 0.08, 0.12, 0.85 * a]);
             self.gfx.stroke_round(x0, y0, x0 + bw, y0 + 86.0, 12.0, 1.5, [1.0, 0.8, 0.4, 0.7 * a]);
             self.gfx.text(&ma_text(m.ma), x0 + 16.0, y0 + 8.0, bw - 32.0, 18.0, Font::Small, [1.0, 0.85, 0.5, a]);
             self.gfx.text(m.title.get(), x0 + 16.0, y0 + 24.0, bw - 32.0, 24.0, Font::Big, [1.0, 1.0, 1.0, a]);
             self.gfx.text(m.text.get(), x0 + 16.0, y0 + 50.0, bw - 32.0, 36.0, Font::Small, [0.85, 0.92, 0.92, a]);
+        }
+    }
+
+    /// 地図のレーダーのカード：何を探しているか、いまの時代のどこにいるか
+    fn render_radar_card(&mut self) {
+        let Some(e) = self.radar else { return };
+        let cw = if self.compact() { 280.0 } else { 330.0 };
+        let (x0, y0) = (10.0, self.top_h() + 8.0);
+        let (x1, y1) = (x0 + cw, y0 + 128.0);
+        self.panel_box(x0, y0, x1, y1);
+        let pulse = (self.clock * 3.0).sin() * 0.5 + 0.5;
+        self.gfx.stroke_circle(x0 + 22.0, y0 + 20.0, 8.0 + pulse * 3.0, 2.0, [1.0, 0.86, 0.35, 0.9]);
+        self.gfx.fill_circle(x0 + 22.0, y0 + 20.0, 3.5, [1.0, 0.9, 0.5, 1.0]);
+        let logged = if self.prog.stars[e] > 0 { stars_text(self.prog.stars[e]) } else { t!("未収録", "not logged", "未收录").to_string() };
+        self.gfx.text(&tf!("レーダー　{}", "Radar  {}", "雷达　{}", logged), x0 + 38.0, y0 + 4.0, cw - 90.0, 16.0, Font::Small, GOLD);
+        self.gfx.text(entry_name(e), x0 + 38.0, y0 + 20.0, cw - 90.0, 20.0, Font::Normal, TEXT);
+        self.add_button(x1 - 44.0, y0 + 6.0, x1 - 8.0, y0 + 32.0, "×", Act::RadarOff, true, false);
+        let (a, b) = entry_span(e);
+        let t = self.prog.t;
+        let (line, go) = if self.travel.is_some() {
+            (t!("時間旅行中…", "Travelling through time…", "时间旅行中…").to_string(), None)
+        } else if self.cap_target.is_some() && !self.radar_cells.is_empty() {
+            (t!("移動中…　着いたら潜ろう（Enter）", "On the way… dive when you arrive (Enter)", "移动中…　到达后下潜（Enter）").to_string(), None)
+        } else if self.radar_cells.is_empty() {
+            (tf!("いまの時代にはいない。{}にいた", "Not in this age. It lived {}", "这个时代没有。生活在{}", span_text(a, b)), Some(t!("その時代へ行く", "Go to its time", "前往那个时代")))
+        } else {
+            // カプセルの真下で会えるか（その場所の環境で確かめる）
+            let (lon, lat) = map_to_lonlat(self.cap.0, self.cap.1);
+            let spot = self.earth.sample(lon, lat, t);
+            let ok_here = if e < n_species() {
+                lives_here(&SPECIES[e], &self.earth, &spot, t)
+            } else {
+                match PHENOMS[e - n_species()].kind {
+                    PhKind::Scenery(k) => scenery_at(&spot, t) == Some(k),
+                    _ => self.radar_nearest().map_or(false, |c| deg_dist((lon, lat), c) < 2.4),
+                }
+            };
+            if ok_here {
+                let what = if e < n_species() { t!("この真下にいる！ 潜る（Enter）", "Right below you! Dive (Enter)", "就在正下方！下潜（Enter）") } else { t!("ここで撮れる！", "You can shoot it here!", "在这里可以拍到！") };
+                (what.to_string(), None)
+            } else {
+                (tf!("光っている所にいる（{}か所）", "Found in the glowing places ({})", "在发光的地方（{}处）", self.radar_cells.len()), Some(t!("いちばん近い所へ", "Go to the nearest", "前往最近处")))
+            }
+        };
+        self.gfx.text(&line, x0 + 12.0, y0 + 46.0, cw - 24.0, 20.0, Font::Small, [0.8, 1.0, 0.9, 1.0]);
+        if let Some(label) = go {
+            self.add_button(x0 + 12.0, y1 - 44.0, x0 + 212.0, y1 - 10.0, label, Act::RadarGo, self.travel.is_none(), true);
+        }
+        self.add_button(x1 - 104.0, y1 - 44.0, x1 - 10.0, y1 - 10.0, t!("図鑑で見る", "Guide", "看图鉴"), Act::Entry(e), true, false);
+    }
+
+    /// 観察中のレーダー：まわりの生きもの（未収録は水色、探しているものは金色）と、探しているものへの矢印
+    fn render_dive_radar(&mut self) {
+        let Some(sc) = &self.scene else { return };
+        let (w, h) = (self.w(), self.h());
+        let r = if self.compact() { 48.0 } else { 58.0 };
+        let shutter = if self.compact() { 38.0 } else { 42.0 };
+        let (cx, cy) = (w - r - 22.0, h - shutter * 2.0 - 44.0 - r);
+        let range = 14.0;
+        self.gfx.fill_circle(cx, cy, r + 4.0, [0.02, 0.08, 0.12, 0.82]);
+        self.gfx.stroke_circle(cx, cy, r, 1.5, [0.45, 0.95, 0.8, 0.7]);
+        self.gfx.stroke_circle(cx, cy, r * 0.5, 1.0, [0.45, 0.95, 0.8, 0.35]);
+        self.gfx.fill_rect(cx - r, cy - 0.5, cx + r, cy + 0.5, [0.45, 0.95, 0.8, 0.25]);
+        self.gfx.fill_rect(cx - 0.5, cy - r, cx + 0.5, cy + r, [0.45, 0.95, 0.8, 0.25]);
+        // 回る走査線（点で描く）
+        let sweep = self.clock * 2.2;
+        for k in 0..10 {
+            let f = k as f32 / 10.0;
+            self.gfx.fill_circle(cx + sweep.cos() * r * f, cy + sweep.sin() * r * f, 1.4, [0.5, 1.0, 0.85, 0.6]);
+        }
+        let target = self.radar.filter(|&e| e < n_species());
+        let mut best: Option<(f32, f32, f32)> = None;
+        let mut blips: Vec<(f32, f32, [f32; 4], f32)> = Vec::new();
+        for c in &sc.creatures {
+            let (dx, dy) = (c.x - sc.cap.x, c.y - sc.cap.y);
+            let d = (dx * dx + dy * dy).sqrt();
+            if Some(c.sp) == target && best.map_or(true, |b| d < b.0) {
+                best = Some((d, c.x, c.y));
+            }
+            if d > range {
+                continue;
+            }
+            let (bx, by) = (cx + dx / range * r, cy + dy / range * r);
+            if Some(c.sp) == target {
+                blips.push((bx, by, [1.0, 0.85, 0.3, 1.0], 4.5));
+            } else if self.prog.stars[c.sp] == 0 {
+                blips.push((bx, by, [0.4, 0.95, 1.0, 0.95], 3.0));
+            } else {
+                blips.push((bx, by, [0.75, 0.8, 0.8, 0.45], 2.2));
+            }
+        }
+        // 探しているものを最後に（上に）描く
+        blips.sort_by(|a, b| a.3.partial_cmp(&b.3).unwrap());
+        for (bx, by, c, s) in blips {
+            self.gfx.fill_circle(bx, by, s, c);
+        }
+        self.gfx.fill_circle(cx, cy, 3.0, [1.0, 1.0, 1.0, 0.95]);
+        let missing = sc.present.iter().filter(|&&i| self.prog.stars[i] == 0).count();
+        let label = tf!("レーダー　未収録{}種", "Radar  {} new here", "雷达　未收录{}种", missing);
+        self.gfx.text(&label, cx - r - 30.0, cy - r - 24.0, r * 2.0 + 30.0, 18.0, Font::Small, [0.6, 1.0, 0.9, 0.95]);
+        // 探しているもの
+        let Some(e) = self.radar else { return };
+        let v = self.dive_view();
+        let top = self.top_h();
+        if e >= n_species() {
+            let k = match PHENOMS[e - n_species()].kind {
+                PhKind::Scenery(k) => Some(k),
+                _ => None,
+            };
+            let (lon, lat) = map_to_lonlat(self.cap.0, self.cap.1);
+            let spot = self.earth.sample(lon, lat, self.prog.t);
+            let ok = k.is_some() && scenery_at(&Spot { hab: sc.hab, ..spot }, self.prog.t) == k;
+            let s = if ok { tf!("{}：ここで撮れる！", "{}: shoot it here!", "{}：在这里可以拍到！", entry_name(e)) } else { tf!("{}：ここでは撮れない", "{}: not here", "{}：这里拍不到", entry_name(e)) };
+            self.gfx.text(&s, cx - r - 120.0, cy + r + 6.0, r * 2.0 + 120.0, 18.0, Font::Small, if ok { GOLD } else { DIM });
+            return;
+        }
+        match best {
+            None => {
+                let s = tf!("{}：ここにはいない", "{}: not here", "{}：这里没有", entry_name(e));
+                self.gfx.text(&s, cx - r - 120.0, cy + r + 6.0, r * 2.0 + 120.0, 18.0, Font::Small, DIM);
+            }
+            Some((d, x, y)) => {
+                let s = tf!("{}　{:.0}m", "{}  {:.0} m", "{}　{:.0}米", entry_name(e), d);
+                self.gfx.text(&s, cx - r - 120.0, cy + r + 6.0, r * 2.0 + 120.0, 18.0, Font::Small, GOLD);
+                // 画面の外なら、端に矢印
+                let (sx, sy) = ((x - v.cx) * v.ppm + w * 0.5, (y - v.cy) * v.ppm + h * 0.5);
+                let inside = sx > 30.0 && sx < w - 30.0 && sy > top + 30.0 && sy < h - 30.0;
+                if inside {
+                    self.gfx.stroke_circle(sx, sy, 26.0 + (self.clock * 5.0).sin() * 4.0, 2.5, [1.0, 0.86, 0.3, 0.9]);
+                } else {
+                    let (mx, my) = (w * 0.5, (top + h) * 0.5);
+                    let (ax, ay) = (sx - mx, sy - my);
+                    let l = (ax * ax + ay * ay).sqrt().max(1.0);
+                    let ex = sx.clamp(40.0, w - 40.0);
+                    // 左下の情報のカード・右下のレーダーとシャッターに重ならないように
+                    let bottom = if ex < 330.0 || ex > w - 160.0 { h - 175.0 } else { h - 40.0 };
+                    let ey = sy.clamp(top + 40.0, bottom);
+                    self.gfx.fill_circle(ex, ey, 17.0, [1.0, 0.84, 0.3, 0.95]);
+                    // 矢印の向きを、中心から外へ向かう点で示す
+                    for k in 0..4 {
+                        let f = 6.0 + k as f32 * 4.0;
+                        self.gfx.fill_circle(ex + ax / l * f, ey + ay / l * f, 3.2 - k as f32 * 0.5, [0.25, 0.12, 0.0, 1.0]);
+                    }
+                }
+            }
         }
     }
 
@@ -1606,6 +1864,16 @@ impl Game {
             let (mx, my) = self.mouse;
             if mx >= a && mx <= b && my >= strip_y0 - 2.0 && my <= strip_y1 + 2.0 {
                 self.tip = Some(tf!("{}（{}）\nクリックでこの紀へ", "{} ({})\nClick to travel to this period", "{}（{}）\n点击前往这个纪", nm, span_text(p.t0, p.t1)));
+            }
+        }
+        // レーダーで探しているものがいた時代
+        if let Some(e) = self.radar {
+            let (a, b) = entry_span(e);
+            self.gfx.fill_rect(px(a), strip_y1 + 1.0, px(b).max(px(a) + 3.0), strip_y1 + 5.0, [1.0, 0.84, 0.32, 0.95]);
+            let (p0, p1) = (per.t0, per.t1);
+            if a > p1 && b < p0 {
+                let sx = |tt: f32| x0 + (p0 - tt) / (p0 - p1) * (x1 - x0);
+                self.gfx.fill_rect(sx(a.min(p0)), bar_y1 - 4.0, sx(b.max(p1)).max(sx(a.min(p0)) + 3.0), bar_y1, [1.0, 0.84, 0.32, 0.95]);
             }
         }
         // いまの位置（全体の帯）
@@ -1723,9 +1991,17 @@ impl Game {
         let mi = self.prog.mission;
         let m = &MISSIONS[mi];
         let done_n = m.targets.iter().filter(|&&(t, n)| self.prog.stars[t.entry()] >= n).count();
-        let head = tf!("宿題{} {}（{}/{}）", "Task {} {} ({}/{})", "作业{} {}（{}/{}）", mi + 1, m.title.get(), done_n, m.targets.len());
-        self.gfx.text(&head, x0 + 12.0, y0 + 8.0, x1 - x0 - 50.0, 20.0, Font::Normal, ACCENT);
+        let passed = self.prog.is_done(mi);
+        let head = if passed {
+            tf!("✔ 宿題{} {}", "✔ Task {} {}", "✔ 作业{} {}", mi + 1, m.title.get())
+        } else {
+            tf!("宿題{} {}（{}/{}）", "Task {} {} ({}/{})", "作业{} {}（{}/{}）", mi + 1, m.title.get(), done_n, m.targets.len())
+        };
+        self.gfx.text(&head, x0 + 12.0, y0 + 8.0, x1 - x0 - 112.0, 20.0, Font::Normal, if passed { GOOD } else { ACCENT });
         let open = self.mission_open;
+        // まだ合格していない、前・次の宿題へ
+        self.add_button(x1 - 96.0, y0 + 5.0, x1 - 68.0, y0 + 29.0, "◀", Act::CycleMission(-1), true, false);
+        self.add_button(x1 - 66.0, y0 + 5.0, x1 - 38.0, y0 + 29.0, "▶", Act::CycleMission(1), true, false);
         self.add_button(x1 - 34.0, y0 + 5.0, x1 - 8.0, y0 + 29.0, if open { "－" } else { "＋" }, Act::MissionCard, true, false);
         if !open {
             return;
@@ -1838,6 +2114,7 @@ impl Game {
             self.gfx.fill_rect(cx - 0.8, cy - 12.0, cx + 0.8, cy + 12.0, [1.0, 1.0, 1.0, 0.6]);
             self.gfx.fill_circle(fx0 + 22.0, fy0 + 22.0, 6.0, [1.0, 0.3, 0.25, 0.5 + 0.5 * (self.clock * 3.0).sin().abs()]);
         }
+        self.render_dive_radar();
         // 宿題の対象の印
         let top = self.top_h();
         for (mx, my) in marks {
@@ -2199,10 +2476,13 @@ impl Game {
                 if y + hh < y1 - 50.0 {
                     self.gfx.text(&f, tx, y, tw, hh, Font::Normal, [0.75, 0.95, 0.9, 1.0]);
                 }
+                // もう一度撮る（星を増やす）ためのレーダー
+                self.add_button(tx, y1 - 44.0, tx + 220.0, y1 - 6.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
             } else {
                 self.gfx.text(t!("まだ撮影していない。上の時代と場所で探してみよう。", "Not photographed yet. Look for it at the time and place above.", "还没有拍到。按上面的时代和地点去找找吧。"), tx, y, tw, 40.0, Font::Normal, DIM);
                 y += 48.0;
                 self.add_button(tx, y, tx + 220.0, y + 38.0, t!("探しに行く", "Go look for it", "去寻找"), Act::Goto(Target::Sp(e)), true, true);
+                self.add_button(tx + 230.0, y, tx + 450.0, y + 38.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
             }
         } else {
             let p = e - ns;
@@ -2215,10 +2495,12 @@ impl Game {
                 let d = ph.desc.get();
                 let hh = self.gfx.measure_h(d, Font::Normal, tw);
                 self.gfx.text(d, tx, y, tw, hh, Font::Normal, TEXT);
+                self.add_button(tx, y1 - 44.0, tx + 220.0, y1 - 6.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
             } else {
                 self.gfx.text(ph.hint.get(), tx, y, tw, 40.0, Font::Normal, DIM);
                 y += 48.0;
                 self.add_button(tx, y, tx + 220.0, y + 38.0, t!("見に行く", "Go and see", "去看看"), Act::Goto(Target::Ph(p)), true, true);
+                self.add_button(tx + 230.0, y, tx + 450.0, y + 38.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
             }
         }
     }
@@ -2236,59 +2518,67 @@ impl Game {
         self.add_button(x0 + pw - 120.0, y0 + 12.0, x0 + pw - 16.0, y0 + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         let mut y = y0 + 56.0;
         let cur = self.prog.mission;
-        if cur < MISSIONS.len() {
+        let total = self.prog.done_count();
+        self.gfx.text(&tf!("合格 {}/{}　好きな順番で取り組めます", "Passed {}/{}  Do them in any order", "合格 {}/{}　可按任意顺序完成", total, MISSIONS.len()), x0 + 20.0, y0 + 40.0, pw - 160.0, 16.0, Font::Small, DIM);
+        if self.prog.all_clear() {
+            self.gfx.text(t!("すべての宿題に合格！ 次は中生代（準備中）。", "All tasks passed! Next: the Mesozoic (coming soon).", "全部作业合格！下一站：中生代（准备中）。"), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, GOLD);
+            y += 30.0;
+        }
+        {
             let m = &MISSIONS[cur];
-            self.gfx.text(&tf!("いまの宿題　{}. {}", "Current task  {}. {}", "当前作业　{}. {}", cur + 1, m.title.get()), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, ACCENT);
+            let passed = self.prog.is_done(cur);
+            let head = if passed {
+                tf!("✔ 選んだ宿題　{}. {}（合格）", "✔ Chosen task  {}. {} (passed)", "✔ 选择的作业　{}. {}（合格）", cur + 1, m.title.get())
+            } else {
+                tf!("選んだ宿題　{}. {}", "Chosen task  {}. {}", "选择的作业　{}. {}", cur + 1, m.title.get())
+            };
+            self.gfx.text(&head, x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, if passed { GOOD } else { ACCENT });
             y += 28.0;
             let b = format!("{}{}{}", t!("トキ先生", "Ms. Toki", "时老师"), t!("：", ": ", "："), m.brief.get());
             let hh = self.gfx.measure_h(&b, Font::Normal, pw - 40.0);
             self.gfx.text(&b, x0 + 20.0, y, pw - 40.0, hh, Font::Normal, TEXT);
-            y += hh + 10.0;
+            y += hh + 8.0;
             for &(tg, need) in m.targets {
                 let have = self.prog.stars[tg.entry()];
                 let ok = have >= need;
                 let s = format!("{} {}　{}", if ok { "✔" } else { "○" }, tg.name(), if need > 1 { tf!("（{}以上）", "({} or better)", "（{}以上）", stars_text(need)) } else { String::new() });
-                self.gfx.text(&s, x0 + 32.0, y + 4.0, pw - 200.0, 20.0, Font::Normal, if ok { GOOD } else { TEXT });
+                self.gfx.text(&s, x0 + 32.0, y + 3.0, pw - 200.0, 20.0, Font::Normal, if ok { GOOD } else { TEXT });
                 if !ok {
-                    self.add_button(x0 + pw - 140.0, y, x0 + pw - 24.0, y + 28.0, t!("行く", "Go", "前往"), Act::Goto(tg), true, false);
+                    self.add_button(x0 + pw - 140.0, y, x0 + pw - 24.0, y + 24.0, t!("行く", "Go", "前往"), Act::Goto(tg), true, false);
                 }
-                y += 32.0;
+                y += 27.0;
             }
-            y += 10.0;
-        } else {
-            self.gfx.text(t!("すべての宿題に合格！ 次は中生代（準備中）。", "All tasks passed! Next: the Mesozoic (coming soon).", "全部作业合格！下一站：中生代（准备中）。"), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, GOLD);
-            y += 34.0;
+            y += 6.0;
         }
-        // いまの宿題の紀の一覧（紀ごとの進み具合も）
-        let vp = MISSIONS.get(cur).map_or(PERIODS.len() - 1, |m| m.period);
-        let mut prog_line = String::new();
+        // 紀のタブ（紀ごとの合格の数）
+        let tw = (pw - 40.0) / PERIODS.len() as f32;
         for (pi, p) in PERIODS.iter().enumerate() {
             let all = MISSIONS.iter().filter(|m| m.period == pi).count();
-            let done = MISSIONS.iter().enumerate().filter(|(i, m)| m.period == pi && *i < cur).count();
-            if pi > 0 {
-                prog_line.push_str("　");
+            let done = (0..MISSIONS.len()).filter(|&i| MISSIONS[i].period == pi && self.prog.is_done(i)).count();
+            let label = if self.compact() || pw < 700.0 { format!("{}{}", if done == all { "✔" } else { "" }, p.name.get()) } else { format!("{}{} {}/{}", if done == all { "✔" } else { "" }, p.name.get(), done, all) };
+            let bx = x0 + 20.0 + pi as f32 * tw;
+            let sel = pi == self.mission_tab;
+            if sel {
+                self.gfx.fill_round(bx, y, bx + tw - 6.0, y + 32.0, 8.0, c4(p.col, 0.35));
             }
-            prog_line.push_str(&format!("{}{} {}/{}", if done == all { "✔" } else if pi == vp { "▶" } else { "" }, p.name.get(), done, all));
+            self.add_button(bx, y, bx + tw - 6.0, y + 32.0, &label, Act::MissionTab(pi), true, sel);
+            self.gfx.fill_rect(bx + 6.0, y + 28.0, bx + tw - 12.0, y + 31.0, c4(p.col, if sel { 1.0 } else { 0.5 }));
         }
-        let hh = self.gfx.measure_h(&prog_line, Font::Small, pw - 40.0);
-        self.gfx.text(&prog_line, x0 + 20.0, y, pw - 40.0, hh, Font::Small, DIM);
-        y += hh + 8.0;
-        self.gfx.text(&tf!("{}の宿題", "{} tasks", "{}的作业", PERIODS[vp].name.get()), x0 + 20.0, y, pw - 40.0, 20.0, Font::Normal, DIM);
-        y += 24.0;
-        let col2 = self.compact() || pw < 700.0;
-        let list: Vec<(usize, &Mission)> = MISSIONS.iter().enumerate().filter(|(_, m)| m.period == vp).collect();
-        for (k, &(i, m)) in list.iter().enumerate() {
-            let (cx, cy) = if col2 { (x0 + 20.0 + (k % 2) as f32 * (pw - 40.0) * 0.5, y + (k / 2) as f32 * 22.0) } else { (x0 + 20.0 + (k % 2) as f32 * (pw - 40.0) * 0.5, y + (k / 2) as f32 * 24.0) };
-            let (mark, c) = if i < cur {
-                ("✔", GOOD)
-            } else if i == cur {
-                ("▶", ACCENT)
-            } else {
-                ("・", DIM)
-            };
-            if cy + 20.0 < y1 {
-                self.gfx.text(&format!("{} {}. {}", mark, i + 1, m.title.get()), cx, cy, (pw - 40.0) * 0.5 - 10.0, 20.0, Font::Normal, c);
+        y += 40.0;
+        // その紀の宿題（押すと選べる）
+        // いつも2列（1つの紀の宿題が、小さな画面でも収まるように）
+        let col2 = false;
+        let rh = 32.0;
+        let list: Vec<usize> = (0..MISSIONS.len()).filter(|&i| MISSIONS[i].period == self.mission_tab).collect();
+        let colw = if col2 { pw - 40.0 } else { (pw - 40.0) * 0.5 };
+        for (k, &i) in list.iter().enumerate() {
+            let (cx, cy) = if col2 { (x0 + 20.0, y + k as f32 * rh) } else { (x0 + 20.0 + (k % 2) as f32 * colw, y + (k / 2) as f32 * rh) };
+            if cy + rh - 4.0 > y1 - 8.0 {
+                continue;
             }
+            let mark = if self.prog.is_done(i) { "✔" } else if i == cur { "▶" } else { "○" };
+            let label = format!("{} {}. {}", mark, i + 1, MISSIONS[i].title.get());
+            self.add_button(cx, cy, cx + colw - 8.0, cy + rh - 4.0, &label, Act::SelectMission(i), true, i == cur);
         }
     }
 
@@ -2412,8 +2702,10 @@ impl Game {
         let name = t!("トキ先生", "Ms. Toki", "时老师");
         let mm = &MISSIONS[m];
         let mut text = format!("{}\n\n{}", tf!("宿題{}「{}」合格！", "Task {} '{}' passed!", "作业{}“{}”合格！", m + 1, mm.title.get()), mm.done.get());
-        if m + 1 < MISSIONS.len() {
-            text.push_str(&tf!("\n\n次の宿題：{}", "\n\nNext task: {}", "\n\n下一个作业：{}", MISSIONS[m + 1].title.get()));
+        if self.prog.all_clear() {
+            text.push_str(t!("\n\nこれで古生代の宿題はすべて合格です！", "\n\nThat completes every Paleozoic task!", "\n\n古生代的作业全部合格了！"));
+        } else if !self.prog.is_done(self.prog.mission) {
+            text.push_str(&tf!("\n\n次の宿題：{}（宿題の一覧から好きなものを選べます）", "\n\nNext task: {} (pick any task from the task list)", "\n\n下一个作业：{}（可在作业一览中任选）", MISSIONS[self.prog.mission].title.get()));
         }
         self.dialog(name, &text, t!("クリック・Enter で閉じる", "Click or press Enter", "点击或按 Enter 关闭"));
     }

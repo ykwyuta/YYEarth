@@ -182,6 +182,7 @@ pub fn draw(g: &mut Gfx, sp: usize, x: f32, y: f32, len: f32, facing: f32, pitch
         Art::Starfish => starfish(g, &pen, c, c2, t),
         Art::RayFin => rayfin(g, &pen, c, c2, t),
         Art::Limulid => limulid(g, &pen, c, c2, t),
+        Art::Urchin => urchin(g, &pen, c, c2, t),
     }
 }
 
@@ -223,6 +224,7 @@ pub fn extent(sp: usize) -> (f32, f32) {
         Art::Starfish => (1.0, 1.0),
         Art::RayFin => (1.05, 0.3),
         Art::Limulid => (1.0, 0.75),
+        Art::Urchin => (0.9, 0.85),
         _ => (1.0, 0.4),
     }
 }
@@ -1990,5 +1992,25 @@ pub(crate) fn limulid(g: &mut Gfx, pen: &Pen, c: [f32; 3], c2: [f32; 3], t: f32)
     seg(g, pen, 0.05, 0.0, 0.42, 0.0, 0.01, mul(c, 0.7), 0.7);
     for sgn in [-1.0f32, 1.0] {
         circ(g, pen, 0.26, sgn * 0.14, 0.018, INK, 1.0);
+    }
+}
+
+pub(crate) fn urchin(g: &mut Gfx, pen: &Pen, c: [f32; 3], c2: [f32; 3], t: f32) {
+    let p0 = Pen { fx: 1.0, ..*pen };
+    let wob = (t * 0.7).sin() * 0.05;
+    // トゲ（まわりに放射状に）
+    for k in 0..22 {
+        let a = k as f32 / 22.0 * PI + wob * if k % 2 == 0 { 1.0 } else { -1.0 };
+        let (s, co) = a.sin_cos();
+        seg(g, &p0, co * 0.2, 0.22 + s * 0.18, co * 0.46, 0.22 + s * 0.42, 0.012, mul(c, 0.8), 1.0);
+    }
+    // 丸い殻と、つぶつぶの列
+    ell(g, &p0, 0.0, 0.22, 0.24, 0.2, 0.0, c, 1.0);
+    for r in 0..5 {
+        let a = -0.8 + r as f32 * 0.4;
+        for q in 1..4 {
+            let f = q as f32 / 4.0;
+            circ(g, &p0, a.sin() * 0.22 * f, 0.22 + a.cos() * 0.18 * f, 0.016, c2, 0.9);
+        }
     }
 }

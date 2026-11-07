@@ -12,8 +12,8 @@
 
 ## 進み具合
 
-- 図鑑の画像：167/167（生きもの154・現象13）
-- 観察用スプライト：154/154
+- 図鑑の画像：225/225（生きもの212・現象13）
+- 観察用スプライト：212/212
 - 遠景（任意）：16/16
 
 ## カンブリア紀（Cambrian）
@@ -56,6 +56,14 @@
 | `conodont` | コノドント動物 | *Proconodontus* | 脊椎動物 | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `radiolarian` | 放散虫 | *Radiolaria* | 単細胞の生きもの（プランクトン） | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `glass-sponge` | ガラス海綿 | *Protospongia* | 海綿動物（六放海綿） | 海底に固着 | ✅ | ✅ |
+| `canadaspis` | カナダスピス | *Canadaspis perfecta* | 節足動物 | 歩く（横から） | ✅ | ✅ |
+| `waptia` | ワプティア | *Waptia fieldensis* | 節足動物 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `yohoia` | ヨホイア | *Yohoia tenuis* | 節足動物（大付属肢類） | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `eldonia` | エルドニア | *Eldonia ludwigi* | 所属不明（円盤形の動物） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `chancelloria` | チャンセロリア | *Chancelloria* | 所属不明（トゲの動物） | 海底に固着 | ✅ | ✅ |
+| `elrathia` | エルラシア | *Elrathia kingii* | 三葉虫 | 歩く（横から） | ✅ | ✅ |
+| `gogia` | ゴギア | *Gogia* | 棘皮動物（始海百合類） | 海底に固着 | ✅ | ✅ |
+| `myllokunmingia` | ミロクンミンギア | *Myllokunmingia fengjiaoa* | 脊椎動物（最古の魚の仲間） | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `gondwana` | ゴンドワナ大陸 | — | 現象 | 上空から見た大陸 | ✅ | 不要 |
 | `laurentia` | ローレンシア大陸 | — | 現象 | 上空から見た大陸 | ✅ | 不要 |
 | `eruption` | カルカリンジの大噴火 | — | 現象 | 巨大噴火 | ✅ | 不要 |
@@ -87,6 +95,15 @@
 | `hudsonaster` | ハドソナスター（古いヒトデ） | *Hudsonaster* | 棘皮動物（ヒトデ） | 歩く（横から） | ✅ | ✅ |
 | `arandaspis` | アランダスピス | *Arandaspis prionotolepis* | 無顎類（甲冑魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `promissum` | プロミッスム（巨大コノドント） | *Promissum pulchrum* | 脊椎動物（コノドント） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `pentecopterus` | ペンテコプテルス | *Pentecopterus decorahensis* | ウミサソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `lunataspis` | ルナタスピス | *Lunataspis aurora* | カブトガニ類 | 歩く（横から） | ✅ | ✅ |
+| `echinosphaerites` | エキノスファエリテス（ウミリンゴ） | *Echinosphaerites aurantium* | 棘皮動物（ウミリンゴ類） | 海底に固着 | ✅ | ✅ |
+| `bothriocidaris` | ボスリオシダリス（古いウニ） | *Bothriocidaris* | 棘皮動物（ウニ） | 歩く（横から） | ✅ | ✅ |
+| `lituites` | リツイテス | *Lituites* | 頭足類（オウムガイの仲間） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `selenopeltis` | セレノペルティス | *Selenopeltis* | 三葉虫 | 歩く（横から） | ✅ | ✅ |
+| `astraspis` | アストラスピス | *Astraspis desiderata* | 無顎類（甲冑魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `halysites` | ハリシテス（クサリサンゴ） | *Halysites* | 床板サンゴ | 海底に固着 | ✅ | ✅ |
+| `receptaculites` | レセプタクリテス（ヒマワリサンゴ） | *Receptaculites* | 所属不明（緑藻の仲間か） | 海底に固着 | ✅ | ✅ |
 | `hirnantian-ice` | ヒルナンシアンの氷床 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
 遠景（任意）：`backdrop-ordovician-land` ✅、`backdrop-ice-land` ✅、`backdrop-ordovician-sea` ✅、`backdrop-ordovician-deep` ✅
@@ -113,6 +130,14 @@
 | `loganellia` | ロガネリア | *Loganellia scotica* | 無顎類（テロドゥス類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `slimonia` | スリモニア | *Slimonia acuminata* | ウミサソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
 | `zosterophyllum` | ゾステロフィルム | *Zosterophyllum* | 維管束植物 | 立っている植物 | ✅ | ✅ |
+| `brontoscorpio` | ブロントスコルピオ | *Brontoscorpio anglicus* | サソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `carcinosoma` | カルキノソーマ | *Carcinosoma* | ウミサソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `jamoytius` | ジャモイティウス | *Jamoytius kerwoodi* | 無顎類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `heliolites` | ヘリオリテス（日石サンゴ） | *Heliolites* | 床板サンゴ | 海底に固着 | ✅ | ✅ |
+| `encrinurus` | エンクリヌルス（イチゴ頭の三葉虫） | *Encrinurus* | 三葉虫 | 歩く（横から） | ✅ | ✅ |
+| `ophioceras` | オフィオセラス | *Ophioceras* | 頭足類（オウムガイの仲間） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `atrypa` | アトリパ | *Atrypa* | 腕足動物 | 海底に固着 | ✅ | ✅ |
+| `pterygotus` | プテリゴトゥス | *Pterygotus* | ウミサソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
 | `green-shore` | 最初の緑の岸辺 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
 遠景（任意）：`backdrop-silurian-land` ✅、`backdrop-silurian-sea` ✅、`backdrop-silurian-deep` ✅
@@ -149,6 +174,17 @@
 | `hyneria` | ハイネリア | *Hyneria lindae* | 肉鰭類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `psilophyton` | プシロフィトン | *Psilophyton* | 維管束植物 | 立っている植物 | ✅ | ✅ |
 | `rhacophyton` | ラコフィトン | *Rhacophyton* | シダの仲間 | 立っている植物 | ✅ | ✅ |
+| `drepanophycus` | ドレパノフィクス | *Drepanophycus spinaeformis* | ヒカゲノカズラ類 | 立っている植物 | ✅ | ✅ |
+| `aglaophyton` | アグラオフィトン | *Aglaophyton majus* | 初期の陸上植物 | 立っている植物 | ✅ | ✅ |
+| `rhyniognatha` | リニオグナタ | *Rhyniognatha hirsti* | 昆虫（最古の昆虫か） | 歩く（横から） | ✅ | ✅ |
+| `drepanaspis` | ドレパナスピス | *Drepanaspis gemuendenensis* | 無顎類（異甲類） | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `holoptychius` | ホロプティキウス | *Holoptychius* | 肉鰭類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `titanichthys` | ティタニクティス | *Titanichthys* | 板皮類（節頸類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `panderichthys` | パンデリクティス | *Panderichthys rhombolepis* | 肉鰭類（魚と四肢動物の間） | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `clymenia` | クリメニア | *Clymenia* | 頭足類（アンモノイド） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `helianthaster` | ヘリアンタスター | *Helianthaster rhenanus* | 棘皮動物（ヒトデの仲間） | 歩く（横から） | ✅ | ✅ |
+| `calamophyton` | カラモフィトン | *Calamophyton* | クラドキシロン類（初期の木） | 立っている植物 | ✅ | ✅ |
+| `attercopus` | アッテルコプス | *Attercopus fimbriunguis* | クモ形類（クモの祖先の仲間） | 歩く（横から） | ✅ | ✅ |
 | `euramerica` | ユーラメリカ大陸 | — | 現象 | 上空から見た大陸 | ✅ | 不要 |
 | `first-forest` | 最初の森 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
@@ -183,6 +219,17 @@
 | `medullosa` | メデュローサ（種子シダ） | *Medullosa* | 種子シダ類 | 立っている植物 | ✅ | ✅ |
 | `stenodictya` | ステノディクティア | *Stenodictya* | 昆虫（ムカシアミバネムシ類） | 飛ぶ（はねを広げて） | ✅ | ✅ |
 | `amphibamus` | アンフィバムス | *Amphibamus grandiceps* | 両生類（分椎類） | 歩く（横から） | ✅ | ✅ |
+| `falcatus` | ファルカトゥス | *Falcatus falcatus* | 軟骨魚類（サメの仲間） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `edestus` | エデスタス | *Edestus* | 軟骨魚類（ギンザメの仲間） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `rhizodus` | リゾドゥス | *Rhizodus hibberti* | 肉鰭類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `crassigyrinus` | クラッシギリヌス | *Crassigyrinus scoticus* | 四肢動物 | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `westlothiana` | ウェストロティアナ | *Westlothiana lizziae* | 爬形類 | 歩く（横から） | ✅ | ✅ |
+| `balanerpeton` | バラネルペトン | *Balanerpeton woodi* | 両生類（分椎類） | 歩く（横から） | ✅ | ✅ |
+| `megarachne` | メガラクネ | *Megarachne servinei* | ウミサソリ | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `petrolacosaurus` | ペトロラコサウルス | *Petrolacosaurus kansensis* | 爬虫類（双弓類） | 歩く（横から） | ✅ | ✅ |
+| `archaeothyris` | アーケオシリス | *Archaeothyris florensis* | 単弓類 | 歩く（横から） | ✅ | ✅ |
+| `essexella` | エセクセラ | *Essexella asherae* | 刺胞動物（クラゲ） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `lyginopteris` | リギノプテリス（種子シダ） | *Lyginopteris* | 種子シダ類 | 立っている植物 | ✅ | ✅ |
 | `coal-forest` | 石炭紀の湿地林 | — | 現象 | 陸の景色 | ✅ | 不要 |
 | `gondwana-ice` | ゴンドワナの大氷河 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
@@ -217,6 +264,17 @@
 | `moschops` | モスコプス | *Moschops capensis* | 単弓類（恐頭類） | 歩く（横から） | ✅ | ✅ |
 | `tshekardocoleus` | チェカルドコレウス（古い甲虫） | *Tshekardocoleus* | 昆虫（甲虫の祖先） | 歩く（横から） | ✅ | ✅ |
 | `gigantopteris` | ギガントプテリス | *Gigantopteris* | 種子植物（大羽羊歯類） | 立っている植物 | ✅ | ✅ |
+| `ophiacodon` | オフィアコドン | *Ophiacodon* | 単弓類（盤竜類） | 歩く（横から） | ✅ | ✅ |
+| `cacops` | カコプス | *Cacops aspidephorus* | 両生類（分椎類） | 歩く（横から） | ✅ | ✅ |
+| `varanops` | ヴァラノプス | *Varanops brevirostris* | 単弓類（盤竜類） | 歩く（横から） | ✅ | ✅ |
+| `estemmenosuchus` | エステメノスクス | *Estemmenosuchus uralensis* | 単弓類（恐頭類） | 歩く（横から） | ✅ | ✅ |
+| `titanophoneus` | ティタノフォネウス | *Titanophoneus potens* | 単弓類（恐頭類） | 歩く（横から） | ✅ | ✅ |
+| `coelurosauravus` | コエルロサウラヴス | *Coelurosauravus* | 爬虫類（滑空する爬虫類） | 歩く（横から） | ✅ | ✅ |
+| `prionosuchus` | プリオノスクス | *Prionosuchus plummeri* | 両生類（分椎類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `dorypterus` | ドリプテルス | *Dorypterus hoffmanni* | 条鰭類（硬骨魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `meganeuropsis` | メガネウロプシス | *Meganeuropsis permiana* | 昆虫（オオトンボ類） | 飛ぶ（はねを広げて） | ✅ | ✅ |
+| `euchambersia` | エウチャンベルシア | *Euchambersia mirabilis* | 単弓類（獣頭類） | 歩く（横から） | ✅ | ✅ |
+| `voltzia` | ボルチア | *Voltzia* | 針葉樹 | 立っている植物 | ✅ | ✅ |
 | `pangaea` | 超大陸パンゲア | — | 現象 | 上空から見た大陸 | ✅ | 不要 |
 | `permian-desert` | パンゲアの砂漠 | — | 現象 | 陸の景色 | ✅ | 不要 |
 | `siberian-traps` | シベリアの大噴火 | — | 現象 | 巨大噴火 | ✅ | 不要 |
