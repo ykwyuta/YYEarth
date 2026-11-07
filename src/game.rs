@@ -1,7 +1,7 @@
 //! 画面と操作：タイトル、地図（上空）、観察（潜る・降りる）、図鑑、宿題、記録（両方の版で共通）
 //!
 //! 地図は正距円筒図法の地球。カプセルを動かして場所を選び、下の年表で時代を選ぶ（時間旅行）。
-//! 観察の場面では生きものを撮影し、写りのよさ（★1〜3）とともに図鑑に収録する。
+//! 観察の場面では生きものを撮影し、よく写っていれば図鑑に収録する。
 
 use crate::art;
 use crate::artwork::{Artwork, Fit};
@@ -122,7 +122,7 @@ struct Travel {
 }
 
 struct PhotoCard {
-    /// (図鑑の項目, 星, 新しい, 星が増えた)
+    /// (図鑑の項目, 収録したか（1）, 新しい, 記録が変わった)
     lines: Vec<(usize, u8, bool, bool)>,
     /// 写りが悪かったときの助言
     advice: Option<&'static str>,
@@ -200,13 +200,6 @@ fn mix4(a: [f32; 4], b: [f32; 4], t: f32) -> [f32; 4] {
     [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t, a[3] + (b[3] - a[3]) * t]
 }
 
-fn stars_text(n: u8) -> String {
-    let mut s = String::new();
-    for i in 0..3 {
-        s.push(if i < n { '★' } else { '☆' });
-    }
-    s
-}
 
 fn ease(t: f32) -> f32 {
     let t = t.clamp(0.0, 1.0);
@@ -1653,7 +1646,7 @@ impl Game {
         let pulse = (self.clock * 3.0).sin() * 0.5 + 0.5;
         self.gfx.stroke_circle(x0 + 22.0, y0 + 20.0, 8.0 + pulse * 3.0, 2.0, [1.0, 0.86, 0.35, 0.9]);
         self.gfx.fill_circle(x0 + 22.0, y0 + 20.0, 3.5, [1.0, 0.9, 0.5, 1.0]);
-        let logged = if self.prog.stars[e] > 0 { stars_text(self.prog.stars[e]) } else { t!("未収録", "not logged", "未收录").to_string() };
+        let logged = if self.prog.stars[e] > 0 { t!("収録済み", "logged", "已收录") } else { t!("未収録", "not logged", "未收录") };
         self.gfx.text(&tf!("レーダー　{}", "Radar  {}", "雷达　{}", logged), x0 + 38.0, y0 + 4.0, cw - 90.0, 16.0, Font::Small, GOLD);
         self.gfx.text(entry_name(e), x0 + 38.0, y0 + 20.0, cw - 90.0, 20.0, Font::Normal, TEXT);
         self.add_button(x1 - 44.0, y0 + 6.0, x1 - 8.0, y0 + 32.0, "×", Act::RadarOff, true, false);
@@ -2015,7 +2008,8 @@ impl Game {
             let mark = if ok { "✔" } else { "○" };
             let here = matches!(tg, Target::Sp(i) if present.contains(&i)) && !ok;
             let col = if ok { GOOD } else if here { GOLD } else { TEXT };
-            let need_s = if need > 1 { format!(" {}", stars_text(need)) } else { String::new() };
+            let _ = need;
+            let need_s = String::new();
             let label = format!("{} {}{}", mark, tg.name(), need_s);
             self.gfx.text(&label, x0 + 12.0, y + 3.0, x1 - x0 - 90.0, 20.0, Font::Normal, col);
             if here {
@@ -2355,10 +2349,7 @@ impl Game {
             let vis_y0 = cy0.max(y0);
             let vis_y1 = (cy0 + ch).min(y1);
             if cy0 + ch - 26.0 >= y0 && cy0 + ch <= y1 + 1.0 {
-                self.gfx.text(&name, cx0 + 4.0, cy0 + ch - 26.0, cw - 8.0, 16.0, Font::NormalCenter, if st > 0 { TEXT } else { DIM });
-                if st > 0 {
-                    self.gfx.text(&stars_text(st), cx0 + 4.0, cy0 + ch - 12.0, cw - 8.0, 12.0, Font::NormalCenter, GOLD);
-                }
+                self.gfx.text(&name, cx0 + 4.0, cy0 + ch - 22.0, cw - 8.0, 16.0, Font::NormalCenter, if st > 0 { TEXT } else { DIM });
             }
             if self.prog.fresh[e] && cy0 >= y0 {
                 self.gfx.fill_round(cx0 + 4.0, cy0 + 4.0, cx0 + 46.0, cy0 + 20.0, 6.0, ACCENT);
@@ -2447,8 +2438,7 @@ impl Game {
             if found {
                 self.gfx.text(&format!("{}　/　{}", sp.sci, sp.group.get()), tx, y, tw, 20.0, Font::Normal, DIM);
                 y += 26.0;
-                self.gfx.text(&tf!("写真 {}", "Photo {}", "照片 {}", stars_text(st)), tx, y, tw, 22.0, Font::Big, GOLD);
-                y += 30.0;
+                let _ = st;
             }
             let rows: Vec<(&str, String)> = vec![
                 (t!("時代", "When", "时代"), span_text(sp.t0, sp.t1)),
@@ -2476,7 +2466,7 @@ impl Game {
                 if y + hh < y1 - 50.0 {
                     self.gfx.text(&f, tx, y, tw, hh, Font::Normal, [0.75, 0.95, 0.9, 1.0]);
                 }
-                // もう一度撮る（星を増やす）ためのレーダー
+                // もう一度会いに行くためのレーダー
                 self.add_button(tx, y1 - 44.0, tx + 220.0, y1 - 6.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
             } else {
                 self.gfx.text(t!("まだ撮影していない。上の時代と場所で探してみよう。", "Not photographed yet. Look for it at the time and place above.", "还没有拍到。按上面的时代和地点去找找吧。"), tx, y, tw, 40.0, Font::Normal, DIM);
@@ -2490,8 +2480,7 @@ impl Game {
             self.gfx.text(if found { ph.name.get() } else { "？？？" }, tx, y, tw, 34.0, Font::TitleMid, TEXT);
             y += 40.0;
             if found {
-                self.gfx.text(&tf!("写真 {}", "Photo {}", "照片 {}", stars_text(st)), tx, y, tw, 22.0, Font::Big, GOLD);
-                y += 30.0;
+                let _ = st;
                 let d = ph.desc.get();
                 let hh = self.gfx.measure_h(d, Font::Normal, tw);
                 self.gfx.text(d, tx, y, tw, hh, Font::Normal, TEXT);
@@ -2541,7 +2530,7 @@ impl Game {
             for &(tg, need) in m.targets {
                 let have = self.prog.stars[tg.entry()];
                 let ok = have >= need;
-                let s = format!("{} {}　{}", if ok { "✔" } else { "○" }, tg.name(), if need > 1 { tf!("（{}以上）", "({} or better)", "（{}以上）", stars_text(need)) } else { String::new() });
+                let s = format!("{} {}　{}", if ok { "✔" } else { "○" }, tg.name(), { let _ = need; String::new() });
                 self.gfx.text(&s, x0 + 32.0, y + 3.0, pw - 200.0, 20.0, Font::Normal, if ok { GOOD } else { TEXT });
                 if !ok {
                     self.add_button(x0 + pw - 140.0, y, x0 + pw - 24.0, y + 24.0, t!("行く", "Go", "前往"), Act::Goto(tg), true, false);
@@ -2604,7 +2593,7 @@ impl Game {
                 (t!("時代", "Time", "时代"), t!("下の年表をクリック、または ,（読点）と .（句点）キーで期を移る", "Click the timeline, or use , and . to change stage", "点击下方年表，或用 , 和 . 键切换期")),
                 (t!("潜る", "Dive", "下潜"), t!("Enter：その場所の海に潜る（陸・干潟なら降りる）", "Enter: dive into the sea here (or land)", "Enter：潜入该处的海洋（陆地·潮坪则降落）")),
                 (t!("観察", "Observe", "观察"), t!("WASD・矢印・マウスを押した方へ進む／Shift で加速／ホイール・Q/E でズーム／L でライト", "WASD, arrows or hold the mouse to move / Shift to boost / wheel or Q,E to zoom / L for light", "WASD·方向键·按住鼠标前进／Shift加速／滚轮·Q/E变焦／L开灯")),
-                (t!("撮影", "Photo", "拍摄"), t!("Space（または右クリック）：大きく・真ん中に・明るく写すほど星が増える", "Space (or right-click): bigger, centred and brighter shots earn more stars", "Space（或右键）：拍得越大、越居中、越明亮，星越多")),
+                (t!("撮影", "Photo", "拍摄"), t!("Space（または右クリック）：ある程度大きく・真ん中に・明るく写すと図鑑に収録できる", "Space (or right-click): a reasonably big, centred and bright shot goes into the guide", "Space（或右键）：拍得够大、居中、明亮，就能收录进图鉴")),
                 (t!("画面", "Screens", "画面"), t!("F1 宿題　F2 図鑑　F3 この説明　Esc 浮上・閉じる　Ctrl＋＋/－ 文字の大きさ　F11 全画面", "F1 tasks  F2 guide  F3 help  Esc surface/close  Ctrl +/- text size  F11 fullscreen", "F1 作业　F2 图鉴　F3 说明　Esc 上浮·关闭　Ctrl＋＋/－ 字号　F11 全屏")),
             ]
         };
@@ -2688,9 +2677,9 @@ impl Game {
                 "用地图下方的年表选择时代，在地图上选择地点。年表上方的色带可以前往奥陶纪、志留纪、泥盆纪、石炭纪和二叠纪。大陆缓慢移动，最终连成一个超大陆。按“下潜”进入海中，按快门拍照。",
             ),
             L(
-                "生きものは、大きく・真ん中に・明るく撮るほど★が増えます。右上の宿題のカードの「行く」を押せば、カプセルが目的の時代と場所へ向かいます。では、いってらっしゃい！",
-                "The bigger, more centred and brighter your shot, the more ★ you earn. Press 'Go' on the task card at the top right and the capsule heads to the right time and place. Off you go!",
-                "生物拍得越大、越居中、越明亮，★就越多。点击右上角作业卡上的“前往”，观测舱就会驶向目标时代和地点。出发吧！",
+                "生きものは、大きく・真ん中に・明るく撮れば図鑑に収録されます。右上の宿題のカードの「行く」を押せば、カプセルが目的の時代と場所へ向かいます。では、いってらっしゃい！",
+                "A big, centred, bright shot goes straight into your guide. Press 'Go' on the task card at the top right and the capsule heads to the right time and place. Off you go!",
+                "生物拍得够大、居中、明亮，就会收录进图鉴。点击右上角作业卡上的“前往”，观测舱就会驶向目标时代和地点。出发吧！",
             ),
         ];
         let text = pages[(n as usize).min(3)].get();
@@ -2737,8 +2726,8 @@ impl Game {
             let [x0,y0,x1,y1]=reveal.bounds;
             let cw=x1-x0;
             let c=crate::reveal::accent(stars);
+            let _ = better;
             let head=if fresh { t!("新発見！", "NEW DISCOVERY!", "新发现！") }
-                else if better { t!("ベスト記録更新！", "NEW BEST!", "最佳记录！") }
                 else { t!("撮影成功！", "CAPTURED!", "拍摄成功！") };
             self.gfx.text(head,x0-100.0,y0-44.0,cw+200.0,32.0,Font::BigCenter,c);
             self.gfx.text(&tf!("図鑑 No.{:02}","Guide No.{:02}","图鉴 No.{:02}",entry+1),
@@ -2748,13 +2737,12 @@ impl Game {
             if entry<n_species() {
                 self.gfx.text(SPECIES[entry].sci,x0+10.0,y1-83.0,cw-20.0,18.0,Font::NormalCenter,DIM);
             }
-            let visible=crate::reveal::visible_stars(age,stars);
             let cx=(x0+x1)*0.5;
-            for i in 0..3 {
-                let elapsed=(age-0.82-i as f32*0.22).max(0.0);
-                let pop=if i<visible as usize {(elapsed*14.0).sin()*(-elapsed*7.0).exp()*8.0}else{0.0};
-                self.gfx.text(if i<visible as usize {"★"}else{"☆"},cx+(i as f32-1.0)*39.0-22.0,
-                    y1-55.0-pop,44.0,48.0,Font::Title,if i<visible as usize {GOLD}else{[0.26,0.35,0.39,1.0]});
+            if age>0.82 {
+                let el=age-0.82;
+                let pop=(el*14.0).sin()*(-el*7.0).exp()*8.0;
+                let stamp=if fresh { t!("図鑑に収録", "Added to the guide", "收录图鉴") } else { t!("収録済み", "Already logged", "已收录") };
+                self.gfx.text(stamp,x0+10.0,y1-52.0-pop,cw-20.0,32.0,Font::BigCenter,if fresh {GOLD} else {GOOD});
             }
             let label=if index+1<count {
                 t!("次のカード ▶", "Next card ▶", "下一张 ▶")
@@ -2781,13 +2769,13 @@ impl Game {
         self.gfx.text(head, x0 + 16.0, y0 + 16.0, pw - 32.0, 26.0, Font::Big, TEXT);
         let mut y = y0 + 52.0;
         for (e, st, new, better) in lines {
-            self.gfx.text(entry_name(e), x0 + 18.0, y, pw - 150.0, 22.0, Font::Normal, TEXT);
-            self.gfx.text(&stars_text(st), x0 + pw - 140.0, y, 60.0, 22.0, Font::Normal, GOLD);
+            let _ = (st, better);
+            self.gfx.text(entry_name(e), x0 + 18.0, y, pw - 110.0, 22.0, Font::Normal, TEXT);
             if new {
                 self.gfx.fill_round(x0 + pw - 72.0, y + 1.0, x0 + pw - 18.0, y + 19.0, 6.0, ACCENT);
                 self.gfx.text("NEW", x0 + pw - 72.0, y + 1.0, 54.0, 18.0, Font::NormalCenter, [0.1, 0.05, 0.0, 1.0]);
-            } else if better {
-                self.gfx.text(t!("★更新", "★ up", "★提升"), x0 + pw - 72.0, y + 1.0, 60.0, 18.0, Font::Small, GOOD);
+            } else {
+                self.gfx.text(t!("収録済み", "Logged", "已收录"), x0 + pw - 90.0, y + 2.0, 76.0, 18.0, Font::Small, GOOD);
             }
             y += 30.0;
         }
