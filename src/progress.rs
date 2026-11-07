@@ -224,6 +224,33 @@ mod tests {
     }
 
     #[test]
+    fn original_mesozoic_save_preserves_records_after_widespread_fauna_are_added() {
+        let mut w = Writer::new();
+        w.bytes(MAGIC);
+        w.u32(3);
+        w.usize(283);
+        w.usize(302);
+        for _ in 0..302 { w.u8(1); w.bool(true); }
+        w.usize(0);
+        w.f32(150.0);
+        w.f32(0.0);
+        w.f32(0.0);
+        w.u32(302);
+        w.bool(true);
+        w.bool(false);
+        let p = Progress::from_bytes(&w.buf).unwrap();
+        assert!(p.stars[..283].iter().all(|&s| s == 1));
+        assert!(p.stars[283..n_species()].iter().all(|&s| s == 0));
+        assert!(p.fresh[283..n_species()].iter().all(|&f| !f));
+        assert!(p.stars[n_species()..].iter().all(|&s| s == 1));
+        assert_eq!(p.found(), 302);
+        assert!(p.all_clear());
+        let q = Progress::from_bytes(&p.to_bytes()).unwrap();
+        assert_eq!(q.stars, p.stars);
+        assert_eq!(q.fresh, p.fresh);
+    }
+
+    #[test]
     fn all_mesozoic_tasks_can_be_completed_and_saved_with_single_photographs() {
         let mut p = Progress::new();
         for (i, m) in MISSIONS.iter().enumerate().filter(|(_, m)| m.period >= crate::earth::TRIASSIC) {

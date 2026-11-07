@@ -2142,5 +2142,77 @@
     "slug": "early-magnolia",
     "prompt": "Use case: scientific-educational. Asset type: individual transparent-background game unit sprite. Subject: Early magnolia relative (Magnoliaceae (early)), Flowering tree: An early flowering tree with big white blossoms, pollinated by beetles. Primary request: richly detailed photorealistic natural-history life reconstruction as a SINGLE isolated game unit, entire specimen visible with every appendage inside the frame. Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped. Landscape 3:2 canvas, tightly readable silhouette, centered subject within 10% clear margins. Realistic fine surface texture, soft neutral light from upper left, natural restrained colors, museum reconstruction quality. TRANSPARENT BACKGROUND with genuine alpha channel. Absolutely no water, scenery, ground plane, cast shadow, text, border, watermark or additional organisms. This sprite will be placed onto a moving scene.",
     "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b488-4a62-7cd0-a7da-7607ef6c86ed\\exec-c921cb21-6ef5-4709-9f8d-460591b7ac82.png"
+  },
+  {
+    "slug": "mesozoic-roachoids",
+    "source": "assets/units/archimylacris.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Blattodea and roach-like relatives"
+  },
+  {
+    "slug": "mesozoic-millipedes",
+    "source": "assets/units/pneumodesmus.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Diplopoda"
+  },
+  {
+    "slug": "mesozoic-scorpions",
+    "source": "assets/units/pulmonoscorpius.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Scorpiones"
+  },
+  {
+    "slug": "mesozoic-small-reptiles",
+    "source": "assets/units/petrolacosaurus.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Small terrestrial Diapsida"
+  },
+  {
+    "slug": "triassic-cynodonts",
+    "source": "assets/units/thrinaxodon.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Cynodontia"
+  },
+  {
+    "slug": "mesozoic-mammaliaforms",
+    "source": "assets/units/megazostrodon.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Mammaliaformes"
+  },
+  {
+    "slug": "mesozoic-rhynchocephalians",
+    "source": "assets/units/hylonomus.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Rhynchocephalia"
+  },
+  {
+    "slug": "mesozoic-small-theropods",
+    "source": "assets/units/coelophysis.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Small Theropoda"
+  },
+  {
+    "slug": "mesozoic-sauropodomorphs",
+    "source": "assets/units/plateosaurus.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Sauropodomorpha"
+  },
+  {
+    "slug": "mesozoic-ornithopods",
+    "source": "assets/units/iguanodon.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Small Ornithopoda"
+  },
+  {
+    "slug": "mesozoic-pterosaurs",
+    "source": "assets/units/eudimorphodon.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Pterosauria"
+  },
+  {
+    "slug": "mesozoic-crocodylomorphs",
+    "source": "assets/units/deinosuchus.png",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Crocodylomorpha"
   }
 ]

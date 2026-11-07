@@ -12,8 +12,8 @@
 
 ## 進み具合
 
-- 図鑑の画像：302/302（生きもの283・現象19）
-- 観察用スプライト：283/283
+- 図鑑の画像：314/314（生きもの295・現象19）
+- 観察用スプライト：295/295
 - 遠景（任意）：25/25
 
 ## カンブリア紀（Cambrian）
@@ -305,6 +305,16 @@
 | `metoposaurus` | メトポサウルス | *Metoposaurus* | 両生類（分椎類） | 歩く（横から） | ✅ | ✅ |
 | `dicroidium` | ディクロイディウム | *Dicroidium* | 種子シダ類（木） | 立っている植物 | ✅ | ✅ |
 | `araucarioxylon` | アラウカリオキシロン（化石の森の木） | *Araucarioxylon arizonicum* | 針葉樹 | 立っている植物 | ✅ | ✅ |
+| `mesozoic-roachoids` | 中生代のゴキブリ型昆虫 | *Blattodea and roach-like relatives* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `mesozoic-millipedes` | 中生代のヤスデの仲間 | *Diplopoda* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `mesozoic-scorpions` | 中生代のサソリの仲間 | *Scorpiones* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `mesozoic-small-reptiles` | 中生代の小型爬虫類 | *Small terrestrial Diapsida* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `triassic-cynodonts` | 三畳紀のキノドン類 | *Cynodontia* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `mesozoic-rhynchocephalians` | 中生代のムカシトカゲ類 | *Rhynchocephalia* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `mesozoic-small-theropods` | 中生代の小型獣脚類 | *Small Theropoda* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `mesozoic-sauropodomorphs` | 中生代の竜脚形類 | *Sauropodomorpha* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `mesozoic-pterosaurs` | 中生代の翼竜の仲間 | *Pterosauria* | 広域の動物群（代表像） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `mesozoic-crocodylomorphs` | 中生代のワニ形類 | *Crocodylomorpha* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
 | `camp-eruption` | 中央大西洋の大噴火（CAMP） | — | 現象 | 巨大噴火 | ✅ | 不要 |
 | `gymnosperm-forest` | 恐竜時代の針葉樹とシダの森 | — | 現象 | 陸の景色 | ✅ | 不要 |
 
@@ -337,6 +347,8 @@
 | `compsognathus` | コンプソグナトゥス | *Compsognathus longipes* | 恐竜（小型の肉食恐竜） | 歩く（横から） | ✅ | ✅ |
 | `williamsonia` | ウィリアムソニア（ベネチテス類） | *Williamsonia* | ベネチテス類（ソテツに似た植物） | 立っている植物 | ✅ | ✅ |
 | `ginkgo` | イチョウの仲間 | *Ginkgo* | イチョウ類 | 立っている植物 | ✅ | ✅ |
+| `mesozoic-mammaliaforms` | 中生代の小型哺乳形類 | *Mammaliaformes* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
+| `mesozoic-ornithopods` | 中生代の小型鳥脚類 | *Small Ornithopoda* | 広域の動物群（代表像） | 歩く（横から） | ✅ | ✅ |
 | `laurasia` | ローラシア大陸 | — | 現象 | 上空から見た大陸 | ✅ | 不要 |
 
 遠景（任意）：`backdrop-jurassic-land` ✅、`backdrop-jurassic-sea` ✅、`backdrop-jurassic-deep` ✅

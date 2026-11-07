@@ -2461,5 +2461,77 @@
     "slug": "backdrop-cretaceous-deep",
     "prompt": "Use case: scientific-educational. Asset type: cinematic game environment. Subject: wide cinematic empty Mesozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor, generous open centre for gameplay, dark foreground edges, realistic natural history film still. Style: photorealistic museum-quality natural history reconstruction, highly detailed tactile surfaces, natural lighting, restrained teal, indigo and amber palette. Landscape 16:9 framing. No text, labels, borders, watermarks, grass, modern mammals, modern birds or fantasy ornament.",
     "source": "C:\\Users\\ykwyu\\.codex\\generated_images\\01a1b488-4a62-7cd0-a7da-7607ef6c86ed\\exec-9a6732b5-3bfe-45b6-a286-1358858dec77.png"
+  },
+  {
+    "slug": "mesozoic-roachoids",
+    "source": "assets/artwork/archimylacris.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Blattodea and roach-like relatives"
+  },
+  {
+    "slug": "mesozoic-millipedes",
+    "source": "assets/artwork/pneumodesmus.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Diplopoda"
+  },
+  {
+    "slug": "mesozoic-scorpions",
+    "source": "assets/artwork/pulmonoscorpius.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Scorpiones"
+  },
+  {
+    "slug": "mesozoic-small-reptiles",
+    "source": "assets/artwork/petrolacosaurus.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Small terrestrial Diapsida"
+  },
+  {
+    "slug": "triassic-cynodonts",
+    "source": "assets/artwork/thrinaxodon.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Cynodontia"
+  },
+  {
+    "slug": "mesozoic-mammaliaforms",
+    "source": "assets/artwork/megazostrodon.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Mammaliaformes"
+  },
+  {
+    "slug": "mesozoic-rhynchocephalians",
+    "source": "assets/artwork/hylonomus.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Rhynchocephalia"
+  },
+  {
+    "slug": "mesozoic-small-theropods",
+    "source": "assets/artwork/coelophysis.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Small Theropoda"
+  },
+  {
+    "slug": "mesozoic-sauropodomorphs",
+    "source": "assets/artwork/plateosaurus.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Sauropodomorpha"
+  },
+  {
+    "slug": "mesozoic-ornithopods",
+    "source": "assets/artwork/iguanodon.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Small Ornithopoda"
+  },
+  {
+    "slug": "mesozoic-pterosaurs",
+    "source": "assets/artwork/eudimorphodon.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Pterosauria"
+  },
+  {
+    "slug": "mesozoic-crocodylomorphs",
+    "source": "assets/artwork/deinosuchus.jpg",
+    "prompt": "Existing reconstruction reused as a representative of a broader animal group. Not a new species-specific reconstruction.",
+    "representative_of": "Crocodylomorpha"
   }
 ]

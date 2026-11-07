@@ -1,4 +1,4 @@
-//! 古生代（カンブリア紀〜ペルム紀）の生きもの（図鑑の項目）と、上空・陸から撮る現象
+//! 古生代・中生代（カンブリア紀〜白亜紀）の生きもの（図鑑の項目）と、上空・陸から撮る現象
 //!
 //! 時代（百万年前）・すみか・産地はおおよそ。体の大きさは代表的な化石の長さ。
 
@@ -3539,7 +3539,7 @@ pub static SPECIES: &[Species] = &[
         name: L("エオラプトル", "Eoraptor", "始盗龙"),
         sci: "Eoraptor lunensis",
         group: L("恐竜（初期の竜盤類）", "Dinosaur (early saurischian)", "恐龙（早期蜥臀类）"),
-        len_cm: 100.0, t0: 231.0, t1: 229.0, hab: LAND, regions: &[Site(S_ISCHIGUALASTO)],
+        len_cm: 100.0, t0: 231.0, t1: 229.0, hab: LAND, regions: &[Site(S_ISCHIGUALASTO), Plate(SOUTH_AMERICA)],
         beh: Beh::Crawl, art: Art::Dino(0), col: [0.56, 0.48, 0.36], col2: [0.74, 0.64, 0.46], rarity: 2.0, shy: 1.8, speed: 0.3,
         desc: L("長さ1mほどの、最も古い恐竜の一つ。二本足ですばやく走り、虫や小動物を食べた。", "One of the oldest dinosaurs, about 1 m long, running fast on two legs after insects and small animals.", "体长约1米，是最古老的恐龙之一，用两条腿快速奔跑，捕食昆虫和小动物。"),
         fact: L("名前は「夜明けの泥棒」。恐竜の時代の夜明けにいたから。", "Its name means 'dawn thief' — it lived at the dawn of the dinosaurs.", "名字意为“黎明的盗贼”，因为它生活在恐龙时代的黎明。"),
@@ -3549,7 +3549,7 @@ pub static SPECIES: &[Species] = &[
         name: L("ヘレラサウルス", "Herrerasaurus", "埃雷拉龙"),
         sci: "Herrerasaurus ischigualastensis",
         group: L("恐竜（初期の肉食恐竜）", "Dinosaur (early predator)", "恐龙（早期肉食恐龙）"),
-        len_cm: 450.0, t0: 231.0, t1: 228.0, hab: LAND, regions: &[Site(S_ISCHIGUALASTO)],
+        len_cm: 450.0, t0: 231.0, t1: 228.0, hab: LAND, regions: &[Site(S_ISCHIGUALASTO), Plate(SOUTH_AMERICA)],
         beh: Beh::Crawl, art: Art::Dino(1), col: [0.52, 0.42, 0.32], col2: [0.72, 0.60, 0.44], rarity: 1.2, shy: 2.5, speed: 0.35,
         desc: L("長さ4mほどの、初期の大型の肉食恐竜。するどい歯と爪で獲物を襲った。", "An early large meat-eating dinosaur about 4 m long, hunting with sharp teeth and claws.", "体长约4米的早期大型肉食恐龙，用锋利的牙齿和爪子捕猎。"),
         fact: L("このころの陸では、恐竜はまだ少数派で、ワニの仲間のほうが強かった。", "At this time dinosaurs were still a minority; crocodile relatives ruled the land.", "这时恐龙在陆地上还是少数派，鳄类亲戚更为强大。"),
@@ -3961,7 +3961,7 @@ pub static SPECIES: &[Species] = &[
         name: L("アルゼンチノサウルス", "Argentinosaurus", "阿根廷龙"),
         sci: "Argentinosaurus huinculensis",
         group: L("恐竜（竜脚類）", "Dinosaur (titanosaur)", "恐龙（泰坦巨龙类）"),
-        len_cm: 3500.0, t0: 96.0, t1: 92.0, hab: LAND, regions: &[Site(S_PATAGONIA)],
+        len_cm: 3500.0, t0: 96.0, t1: 92.0, hab: LAND, regions: &[Site(S_PATAGONIA), Plate(SOUTH_AMERICA)],
         beh: Beh::Crawl, art: Art::Dino(3), col: [0.54, 0.50, 0.42], col2: [0.70, 0.66, 0.54], rarity: 0.8, shy: 1.0, speed: 0.05,
         desc: L("長さ35m・重さ70トンにもなったと考えられる、史上最大級の陸の動物。", "Possibly 35 m long and 70 tonnes — one of the largest land animals ever.", "体长可能达35米、体重70吨，是史上最大的陆地动物之一。"),
         fact: L("背骨の一つだけで、人の背の高さほどもある。", "A single one of its vertebrae is as tall as a person.", "仅一块脊椎骨就有一个人那么高。"),
@@ -3971,7 +3971,7 @@ pub static SPECIES: &[Species] = &[
         name: L("ギガノトサウルス", "Giganotosaurus", "南方巨兽龙"),
         sci: "Giganotosaurus carolinii",
         group: L("恐竜（大型の肉食恐竜）", "Dinosaur (large theropod)", "恐龙（大型兽脚类）"),
-        len_cm: 1250.0, t0: 99.0, t1: 95.0, hab: LAND, regions: &[Site(S_PATAGONIA)],
+        len_cm: 1250.0, t0: 99.0, t1: 95.0, hab: LAND, regions: &[Site(S_PATAGONIA), Plate(SOUTH_AMERICA)],
         beh: Beh::Crawl, art: Art::Dino(1), col: [0.54, 0.44, 0.34], col2: [0.76, 0.60, 0.42], rarity: 0.8, shy: 2.5, speed: 0.35,
         desc: L("ティラノサウルスに並ぶ大きさの、南アメリカの巨大な肉食恐竜。", "A giant South American meat-eater as big as Tyrannosaurus.", "体型与霸王龙相当的南美洲巨型肉食恐龙。"),
         fact: L("刃物のような薄い歯で、巨大な竜脚類の肉を切りさいた。", "Its blade-like teeth sliced flesh from giant sauropods.", "用刀刃般的薄齿切割巨型蜥脚类的肉。"),
@@ -4155,6 +4155,127 @@ pub static SPECIES: &[Species] = &[
         beh: Beh::Sessile, art: Art::Plant(14), col: [0.40, 0.32, 0.26], col2: [0.30, 0.50, 0.26], rarity: 3.0, shy: 0.0, speed: 0.0,
         desc: L("大きな白い花を咲かせた、初期の花の咲く木。甲虫が花粉を運んだ。", "An early flowering tree with big white blossoms, pollinated by beetles.", "开出大白花的早期开花树木，靠甲虫传粉。"),
         fact: L("白亜紀の終わりには、花の咲く植物が陸の植物の主役になっていた。", "By the end of the Cretaceous, flowering plants had become the main plants on land.", "到白垩纪末，开花植物已成为陆地植物的主角。"),
+    },
+    // 広域の動物群。既存の種の番号を保つため、必ず末尾に追加する。
+    Species {
+        slug: "mesozoic-roachoids",
+        name: L("中生代のゴキブリ型昆虫", "Mesozoic roach-like insects", "中生代蜚蠊型昆虫"),
+        sci: "Blattodea and roach-like relatives",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 3.0, t0: 251.9, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Arthro(4), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 2.2, shy: 1.2, speed: 0.1,
+        desc: L("落ち葉の間を歩き、植物のかけらなどを食べた小さな昆虫の仲間。", "Small insects that walked among leaf litter and fed on plant material.", "在落叶间行走、取食植物碎屑等的小型昆虫。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-millipedes",
+        name: L("中生代のヤスデの仲間", "Mesozoic millipedes", "中生代马陆类"),
+        sci: "Diplopoda",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 8.0, t0: 251.9, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Arthro(0), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 1.5, shy: 1.2, speed: 0.07,
+        desc: L("たくさんの足で林床を歩き、落ち葉などの分解を助けた動物。", "Many-legged forest-floor animals that helped break down fallen leaves.", "用许多足在林地行走、帮助分解落叶的动物。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-scorpions",
+        name: L("中生代のサソリの仲間", "Mesozoic scorpions", "中生代蝎类"),
+        sci: "Scorpiones",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 10.0, t0: 251.9, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Arthro(2), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 0.8, shy: 1.2, speed: 0.12,
+        desc: L("はさみと尾を持ち、地表で虫などを捕らえた小さな捕食者。", "Small ground predators with pincers and a tail, hunting insects and other prey.", "长着钳和尾巴、在地面捕食昆虫等的小型捕食者。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-small-reptiles",
+        name: L("中生代の小型爬虫類", "Mesozoic small reptiles", "中生代小型爬行动物"),
+        sci: "Small terrestrial Diapsida",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 25.0, t0: 251.9, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Tetrapod(2), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 1.6, shy: 1.2, speed: 0.18,
+        desc: L("恐竜だけでなく、虫などを食べる小さな爬虫類も地表で暮らしていた。", "Alongside larger animals, small reptiles lived on the ground and ate insects and other prey.", "除了大型动物，地面上也生活着捕食昆虫等的小型爬行动物。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "triassic-cynodonts",
+        name: L("三畳紀のキノドン類", "Triassic cynodonts", "三叠纪犬齿兽类"),
+        sci: "Cynodontia",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 45.0, t0: 251.9, t1: 201.4, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Mammal(3), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 1.2, shy: 1.2, speed: 0.15,
+        desc: L("哺乳類につながる仲間。三畳紀の陸には、小型のものから大きなものまでいた。", "Mammal relatives ranging from small to large forms on Triassic land.", "通向哺乳动物的亲缘类群，在三叠纪陆地上有大小不同的成员。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-mammaliaforms",
+        name: L("中生代の小型哺乳形類", "Mesozoic small mammaliaforms", "中生代小型哺乳形类"),
+        sci: "Mammaliaformes",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 15.0, t0: 201.4, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 1.5, shy: 1.2, speed: 0.18,
+        desc: L("毛に覆われた小さな動物たち。恐竜の足もとで、虫などを探して暮らした。", "Small furry animals that searched for insects and other food beneath the dinosaurs.", "披着毛的小动物，在恐龙脚下寻找昆虫等食物。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-rhynchocephalians",
+        name: L("中生代のムカシトカゲ類", "Mesozoic rhynchocephalians", "中生代喙头类"),
+        sci: "Rhynchocephalia",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 30.0, t0: 242.0, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Tetrapod(2), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 0.9, shy: 1.2, speed: 0.15,
+        desc: L("トカゲに似ているが別の仲間。中生代には今よりずっと多様だった。", "Reptiles resembling lizards but belonging to a different lineage, more diverse in the Mesozoic than today.", "外形像蜥蜴却属于不同支系，中生代时比今天更多样。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-small-theropods",
+        name: L("中生代の小型獣脚類", "Mesozoic small theropods", "中生代小型兽脚类"),
+        sci: "Small Theropoda",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 180.0, t0: 233.0, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Dino(0), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 1.1, shy: 1.2, speed: 0.32,
+        desc: L("二本足ですばやく動く恐竜の仲間。時代と地域によって異なる種類が暮らした。", "Agile two-legged dinosaurs, represented by different kinds in different times and regions.", "灵活的两足恐龙，不同时代和地区生活着不同种类。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-sauropodomorphs",
+        name: L("中生代の竜脚形類", "Mesozoic sauropodomorphs", "中生代蜥脚形类"),
+        sci: "Sauropodomorpha",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 650.0, t0: 233.0, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Dino(4), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 0.7, shy: 1.2, speed: 0.13,
+        desc: L("長い首を持つ植物食恐竜の大きな仲間。初期の二足歩行のものから、のちの巨大な竜脚類まで含む。", "A major group of long-necked plant eaters, from early two-legged forms to later giant sauropods.", "长颈植食恐龙的大类，包括早期两足成员和后来的巨型蜥脚类。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-ornithopods",
+        name: L("中生代の小型鳥脚類", "Mesozoic small ornithopods", "中生代小型鸟脚类"),
+        sci: "Small Ornithopoda",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 200.0, t0: 170.0, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Dino(9), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 1.2, shy: 1.2, speed: 0.25,
+        desc: L("くちばしと奥歯で植物を食べる恐竜の仲間。小さな種類も各地にいた。", "Beaked dinosaurs with chewing teeth; small forms lived in many regions.", "用喙和后牙吃植物的恐龙，许多地区都有小型成员。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-pterosaurs",
+        name: L("中生代の翼竜の仲間", "Mesozoic pterosaurs", "中生代翼龙类"),
+        sci: "Pterosauria",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 120.0, t0: 228.0, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Swim, art: Art::Pterosaur(0), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 0.7, shy: 1.2, speed: 0.55,
+        desc: L("膜の翼で飛ぶ爬虫類。空や水辺を利用し、時代ごとに違う仲間が広がった。", "Reptiles flying on membrane wings, with different forms using skies and shores through time.", "用膜翼飞行的爬行动物，不同时代的成员利用天空和水岸环境。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
+    },
+    Species {
+        slug: "mesozoic-crocodylomorphs",
+        name: L("中生代のワニ形類", "Mesozoic crocodylomorphs", "中生代鳄形类"),
+        sci: "Crocodylomorpha",
+        group: L("広域の動物群（代表像）", "Widespread animal group (representative)", "广布动物类群（代表形象）"),
+        len_cm: 160.0, t0: 230.0, t1: 66.0, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Archosaur(2), col: [0.48, 0.42, 0.30], col2: [0.72, 0.64, 0.46], rarity: 0.7, shy: 1.2, speed: 0.17,
+        desc: L("今のワニにつながる多様な仲間。水辺だけでなく、陸を歩いて暮らすものもいた。", "Diverse crocodile relatives, including forms that walked on land as well as shore dwellers.", "通向现代鳄类的多样类群，既有水岸成员也有陆地行走的成员。"),
+        fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
     },
 ];
 
@@ -4767,6 +4888,34 @@ pub fn place_text(sp: &Species) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Check the whole map at every Mesozoic stage boundary and midpoint,
+    /// including the poles and continental interiors away from fossil sites.
+    #[test]
+    fn mesozoic_land_has_diverse_animals_throughout_every_stage() {
+        let earth = Earth::new();
+        for stage in STAGES.iter().filter(|s| s.t0 <= 251.9) {
+            for t in [stage.t0, (stage.t0 + stage.t1) * 0.5, stage.t1] {
+                let mut land = 0;
+                let mut empty = 0;
+                for lat in (-85..=85).step_by(5) {
+                    for lon in (-180..180).step_by(5) {
+                        let spot = earth.sample(lon as f32, lat as f32, t);
+                        if spot.hab != Habitat::Land { continue; }
+                        land += 1;
+                        let animals = SPECIES.iter().filter(|sp| {
+                            !matches!(sp.art, Art::Plant(_) | Art::Mat | Art::Stromatolite | Art::Trace)
+                                && lives_here(sp, &earth, &spot, t)
+                        }).count();
+                        if animals == 0 { empty += 1; }
+                        assert!(animals >= 4, "only {animals} animals at {lon},{lat}, t={t}");
+                    }
+                }
+                assert!(land > 100, "insufficient land samples at t={t}");
+                println!("Mesozoic land t={t:.2}: {land} samples, {empty} empty");
+            }
+        }
+    }
 
     #[test]
     fn every_species_can_be_found() {
