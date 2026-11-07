@@ -1,3 +1,4 @@
+import { createNarrator } from './speech.mjs';
 // 地球史図鑑 — ブラウザ側のつなぎ目
 // Rust（WebAssembly）の描画命令を WebGL2 と Canvas2D に、ブラウザの入力を Rust に渡す。
 
@@ -314,7 +315,25 @@ function pickFile() {
 }
 
 // ------------------------------------------------------------------ Rust から呼ばれる関数
+const narrator = createNarrator(window.speechSynthesis, window.SpeechSynthesisUtterance);
+let voiceEnabled = true;
+try { voiceEnabled = localStorage.getItem('yyearth.voice') !== 'off'; } catch {}
+// Browsers require an explicit interaction before speech can begin.
+window.addEventListener('pointerdown', () => narrator.unlock(), { capture: true });
+window.addEventListener('keydown', () => narrator.unlock(), { capture: true });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) narrator.stop();
+});
+window.addEventListener('pagehide', () => narrator.stop());
+
 const env = {
+  js_speak: (p, l) => narrator.say(str(p, l), ['ja-JP', 'en-US', 'zh-CN'][curLang]),
+  js_voice_get: () => voiceEnabled ? 1 : 0,
+  js_voice_save: (enabled) => {
+    voiceEnabled = !!enabled;
+    if (!voiceEnabled) narrator.stop();
+    try { localStorage.setItem('yyearth.voice', voiceEnabled ? 'on' : 'off'); } catch {}
+  },
   js_save: (slot, p, l, mp, ml) => {
     views();
     const data = u8.slice(p, p + l).buffer;

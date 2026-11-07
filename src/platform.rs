@@ -4,6 +4,9 @@
 pub mod js {
     #[link(wasm_import_module = "env")]
     extern "C" {
+        pub fn js_speak(ptr: *const u8, len: usize);
+        pub fn js_voice_get() -> u32;
+        pub fn js_voice_save(enabled: u32);
         pub fn js_now() -> f64;
         pub fn js_random() -> u32;
         pub fn js_log(ptr: *const u8, len: usize, level: u32);
@@ -199,3 +202,23 @@ pub fn take_notes() -> Vec<String> {
 
 /// 操作の足跡（デスクトップ版の異常終了ログ用。ブラウザ版では記録しない）
 pub fn crumb(_s: String) {}
+
+/// Empty text stops current speech. Browser implementation waits for a user gesture.
+pub fn speak(text: &str) {
+    #[cfg(target_arch = "wasm32")]
+    unsafe { js::js_speak(text.as_ptr(), text.len()); }
+    #[cfg(not(target_arch = "wasm32"))]
+    let _ = text;
+}
+pub fn voice_enabled() -> bool {
+    #[cfg(target_arch = "wasm32")]
+    { return unsafe { js::js_voice_get() != 0 }; }
+    #[cfg(not(target_arch = "wasm32"))]
+    true
+}
+pub fn save_voice(enabled: bool) {
+    #[cfg(target_arch = "wasm32")]
+    unsafe { js::js_voice_save(enabled as u32); }
+    #[cfg(not(target_arch = "wasm32"))]
+    let _ = enabled;
+}

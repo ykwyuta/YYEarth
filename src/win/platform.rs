@@ -234,3 +234,55 @@ pub fn random_u32() -> u32 {
 pub fn crumb(s: String) {
     crate::crashlog::crumb(s);
 }
+
+/// Voice settings are independent of the save and language preferences.
+pub fn voice_enabled() -> bool {
+    std::fs::read_to_string(app_dir().join("voice.txt")).map_or(true, |s| s.trim() != "off")
+}
+pub fn save_voice(enabled: bool) {
+    let _ = write_atomic(&app_dir().join("voice.txt"), if enabled { b"on" } else { b"off" });
+}
+
+/// SAPI runs on its own COM thread, so speech never blocks the game loop.
+pub fn speak(text: &str) {
+    #[cfg(test)]
+    { let _ = text; }
+    #[cfg(not(test))]
+    {
+        use std::sync::{mpsc, OnceLock};
+        static SPEECH: OnceLock<mpsc::Sender<(String, crate::lang::Lang)>> = OnceLock::new();
+        let sender = SPEECH.get_or_init(|| {
+            let (tx, rx) = mpsc::channel::<(String, crate::lang::Lang)>();
+            let _ = std::thread::Builder::new().name("voice-guide".into()).spawn(move || unsafe {
+                use windows::Win32::{Media::Speech::*, System::Com::*};
+                if CoInitializeEx(None, COINIT_APARTMENTTHREADED).is_err() { return; }
+                {
+                    let voice: windows::core::Result<ISpVoice> = CoCreateInstance(&SpVoice, None, CLSCTX_ALL);
+                    if let Ok(voice) = voice {
+                        let _ = voice.SetRate(-2);
+                        while let Ok(mut request) = rx.recv() {
+                            while let Ok(newer) = rx.try_recv() { request = newer; }
+                            let (text, lang) = request;
+                            let category: windows::core::Result<ISpObjectTokenCategory> = CoCreateInstance(&SpObjectTokenCategory, None, CLSCTX_ALL);
+                            if let Ok(category) = category {
+                                let _ = category.SetId(w!("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices"), false);
+                                let filter = HSTRING::from(match lang {
+                                    crate::lang::Lang::Ja => "Language=411",
+                                    crate::lang::Lang::Zh => "Language=804",
+                                    crate::lang::Lang::En => "Language=409",
+                                });
+                                if let Ok(tokens) = category.EnumTokens(&filter, PCWSTR::null()) {
+                                    if let Ok(token) = tokens.Item(0) { let _ = voice.SetVoice(&token); }
+                                }
+                            }
+                            let _ = voice.Speak(&HSTRING::from(text), (SPF_ASYNC.0 | SPF_PURGEBEFORESPEAK.0 | SPF_IS_NOT_XML.0) as u32, None);
+                        }
+                    }
+                }
+                CoUninitialize();
+            });
+            tx
+        });
+        let _ = sender.send((text.to_string(), crate::lang::lang()));
+    }
+}

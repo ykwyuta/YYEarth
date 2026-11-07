@@ -23,6 +23,9 @@ jobs:
       - name: Test WebAssembly packaging
         run: node --test tools/package_wasm.test.mjs
 
+      - name: Test voice guide
+        run: node --test tools/speech.test.mjs
+
       - name: Build (WebAssembly)
         run: bash build.sh
 

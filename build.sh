@@ -20,7 +20,7 @@ cargo build --release --lib --target wasm32-unknown-unknown --config profile.rel
 
 rm -rf dist
 mkdir -p dist
-cp web/index.html web/main.js web/manifest.webmanifest web/icon-192.png web/icon-512.png web/apple-touch-icon.png dist/
+cp web/index.html web/main.js web/speech.mjs web/manifest.webmanifest web/icon-192.png web/icon-512.png web/apple-touch-icon.png dist/
 cp assets/app_icon.ico dist/favicon.ico
 cp target/wasm32-unknown-unknown/release/yyearth.wasm dist/
 # wasm-opt があればさらに小さくする（任意）
@@ -38,6 +38,9 @@ cat > dist/_headers <<'H'
 /wasm-manifest.json
   Cache-Control: no-cache
 /main.js
+  Cache-Control: no-cache
+/speech.mjs
+  Content-Type: text/javascript
   Cache-Control: no-cache
 /index.html
   Cache-Control: no-cache

@@ -66,6 +66,8 @@ enum Panel {
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 enum Act {
+    Voice,
+    ReplayVoice,
     NewGame,
     Continue,
     Import,
@@ -111,6 +113,7 @@ struct Button {
     x1: f32,
     y1: f32,
     act: Act,
+    label: String,
     enabled: bool,
 }
 
@@ -189,6 +192,11 @@ pub struct Game {
     save_dirty: bool,
     title_t: f32,
     tip: Option<String>,
+    voice: bool,
+    spoken: String,
+    dialog_voice: String,
+    hover_voice: Option<(String, f32)>,
+    voice_mouse: (f32, f32),
     seed: u32,
 }
 
@@ -329,6 +337,11 @@ impl Game {
             save_dirty: false,
             title_t: 0.0,
             tip: None,
+            voice: platform::voice_enabled(),
+            spoken: String::new(),
+            dialog_voice: String::new(),
+            hover_voice: None,
+            voice_mouse: (0.0, 0.0),
             seed: platform::random_u32(),
         };
         g.fit_world();
@@ -526,8 +539,72 @@ impl Game {
         }
         self.update(dt);
         self.save_tick(dt);
+        self.dialog_voice.clear();
         self.render();
+        self.voice_tick(dt);
         false
+    }
+
+    /// Read semantic content once per change; never enqueue the canvas text each frame.
+    fn voice_text(&self) -> String {
+        if let Some(p) = &self.photo {
+            if let Some(&(e, stars, fresh, _)) = p.lines.get(p.index) {
+                return tf!("{}。{}。星{}つ！ 下のボタンで次へ進もう。", "{}. {}. {} stars! Press the button below to continue.", "{}。{}。{}颗星！按下方按钮继续。",
+                    if fresh { t!("新発見", "New discovery", "新发现") } else { t!("撮影成功", "Photo taken", "拍摄成功") }, entry_name(e), stars);
+            }
+            return p.advice.unwrap_or("").to_string();
+        }
+        if !self.dialog_voice.is_empty() { return self.dialog_voice.clone(); }
+        let m = &MISSIONS[self.prog.mission];
+        match self.panel {
+            Panel::Entry(e) => {
+                let desc = if e < n_species() { SPECIES[e].desc.get() } else { PHENOMS[e - n_species()].desc.get() };
+                format!("{}。{}", entry_name(e), desc)
+            }
+            Panel::Missions => format!("{}。{}", m.title.get(), m.brief.get()),
+            Panel::Guide => t!("生きものの絵を押すと、お話が聞けるよ。", "Choose a creature's picture to hear about it.", "点击生物图片，听听它的故事吧。").to_string(),
+            Panel::Help => t!("地図で行きたいところを押そう。潜るボタンで海へ。生きものに近づいて、撮影ボタンで写真を撮ろう。左上のスピーカーで声を切り替え、丸い矢印でもう一度聞けるよ。", "Choose a place on the map. Press Dive, move closer to a creature, then press Photo. The speaker turns voice on or off. The round arrow repeats the guide.", "点击地图选择地点。按下潜，靠近生物，再按拍摄。左上角的喇叭开关语音，圆箭头可以重听。").to_string(),
+            _ => match self.screen {
+                Screen::Title => t!("地球史図鑑へようこそ！ はじめからのボタンで冒険に出発しよう。左上の丸い矢印で、もう一度聞けるよ。", "Welcome to YYEarth! Press New Game to start your adventure. The round arrow at the top left repeats the guide.", "欢迎来到地球史图鉴！按新游戏开始冒险。左上角圆箭头可以重听。").to_string(),
+                Screen::Map => tf!("{}。{}。右上の宿題の、行くボタンを押してみよう。着いたら潜るボタンで、生きものを探そう。", "{}. {}. Press Go on the task card at the top right. Then press Dive to look for creatures.", "{}。{}。点击右上角作业卡的前往。到达后按下潜寻找生物。", m.title.get(), m.brief.get()),
+                Screen::Dive => t!("生きものを見つけよう。進みたい方を押し続けると動くよ。生きものに近づいて、撮影ボタンを押そう。暗いときはライトをつけてね。", "Look for creatures. Hold the direction you want to move. Get closer, then press Photo. Turn on the light if it is dark.", "找找生物吧。按住想去的方向移动。靠近生物后按拍摄。太暗时记得开灯。").to_string(),
+            }
+        }
+    }
+
+    fn voice_tick(&mut self, dt: f32) {
+        if !self.voice { return; }
+        let text = self.voice_text();
+        // Include photo count so taking the same photograph still gives feedback.
+        let key = format!("{}:{:?}:{}:{}", lang::lang() as u8, self.panel, self.prog.photos, text);
+        if key != self.spoken {
+            self.spoken = key;
+            self.hover_voice = None;
+            self.voice_mouse = self.mouse;
+            platform::speak(&text);
+            return;
+        }
+        if self.mouse == self.voice_mouse { return; }
+        let label = if self.touch { None } else {
+            self.buttons.iter().rev().find(|b| b.enabled && self.mouse.0 >= b.x0 && self.mouse.0 <= b.x1 && self.mouse.1 >= b.y0 && self.mouse.1 <= b.y1).map(|b| match b.act {
+                Act::Voice => t!("声をつける、消す", "Turn voice on or off", "开关语音").to_string(),
+                Act::ReplayVoice => t!("もう一度聞く", "Listen again", "再听一次").to_string(),
+                Act::CycleMission(d) => if d < 0 { t!("前の宿題", "Previous task", "上一个作业") } else { t!("次の宿題", "Next task", "下一个作业") }.to_string(),
+                Act::StepStage(d) => if d < 0 { t!("昔の時代へ", "Earlier time", "更早的时代") } else { t!("次の時代へ", "Later time", "更晚的时代") }.to_string(),
+                Act::Lens(d) => if d < 0 { t!("小さく見る", "Zoom out", "缩小") } else { t!("大きく見る", "Zoom in", "放大") }.to_string(),
+                Act::MissionCard => t!("宿題を開く、閉じる", "Open or close the task", "展开或收起作业").to_string(),
+                _ => b.label.clone(),
+            })
+        };
+        if let Some(label) = label {
+            match &mut self.hover_voice {
+                Some((old, age)) if *old == label => {
+                    *age += dt;
+                    if *age >= 0.7 && *age - dt < 0.7 { platform::speak(&label); }
+                }
+                _ => self.hover_voice = Some((label, 0.0)),
+            }
+        } else { self.hover_voice = None; }
     }
 
     fn update(&mut self, dt: f32) {
@@ -545,7 +622,7 @@ impl Game {
         }
         if let Some(p) = &mut self.photo {
             p.age += dt;
-            p.left -= dt;
+            if !self.voice { p.left -= dt; }
             if p.left <= 0.0 {
                 self.next_photo();
             }
@@ -868,6 +945,8 @@ impl Game {
     }
 
     fn key_down(&mut self, k: u32) {
+        if k == 0x73 { self.do_act(Act::ReplayVoice); return; }
+        if k == 0x74 { self.do_act(Act::Voice); return; }
         let ctrl = self.keys[VK_CONTROL as usize];
         if ctrl && (k == VK_PLUS || k == VK_ADD) {
             self.gfx.adjust_scale(1);
@@ -973,6 +1052,16 @@ impl Game {
     fn do_act(&mut self, a: Act) {
         platform::crumb(format!("act {:?}", a));
         match a {
+            Act::Voice => {
+                self.voice = !self.voice;
+                platform::save_voice(self.voice);
+                platform::speak("");
+                self.spoken.clear();
+            }
+            Act::ReplayVoice => {
+                if !self.voice { self.voice = true; platform::save_voice(true); }
+                self.spoken.clear();
+            }
             Act::NewGame => {
                 if self.have_save && self.confirm_new <= 0.0 {
                     self.confirm_new = 4.0;
@@ -1098,6 +1187,7 @@ impl Game {
             Act::TimeAt(t) => self.travel_to(t),
             Act::Light => {
                 self.prog.light = !self.prog.light;
+                if self.voice { platform::speak(if self.prog.light { t!("ライトをつけたよ", "Light on", "灯打开了") } else { t!("ライトを消したよ", "Light off", "灯关上了") }); }
             }
             Act::Lens(d) => {
                 self.lens = (self.lens * 1.35f32.powi(d)).clamp(1.0, 8.0);
@@ -1419,6 +1509,10 @@ impl Game {
             self.render_photo();
             if self.photo.is_none() { self.render_notices(); }
             self.render_tip();
+            let y = 4.0;
+            let voice_h = self.top_h() - 8.0;
+            self.add_button(8.0, y, 56.0, y + voice_h, if self.voice { "🔊" } else { "🔇" }, Act::Voice, true, self.voice);
+            self.add_button(60.0, y, 108.0, y + voice_h, "↻", Act::ReplayVoice, true, false);
             self.gfx.d2d_end();
         }
         self.gfx.present();
@@ -1451,7 +1545,7 @@ impl Game {
         };
         let f = if y1 - y0 >= 40.0 { Font::BigCenter } else { Font::NormalCenter };
         self.gfx.text(label, x0 + 4.0, y0, x1 - x0 - 8.0, y1 - y0, f, tc);
-        self.buttons.push(Button { x0, y0, x1, y1, act, enabled });
+        self.buttons.push(Button { x0, y0, x1, y1, act, label: label.to_string(), enabled });
     }
 
     fn panel_box(&mut self, x0: f32, y0: f32, x1: f32, y1: f32) {
@@ -1860,7 +1954,7 @@ impl Game {
             // 紀の始まりの期へ
             let first = STAGES.iter().find(|s| (s.t0 - p.t0).abs() < 1e-3).unwrap_or(&STAGES[0]);
             let go = ((first.t0 + first.t1) * 0.5 * 10.0).round() / 10.0;
-            self.buttons.push(Button { x0: a, y0: strip_y0 - 2.0, x1: b, y1: strip_y1 + 2.0, act: Act::TimeAt(if cur { t } else { go }), enabled: self.travel.is_none() && !cur });
+            self.buttons.push(Button { x0: a, y0: strip_y0 - 2.0, x1: b, y1: strip_y1 + 2.0, act: Act::TimeAt(if cur { t } else { go }), label: nm.to_string(), enabled: self.travel.is_none() && !cur });
             let (mx, my) = self.mouse;
             if mx >= a && mx <= b && my >= strip_y0 - 2.0 && my <= strip_y1 + 2.0 {
                 self.tip = Some(tf!("{}（{}）\nクリックでこの紀へ", "{} ({})\nClick to travel to this period", "{}（{}）\n点击前往这个纪", nm, span_text(p.t0, p.t1)));
@@ -1927,7 +2021,7 @@ impl Game {
             let f1 = (i + 1) as f32 / n as f32;
             let tt = t0 - (f0 + f1) * 0.5 * (t0 - t1);
             let tt = ((tt / step).round() * step).clamp(t1, t0);
-            self.buttons.push(Button { x0: x0 + f0 * (x1 - x0), y0: bar_y0 - 8.0, x1: x0 + f1 * (x1 - x0), y1: bar_y1 + 4.0, act: Act::TimeAt(tt), enabled: self.travel.is_none() });
+            self.buttons.push(Button { x0: x0 + f0 * (x1 - x0), y0: bar_y0 - 8.0, x1: x0 + f1 * (x1 - x0), y1: bar_y1 + 4.0, act: Act::TimeAt(tt), label: ma_text(tt), enabled: self.travel.is_none() });
         }
         let bw = 44.0;
         self.add_button(x0 - 52.0, y0 + 8.0, x0 - 52.0 + bw, y1 - 4.0, "◀", Act::StepStage(-1), self.travel.is_none(), false);
@@ -1943,8 +2037,8 @@ impl Game {
         self.gfx.fill_rect(0.0, th - 1.5, w, th, [0.45, 0.85, 0.80, 0.4]);
         let t = self.prog.t;
         let left = if self.compact() { stage_at(t).name.get().to_string() } else { era_text(t) };
-        self.gfx.text(&left, 12.0, 4.0, 360.0, 18.0, Font::Small, DIM);
-        self.gfx.text(&ma_text(t), 12.0, 18.0, 360.0, 24.0, Font::Big, TEXT);
+        self.gfx.text(&left, 120.0, 4.0, 250.0, 18.0, Font::Small, DIM);
+        self.gfx.text(&ma_text(t), 120.0, 18.0, 250.0, 24.0, Font::Big, TEXT);
         // 右のボタン
         let bh = th - 12.0;
         let mut x = w - 8.0;
@@ -2098,7 +2192,7 @@ impl Game {
         self.gfx.fill_circle(sx, sy, r, if hover { [1.0, 0.8, 0.45, 1.0] } else { [0.95, 0.66, 0.28, 1.0] });
         self.gfx.stroke_circle(sx, sy, r - 7.0, 2.0, [1.0, 1.0, 1.0, 0.85]);
         self.gfx.text(t!("撮影", "Shoot", "拍摄"), sx - r, sy - 12.0, r * 2.0, 24.0, Font::BigCenter, [0.1, 0.06, 0.02, 1.0]);
-        self.buttons.push(Button { x0: sx - r, y0: sy - r, x1: sx + r, y1: sy + r, act: Act::Shoot, enabled: true });
+        self.buttons.push(Button { x0: sx - r, y0: sy - r, x1: sx + r, y1: sy + r, act: Act::Shoot, label: t!("撮影", "Photo", "拍摄").to_string(), enabled: true });
         // ファインダー
         if lens >= 1.8 {
             let m = 40.0;
@@ -2368,7 +2462,7 @@ impl Game {
                 self.gfx.text(t!("現象", "Event", "现象"), cx0 + cw - 44.0, cy0 + 4.0, 40.0, 14.0, Font::Small, DIM);
             }
             if vis_y1 > vis_y0 + 4.0 {
-                self.buttons.push(Button { x0: cx0, y0: vis_y0, x1: cx0 + cw, y1: vis_y1, act: Act::Entry(e), enabled: true });
+                self.buttons.push(Button { x0: cx0, y0: vis_y0, x1: cx0 + cw, y1: vis_y1, act: Act::Entry(e), label: entry_name(e).to_string(), enabled: true });
             }
         }
     }
@@ -2650,6 +2744,7 @@ impl Game {
     }
 
     fn dialog(&mut self, speaker: &str, text: &str, foot: &str) {
+        self.dialog_voice = format!("{speaker}。{text}。{foot}");
         let (w, h) = (self.w(), self.h());
         let pw = (w - 40.0).min(820.0);
         let x0 = (w - pw) * 0.5;

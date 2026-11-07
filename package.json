@@ -5,6 +5,7 @@
   "description": "地球史図鑑 — 時をめぐる観察カプセル（Rust → WebAssembly のブラウザ版）",
   "scripts": {
     "build": "bash build.sh",
+    "test:voice": "node --test tools/speech.test.mjs",
     "deploy": "bash build.sh && npx wrangler deploy"
   }
 }
