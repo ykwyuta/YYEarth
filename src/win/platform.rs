@@ -191,6 +191,11 @@ pub fn export_slot(slot: u8) {
 }
 
 /// 記録ファイルを選んで読み込む
+/// 「キャッシュを消して再読み込み」はブラウザ版だけ
+pub const CAN_RELOAD: bool = false;
+
+pub fn reload_clear() {}
+
 pub fn import_file() {
     let mut buf = [0u16; 1024];
     let filter: Vec<u16> = filter().encode_utf16().collect();

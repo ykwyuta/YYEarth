@@ -26,10 +26,6 @@ pub fn accent(stars:u8) -> [f32;4] {
     match stars { 3=>[1.0,0.76,0.30,1.0],2=>[0.44,0.76,1.0,1.0],_=>[0.38,0.93,0.79,1.0] }
 }
 
-pub fn visible_stars(age:f32,stars:u8) -> u8 {
-    (0..stars).filter(|i|age>=0.82+*i as f32*0.22).count() as u8
-}
-
 /// Card frame, rotating light rays and a deterministic burst of sparkles.
 pub fn draw_stage(g:&mut crate::gfx::Gfx,w:f32,h:f32,age:f32,stars:u8,fresh:bool) -> Reveal {
     let r=layout(w,h,age);
@@ -88,12 +84,9 @@ pub fn draw_stage(g:&mut crate::gfx::Gfx,w:f32,h:f32,age:f32,stars:u8,fresh:bool
 mod tests {
     use super::*;
     #[test]
-    fn flip_reveals_front_before_stars_arrive() {
+    fn flip_reveals_front() {
         assert!(!layout(1360.0,720.0,0.15).front);
         assert!(layout(1360.0,720.0,0.5).front);
-        assert_eq!(visible_stars(0.7,3),0);
-        assert_eq!(visible_stars(1.05,3),2);
-        assert_eq!(visible_stars(2.0,3),3);
     }
     #[test]
     fn card_stays_inside_playable_view() {

@@ -33,7 +33,7 @@ pub struct Mission {
     pub brief: L,
     /// 達成したときの先生のことば
     pub done: L,
-    /// (撮る対象, 必要な星の数)
+    /// (撮る対象, 1)：撮って図鑑に収録すれば合格
     pub targets: &'static [(Target, u8)],
 }
 
@@ -370,7 +370,7 @@ pub static MISSIONS: &[Mission] = &[
             "A splendid reef! But it will vanish when the seas lose their oxygen.",
             "真是壮观的礁啊。但这片礁将因海洋缺氧事件而消失。",
         ),
-        targets: &[(Sp(SP_ARCHAEOCYATH), 2), (Sp(SP_LINGULELLA), 1), (Sp(SP_HALKIERIA), 1)],
+        targets: &[(Sp(SP_ARCHAEOCYATH), 1), (Sp(SP_LINGULELLA), 1), (Sp(SP_HALKIERIA), 1)],
     },
     Mission {
         period: CAMBRIAN,
@@ -436,9 +436,9 @@ pub static MISSIONS: &[Mission] = &[
         period: CAMBRIAN,
         title: L("バージェスのもっと奥へ", "Deeper into the Burgess", "深入伯吉斯"),
         brief: L(
-            "バージェスにはまだまだ仲間がいます。そして最後に、海の王者アノマロカリスを、画面いっぱいに大きく撮影してきてください（★3）。",
-            "There are more Burgess animals to find. Finally, fill the frame with the king of the seas, Anomalocaris (★3).",
-            "伯吉斯还有更多动物。最后，请把海洋霸主奇虾拍得满满一画面（★3）。",
+            "バージェスにはまだまだ仲間がいます。そして最後に、海の王者アノマロカリスも撮影してきてください。",
+            "There are more Burgess animals to find. Finally, photograph the king of the seas, Anomalocaris.",
+            "伯吉斯还有更多动物。最后，也请拍下海洋霸主奇虾。",
         ),
         done: L(
             "大迫力の写真！ 学校のみんなもびっくりするでしょう。",
@@ -452,7 +452,7 @@ pub static MISSIONS: &[Mission] = &[
             (Sp(SP_LEANCHOILIA), 1),
             (Sp(SP_CAMBRORASTER), 1),
             (Sp(SP_JELLY), 1),
-            (Sp(SP_ANOMALOCARIS), 3),
+            (Sp(SP_ANOMALOCARIS), 1),
         ],
     },
     Mission {
@@ -505,16 +505,16 @@ pub static MISSIONS: &[Mission] = &[
         period: ORDOVICIAN,
         title: L("ゴンドワナの浅い海", "Gondwana's shallow sea", "冈瓦纳的浅海"),
         brief: L(
-            "4億6500万年前、ゴンドワナの西の浅い海（いまのボリビア）へ。とぼけた顔の魚サカバンバスピスを、顔がよく見えるように★2以上で撮ってください。それから岸辺に上がって、陸に生えはじめた最初の植物も探しましょう。",
-            "Visit the shallow sea off western Gondwana (now Bolivia) 465 million years ago. Photograph the goofy-faced fish Sacabambaspis at ★2 or better so we can see its face. Then go ashore and look for the first plants on land.",
-            "前往4亿6500万年前冈瓦纳西部的浅海（今玻利维亚）。请把呆萌的萨卡班巴鱼拍到★2以上，让它的脸清清楚楚。然后上岸寻找最早在陆地上生长的植物。",
+            "4億6500万年前、ゴンドワナの西の浅い海（いまのボリビア）へ。とぼけた顔の魚サカバンバスピスを、顔がよく見えるように撮ってください。それから岸辺に上がって、陸に生えはじめた最初の植物も探しましょう。",
+            "Visit the shallow sea off western Gondwana (now Bolivia) 465 million years ago. Photograph the goofy-faced fish Sacabambaspis so we can see its face. Then go ashore and look for the first plants on land.",
+            "前往4亿6500万年前冈瓦纳西部的浅海（今玻利维亚）。请把呆萌的萨卡班巴鱼拍下来，让它的脸清清楚楚。然后上岸寻找最早在陆地上生长的植物。",
         ),
         done: L(
             "あごのない魚と、地面にはりつく小さな植物。どちらも、のちの大きな進化の出発点です。",
             "A jawless fish and tiny plants hugging the ground — both are starting points for great things to come.",
             "没有颌的鱼和贴地生长的小植物，都是日后伟大演化的起点。",
         ),
-        targets: &[(Sp(SP_SACABAMBASPIS), 2), (Sp(SP_EARLY_LAND_PLANTS), 1)],
+        targets: &[(Sp(SP_SACABAMBASPIS), 1), (Sp(SP_EARLY_LAND_PLANTS), 1)],
     },
     Mission {
         period: ORDOVICIAN,
@@ -611,16 +611,16 @@ pub static MISSIONS: &[Mission] = &[
         period: SILURIAN,
         title: L("ウミサソリの入り江", "Lagoon of the sea scorpions", "海蝎的潟湖"),
         brief: L(
-            "シルル紀の終わり、ローレンシアの浅い入り江（いまのニューヨーク州）。ウミサソリのユーリプテルスを★2以上で撮影してください。群れで泳ぐ小魚ビルケニア、南のゴンドワナに生えた葉のある植物バラグワナチアも記録しましょう。",
-            "The end of the Silurian, in a shallow Laurentian lagoon (now New York). Photograph the sea scorpion Eurypterus at ★2 or better. Also record the shoaling little fish Birkenia and Baragwanathia, a leafy plant growing far south on Gondwana.",
-            "志留纪末，劳伦大陆的浅潟湖（今纽约州）。请把海蝎广翅鲎拍到★2以上。也记录成群游动的小鱼伯肯鱼，以及生长在南方冈瓦纳的有叶植物巴拉格瓦纳蕨。",
+            "シルル紀の終わり、ローレンシアの浅い入り江（いまのニューヨーク州）。ウミサソリのユーリプテルスを撮影してください。群れで泳ぐ小魚ビルケニア、南のゴンドワナに生えた葉のある植物バラグワナチアも記録しましょう。",
+            "The end of the Silurian, in a shallow Laurentian lagoon (now New York). Photograph the sea scorpion Eurypterus. Also record the shoaling little fish Birkenia and Baragwanathia, a leafy plant growing far south on Gondwana.",
+            "志留纪末，劳伦大陆的浅潟湖（今纽约州）。请拍下海蝎广翅鲎。也记录成群游动的小鱼伯肯鱼，以及生长在南方冈瓦纳的有叶植物巴拉格瓦纳蕨。",
         ),
         done: L(
             "シルル紀の図鑑も充実してきました。次はいよいよ「魚の時代」、デボン紀です！",
             "Your Silurian guide is looking great. Next comes the Devonian — the Age of Fishes!",
             "志留纪图鉴也充实起来了。接下来就是“鱼类时代”泥盆纪！",
         ),
-        targets: &[(Sp(SP_EURYPTERUS), 2), (Sp(SP_BIRKENIA), 1), (Sp(SP_BARAGWANATHIA), 1)],
+        targets: &[(Sp(SP_EURYPTERUS), 1), (Sp(SP_BIRKENIA), 1), (Sp(SP_BARAGWANATHIA), 1)],
     },
     // ======================================================== デボン紀
     Mission {
@@ -687,16 +687,16 @@ pub static MISSIONS: &[Mission] = &[
         period: DEVONIAN,
         title: L("水から陸へ", "From water to land", "从水到陆"),
         brief: L(
-            "川の河口や浅瀬に、陸へ上がる準備をしている魚たちがいます。ユーステノプテロンとボスリオレピス、そして浅瀬から顔を出すティクターリクを★2以上で撮ってください。",
-            "In estuaries and shallows, fish are getting ready to move onto land. Photograph Eusthenopteron and Bothriolepis, and Tiktaalik lifting its head from the shallows at ★2 or better.",
-            "在河口和浅滩，鱼儿们正在为登上陆地做准备。请拍摄真掌鳍鱼和沟鳞鱼，并把从浅滩探出头的提塔利克鱼拍到★2以上。",
+            "川の河口や浅瀬に、陸へ上がる準備をしている魚たちがいます。ユーステノプテロンとボスリオレピス、そして浅瀬から顔を出すティクターリクを撮ってください。",
+            "In estuaries and shallows, fish are getting ready to move onto land. Photograph Eusthenopteron and Bothriolepis, and Tiktaalik lifting its head from the shallows.",
+            "在河口和浅滩，鱼儿们正在为登上陆地做准备。请拍摄真掌鳍鱼和沟鳞鱼，以及从浅滩探出头的提塔利克鱼。",
         ),
         done: L(
             "ひれの中の骨が、やがて腕と足になります。わたしたちの腕のルーツはここにあるのです。",
             "The bones inside these fins will become arms and legs. The roots of your own arms are right here.",
             "鳍中的骨头终将变成手臂和腿。我们手臂的根源就在这里。",
         ),
-        targets: &[(Sp(SP_EUSTHENOPTERON), 1), (Sp(SP_BOTHRIOLEPIS), 1), (Sp(SP_TIKTAALIK), 2)],
+        targets: &[(Sp(SP_EUSTHENOPTERON), 1), (Sp(SP_BOTHRIOLEPIS), 1), (Sp(SP_TIKTAALIK), 1)],
     },
     Mission {
         period: DEVONIAN,
@@ -717,16 +717,16 @@ pub static MISSIONS: &[Mission] = &[
         period: DEVONIAN,
         title: L("デボン紀の海の王", "King of the Devonian seas", "泥盆纪的海洋之王"),
         brief: L(
-            "クリーブランドの海（いまのオハイオ州）には、鎧の頭を持つ巨大魚ダンクルオステウスがいます。古いサメのクラドセラケも探し、最後にダンクルオステウスを画面いっぱいに★3で撮影してください。用心深いので、そっと！",
-            "The Cleveland sea (now Ohio) is home to Dunkleosteus, the giant armour-headed fish. Find the early shark Cladoselache too, and finally fill the frame with Dunkleosteus for ★3. It is wary — go gently!",
-            "克利夫兰海（今俄亥俄州）中生活着头披骨甲的巨鱼邓氏鱼。也去找找早期鲨鱼裂口鲨，最后把邓氏鱼拍满画面达到★3。它很警觉，要悄悄靠近！",
+            "クリーブランドの海（いまのオハイオ州）には、鎧の頭を持つ巨大魚ダンクルオステウスがいます。古いサメのクラドセラケも探し、ダンクルオステウスも撮影してください。用心深いので、そっと！",
+            "The Cleveland sea (now Ohio) is home to Dunkleosteus, the giant armour-headed fish. Find the early shark Cladoselache too, and photograph Dunkleosteus itself. It is wary — go gently!",
+            "克利夫兰海（今俄亥俄州）中生活着头披骨甲的巨鱼邓氏鱼。也去找找早期鲨鱼裂口鲨，也要拍下邓氏鱼。它很警觉，要悄悄靠近！",
         ),
         done: L(
             "迫力満点の一枚です！ デボン紀の宿題、合格です。",
             "What a dramatic shot! Your Devonian assignments are complete.",
             "气势十足的一张照片！泥盆纪作业合格。",
         ),
-        targets: &[(Sp(SP_CLADOSELACHE), 1), (Sp(SP_DUNKLEOSTEUS), 3)],
+        targets: &[(Sp(SP_CLADOSELACHE), 1), (Sp(SP_DUNKLEOSTEUS), 1)],
     },
     // ======================================================== 石炭紀
     Mission {
@@ -793,16 +793,16 @@ pub static MISSIONS: &[Mission] = &[
         period: CARBONIFEROUS,
         title: L("空の王者とふしぎな怪物", "Sky king and mystery monster", "天空霸主与神秘怪物"),
         brief: L(
-            "石炭紀の終わり。メゾンクリークの三角州で正体不明の「トゥリーモンスター」を、フランスの沼地で巨大トンボのメガネウラを★2以上で撮影してください。木生シダの森も記録しましょう。",
-            "The end of the Carboniferous. Photograph the mysterious 'Tully monster' in the Mazon Creek delta and the giant griffinfly Meganeura in a French swamp at ★2 or better. Record the tree-fern forest too.",
-            "石炭纪末。在梅森溪三角洲拍摄身份不明的“塔利怪物”，在法国沼泽把巨型蜻蜓巨脉蜻蜓拍到★2以上。也记录树蕨森林吧。",
+            "石炭紀の終わり。メゾンクリークの三角州で正体不明の「トゥリーモンスター」を、フランスの沼地で巨大トンボのメガネウラを撮影してください。木生シダの森も記録しましょう。",
+            "The end of the Carboniferous. Photograph the mysterious 'Tully monster' in the Mazon Creek delta and the giant griffinfly Meganeura in a French swamp. Record the tree-fern forest too.",
+            "石炭纪末。在梅森溪三角洲拍摄身份不明的“塔利怪物”，在法国沼泽拍摄巨型蜻蜓巨脉蜻蜓。也记录树蕨森林吧。",
         ),
         done: L(
-            "メガネウラは飛ぶのがとても速いので、★2は見事です！ 石炭紀の宿題、合格です。",
-            "Meganeura is a very fast flier, so ★2 is superb! Your Carboniferous assignments are complete.",
-            "巨脉蜻蜓飞得非常快，拍到★2真了不起！石炭纪作业合格。",
+            "飛ぶのがとても速いメガネウラを撮れたのは見事です！ 石炭紀の宿題、合格です。",
+            "Catching the very fast Meganeura on camera is superb! Your Carboniferous assignments are complete.",
+            "拍到飞得非常快的巨脉蜻蜓，真了不起！石炭纪作业合格。",
         ),
-        targets: &[(Sp(SP_TULLIMONSTRUM), 1), (Sp(SP_MEGANEURA), 2), (Sp(SP_PSARONIUS), 1)],
+        targets: &[(Sp(SP_TULLIMONSTRUM), 1), (Sp(SP_MEGANEURA), 1), (Sp(SP_PSARONIUS), 1)],
     },
     // ======================================================== ペルム紀
     Mission {
@@ -824,16 +824,16 @@ pub static MISSIONS: &[Mission] = &[
         period: PERMIAN,
         title: L("テキサスの赤い大地", "The red lands of Texas", "得克萨斯的红色大地"),
         brief: L(
-            "2億9000万年前、パンゲアの赤い大地（いまのアメリカ・テキサス州）。背中に帆を持つディメトロドンを★2以上で撮ってください。水辺の両生類エリオプスとディプロカウルス、針葉樹ワルキアも記録しましょう。",
-            "Pangaea's red lands 290 million years ago (now Texas, USA). Photograph sail-backed Dimetrodon at ★2 or better, and record the waterside amphibians Eryops and Diplocaulus and the conifer Walchia.",
-            "2亿9000万年前盘古大陆的红色大地（今美国得克萨斯州）。请把背上长帆的异齿龙拍到★2以上，并记录水边的两栖动物引螈和笠头螈，以及针叶树瓦契杉。",
+            "2億9000万年前、パンゲアの赤い大地（いまのアメリカ・テキサス州）。背中に帆を持つディメトロドンを撮ってください。水辺の両生類エリオプスとディプロカウルス、針葉樹ワルキアも記録しましょう。",
+            "Pangaea's red lands 290 million years ago (now Texas, USA). Photograph sail-backed Dimetrodon, and record the waterside amphibians Eryops and Diplocaulus and the conifer Walchia.",
+            "2亿9000万年前盘古大陆的红色大地（今美国得克萨斯州）。请拍下背上长帆的异齿龙，并记录水边的两栖动物引螈和笠头螈，以及针叶树瓦契杉。",
         ),
         done: L(
             "ディメトロドンは恐竜ではなく、わたしたち哺乳類の遠い親戚。ちょっと親しみがわきますね。",
             "Dimetrodon isn't a dinosaur but a distant relative of us mammals. That makes it feel a bit like family!",
             "异齿龙不是恐龙，而是我们哺乳动物的远亲，是不是有点亲切感？",
         ),
-        targets: &[(Sp(SP_DIMETRODON), 2), (Sp(SP_ERYOPS), 1), (Sp(SP_DIPLOCAULUS), 1), (Sp(SP_WALCHIA), 1)],
+        targets: &[(Sp(SP_DIMETRODON), 1), (Sp(SP_ERYOPS), 1), (Sp(SP_DIPLOCAULUS), 1), (Sp(SP_WALCHIA), 1)],
     },
     Mission {
         period: PERMIAN,
@@ -907,12 +907,12 @@ pub static MISSIONS: &[Mission] = &[
         period: TRIASSIC,
         title: L("最初の恐竜", "The first dinosaurs", "最早的恐龙"),
         brief: L(
-            "2億3000万年前、パンゲアの南（いまのアルゼンチン）。ついに恐竜が現れました。小さなエオラプトルと、大きなヘレラサウルスを★2以上で撮影してください。",
-            "Southern Pangaea 230 million years ago (now Argentina). The dinosaurs have finally arrived! Photograph little Eoraptor and big Herrerasaurus at ★2 or better.",
-            "2亿3000万年前盘古大陆南部（今阿根廷）。恐龙终于登场了！请把小小的始盗龙和大大的埃雷拉龙拍到★2以上。",
+            "2億3000万年前、パンゲアの南（いまのアルゼンチン）。ついに恐竜が現れました。小さなエオラプトルと、大きなヘレラサウルスを撮影してください。",
+            "Southern Pangaea 230 million years ago (now Argentina). The dinosaurs have finally arrived! Photograph little Eoraptor and big Herrerasaurus.",
+            "2亿3000万年前盘古大陆南部（今阿根廷）。恐龙终于登场了！请把小小的始盗龙和大大的埃雷拉龙拍摄下来。",
         ),
         done: L("これが、1億6000万年続く恐竜の時代の始まりです。", "This is the start of the dinosaurs' 160-million-year reign.", "这就是持续1亿6000万年的恐龙时代的开端。"),
-        targets: &[(Sp(SP_EORAPTOR), 2), (Sp(SP_HERRERASAURUS), 2)],
+        targets: &[(Sp(SP_EORAPTOR), 1), (Sp(SP_HERRERASAURUS), 1)],
     },
     Mission {
         period: TRIASSIC,
@@ -974,23 +974,23 @@ pub static MISSIONS: &[Mission] = &[
         period: JURASSIC,
         title: L("モリソンの巨人たち", "Giants of the Morrison", "莫里森的巨人们"),
         brief: L(
-            "1億5200万年前、北アメリカの大平原。巨大な竜脚類ディプロドクス（★2以上）とブラキオサウルス、背中に板を持つステゴサウルス、そして肉食恐竜アロサウルスを記録しましょう。",
-            "The great plains of North America 152 million years ago. Record giant Diplodocus (★2 or better) and Brachiosaurus, plated Stegosaurus, and the predator Allosaurus.",
-            "1亿5200万年前北美洲大平原。记录巨型蜥脚类梁龙（★2以上）和腕龙、背有骨板的剑龙，以及肉食恐龙异特龙。",
+            "1億5200万年前、北アメリカの大平原。巨大な竜脚類ディプロドクスとブラキオサウルス、背中に板を持つステゴサウルス、そして肉食恐竜アロサウルスを記録しましょう。",
+            "The great plains of North America 152 million years ago. Record giant Diplodocus and Brachiosaurus, plated Stegosaurus, and the predator Allosaurus.",
+            "1亿5200万年前北美洲大平原。记录巨型蜥脚类梁龙和腕龙、背有骨板的剑龙，以及肉食恐龙异特龙。",
         ),
         done: L("地球の歴史で、いちばん大きな動物たちが大地を歩いた時代です。", "This was when the biggest animals in Earth's history walked the land.", "这是地球史上最大的动物在大地上行走的时代。"),
-        targets: &[(Sp(SP_DIPLODOCUS), 2), (Sp(SP_BRACHIOSAURUS), 1), (Sp(SP_STEGOSAURUS), 1), (Sp(SP_ALLOSAURUS), 1)],
+        targets: &[(Sp(SP_DIPLODOCUS), 1), (Sp(SP_BRACHIOSAURUS), 1), (Sp(SP_STEGOSAURUS), 1), (Sp(SP_ALLOSAURUS), 1)],
     },
     Mission {
         period: JURASSIC,
         title: L("始祖鳥の潟", "The Archaeopteryx lagoon", "始祖鸟的潟湖"),
         brief: L(
-            "1億5000万年前、いまのドイツ南部の島々。恐竜と鳥の両方の特徴を持つ始祖鳥を★2以上で撮影してください。翼竜ランフォリンクスと、小さな恐竜コンプソグナトゥスもいます。",
-            "Islands of southern Germany 150 million years ago. Photograph Archaeopteryx — half dinosaur, half bird — at ★2 or better, along with the pterosaur Rhamphorhynchus and tiny Compsognathus.",
-            "1亿5000万年前的德国南部群岛。请把兼具恐龙与鸟类特征的始祖鸟拍到★2以上，还有喙嘴翼龙和小恐龙美颌龙。",
+            "1億5000万年前、いまのドイツ南部の島々。恐竜と鳥の両方の特徴を持つ始祖鳥を撮影してください。翼竜ランフォリンクスと、小さな恐竜コンプソグナトゥスもいます。",
+            "Islands of southern Germany 150 million years ago. Photograph Archaeopteryx — half dinosaur, half bird —, along with the pterosaur Rhamphorhynchus and tiny Compsognathus.",
+            "1亿5000万年前的德国南部群岛。请把兼具恐龙与鸟类特征的始祖鸟拍摄下来，还有喙嘴翼龙和小恐龙美颌龙。",
         ),
         done: L("鳥は、恐竜から生まれたのです。ジュラ紀の宿題、合格です！", "Birds came from dinosaurs. Your Jurassic assignments are complete!", "鸟类起源于恐龙。侏罗纪作业合格！"),
-        targets: &[(Sp(SP_ARCHAEOPTERYX), 2), (Sp(SP_RHAMPHORHYNCHUS), 1), (Sp(SP_COMPSOGNATHUS), 1)],
+        targets: &[(Sp(SP_ARCHAEOPTERYX), 1), (Sp(SP_RHAMPHORHYNCHUS), 1), (Sp(SP_COMPSOGNATHUS), 1)],
     },
     // ======================================================== 白亜紀
     Mission {
@@ -1008,12 +1008,12 @@ pub static MISSIONS: &[Mission] = &[
         period: CRETACEOUS,
         title: L("南の大陸の巨人", "Giants of the southern continents", "南方大陆的巨人"),
         brief: L(
-            "白亜紀の中ごろ、分かれていくゴンドワナの大陸へ。アフリカの大河の帆を持つスピノサウルス、南アメリカの史上最大級の恐竜アルゼンチノサウルス（★2以上）とギガノトサウルスを探してください。",
-            "Mid-Cretaceous Gondwana, breaking apart. Find sail-backed Spinosaurus in Africa's great rivers, and in South America record-breaking Argentinosaurus (★2 or better) and Giganotosaurus.",
-            "白垩纪中期，分裂中的冈瓦纳大陆。寻找非洲大河中背有大帆的棘龙，以及南美洲史上最大级的阿根廷龙（★2以上）和南方巨兽龙。",
+            "白亜紀の中ごろ、分かれていくゴンドワナの大陸へ。アフリカの大河の帆を持つスピノサウルス、南アメリカの史上最大級の恐竜アルゼンチノサウルスとギガノトサウルスを探してください。",
+            "Mid-Cretaceous Gondwana, breaking apart. Find sail-backed Spinosaurus in Africa's great rivers, and in South America record-breaking Argentinosaurus and Giganotosaurus.",
+            "白垩纪中期，分裂中的冈瓦纳大陆。寻找非洲大河中背有大帆的棘龙，以及南美洲史上最大级的阿根廷龙和南方巨兽龙。",
         ),
         done: L("大陸が分かれると、それぞれの大陸で恐竜も別々の進化をしていきました。", "As the continents separated, dinosaurs evolved differently on each one.", "大陆分离后，各大陆上的恐龙也各自演化。"),
-        targets: &[(Sp(SP_SPINOSAURUS), 1), (Sp(SP_ARGENTINOSAURUS), 2), (Sp(SP_GIGANOTOSAURUS), 1)],
+        targets: &[(Sp(SP_SPINOSAURUS), 1), (Sp(SP_ARGENTINOSAURUS), 1), (Sp(SP_GIGANOTOSAURUS), 1)],
     },
     Mission {
         period: CRETACEOUS,
@@ -1030,27 +1030,27 @@ pub static MISSIONS: &[Mission] = &[
         period: CRETACEOUS,
         title: L("ゴビの砂丘", "The Gobi dunes", "戈壁沙丘"),
         brief: L(
-            "7300万年前、いまのモンゴルの砂丘。羽毛を持つ肉食恐竜ヴェロキラプトルを★2以上で、その獲物プロトケラトプスと一緒に撮影してください。それから上空からローラシア大陸の全体を撮りましょう。",
-            "The dunes of Mongolia 73 million years ago. Photograph feathered Velociraptor at ★2 or better along with its prey Protoceratops, then photograph the whole of Laurasia from the sky.",
-            "7300万年前的蒙古沙丘。请把长羽毛的伶盗龙拍到★2以上，连同它的猎物原角龙一起，然后从高空拍下整个劳亚大陆。",
+            "7300万年前、いまのモンゴルの砂丘。羽毛を持つ肉食恐竜ヴェロキラプトルを、その獲物プロトケラトプスと一緒に撮影してください。それから上空からローラシア大陸の全体を撮りましょう。",
+            "The dunes of Mongolia 73 million years ago. Photograph feathered Velociraptor along with its prey Protoceratops, then photograph the whole of Laurasia from the sky.",
+            "7300万年前的蒙古沙丘。请把长羽毛的伶盗龙拍摄下来，连同它的猎物原角龙一起，然后从高空拍下整个劳亚大陆。",
         ),
         done: L("映画のヴェロキラプトルとちがって、本物は七面鳥ほどの大きさで、羽毛がありました。", "Unlike in the movies, the real Velociraptor was turkey-sized and feathered.", "与电影里不同，真正的伶盗龙只有火鸡那么大，而且长着羽毛。"),
-        targets: &[(Sp(SP_VELOCIRAPTOR), 2), (Sp(SP_PROTOCERATOPS), 1), (Ph(P_LAURASIA), 1)],
+        targets: &[(Sp(SP_VELOCIRAPTOR), 1), (Sp(SP_PROTOCERATOPS), 1), (Ph(P_LAURASIA), 1)],
     },
     Mission {
         period: CRETACEOUS,
         title: L("中生代の終わり", "The end of the Mesozoic", "中生代的终结"),
         brief: L(
-            "最後の課題です。6600万年前、北アメリカのヘルクリーク。王者ティラノサウルスを画面いっぱいに★3で、そしてトリケラトプスを撮影したら、インドの大噴火と、小惑星の衝突を上空から記録してください。",
-            "Your final assignment. Hell Creek, North America, 66 million years ago. Fill the frame with Tyrannosaurus for ★3 and photograph Triceratops, then record from the sky the eruptions in India and the asteroid impact.",
-            "最后的课题。6600万年前北美洲的地狱溪。请把霸王龙拍满画面达到★3，再拍下三角龙，然后从高空记录印度的大喷发和小行星撞击。",
+            "最後の課題です。6600万年前、北アメリカのヘルクリーク。王者ティラノサウルスを画面いっぱいに、そしてトリケラトプスを撮影したら、インドの大噴火と、小惑星の衝突を上空から記録してください。",
+            "Your final assignment. Hell Creek, North America, 66 million years ago. Fill the frame with Tyrannosaurus and photograph Triceratops, then record from the sky the eruptions in India and the asteroid impact.",
+            "最后的课题。6600万年前北美洲的地狱溪。请把霸王龙拍满画面，再拍下三角龙，然后从高空记录印度的大喷发和小行星撞击。",
         ),
         done: L(
             "地球史図鑑、古生代と中生代の宿題すべて合格です！ 鳥以外の恐竜はここで姿を消し、生きのびた小さな哺乳類と鳥の時代、新生代が始まります。次の旅も楽しみにしていてください。",
             "Every Paleozoic and Mesozoic assignment passed! The non-bird dinosaurs vanish here, and the age of the surviving mammals and birds — the Cenozoic — begins. Look forward to your next journey.",
             "古生代和中生代的作业全部合格！非鸟恐龙在此消失，幸存的小型哺乳动物和鸟类的时代——新生代开始了。敬请期待下一段旅程。",
         ),
-        targets: &[(Sp(SP_TYRANNOSAURUS), 3), (Sp(SP_TRICERATOPS), 1), (Ph(P_DECCAN), 1), (Ph(P_CHICXULUB), 1)],
+        targets: &[(Sp(SP_TYRANNOSAURUS), 1), (Sp(SP_TRICERATOPS), 1), (Ph(P_DECCAN), 1), (Ph(P_CHICXULUB), 1)],
     },
 ];
 

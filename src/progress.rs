@@ -1,4 +1,4 @@
-//! 進み具合（図鑑の星・宿題・時と場所）と、その記録の読み書き
+//! 進み具合（図鑑の収録・宿題・時と場所）と、その記録の読み書き
 use crate::life::{n_entries, n_species};
 use crate::mission::{mission_done, MISSIONS};
 use crate::save::{RResult, Reader, Writer};
@@ -13,11 +13,11 @@ const V2_SPECIES: usize = 99;
 
 #[derive(Clone)]
 pub struct Progress {
-    /// 図鑑の項目ごとの、いちばんよい写真の星（0 は未収録）
+    /// 図鑑の項目ごとの、収録済みか（1 が収録済み、0 が未収録。以前の版の星 1〜3 は 1 として読む）
     pub stars: Vec<u8>,
     /// まだ図鑑で見ていない新しい項目
     pub fresh: Vec<bool>,
-    /// 選んでいる宿題（どの順番でも取り組める。合格したかは写真の星から決まる）
+    /// 選んでいる宿題（どの順番でも取り組める。合格したかは図鑑の収録から決まる）
     pub mission: usize,
     /// いまの時代（百万年前）
     pub t: f32,
@@ -37,9 +37,10 @@ impl Progress {
         self.stars.iter().filter(|&&s| s > 0).count()
     }
 
-    /// 写真を図鑑に収録する。新しい項目か、星が増えたら true
+    /// 写真を図鑑に収録する。(新しい項目か, 記録が変わったか)
     pub fn record(&mut self, entry: usize, stars: u8) -> (bool, bool) {
         let old = self.stars[entry];
+        let stars = stars.min(1);
         if stars > old {
             self.stars[entry] = stars;
             if old == 0 {
@@ -51,7 +52,7 @@ impl Progress {
         }
     }
 
-    /// その宿題に合格しているか（写真の星は減らないので、一度合格すればずっと合格）
+    /// その宿題に合格しているか（収録は消えないので、一度合格すればずっと合格）
     pub fn is_done(&self, i: usize) -> bool {
         mission_done(&MISSIONS[i], &self.stars)
     }
@@ -129,7 +130,7 @@ impl Progress {
         };
         let n = r.len(4096)?;
         for i in 0..n {
-            let s = r.u8()?.min(3);
+            let s = r.u8()?.min(1);
             let f = r.bool()?;
             let j = if i >= saved_species { n_species() + (i - saved_species) } else { i };
             if j < p.stars.len() {
@@ -207,9 +208,9 @@ mod tests {
         w.bool(true);
         w.bool(false);
         let p = Progress::from_bytes(&w.buf).unwrap();
-        assert_eq!(p.stars[50], 3);
+        assert_eq!(p.stars[50], 1);
         assert_eq!(p.stars[99], 0);
-        assert_eq!(p.stars[n_species() + crate::life::P_GONDWANA_ICE], 3);
+        assert_eq!(p.stars[n_species() + crate::life::P_GONDWANA_ICE], 1);
         assert_eq!(p.mission, 30);
     }
 
@@ -232,10 +233,10 @@ mod tests {
         w.bool(true);
         w.bool(false);
         let p = Progress::from_bytes(&w.buf).unwrap();
-        assert_eq!(p.stars[16], 2);
+        assert_eq!(p.stars[16], 1);
         assert_eq!(p.stars[36], 0);
-        assert_eq!(p.stars[n_species() + crate::life::P_GONDWANA], 2);
-        assert_eq!(p.stars[n_species() + crate::life::P_BARREN], 2);
+        assert_eq!(p.stars[n_species() + crate::life::P_GONDWANA], 1);
+        assert_eq!(p.stars[n_species() + crate::life::P_BARREN], 1);
         assert_eq!(p.mission, 10);
         assert_eq!(p.t, 486.0);
     }
@@ -270,7 +271,7 @@ mod tests {
         p.mission = 0;
         p.select_next(-1);
         assert_eq!(p.mission, last - 1);
-        // 記録を読み直しても、合格は星から決まる
+        // 記録を読み直しても、合格は図鑑の収録から決まる
         let q = Progress::from_bytes(&p.to_bytes()).unwrap();
         assert!(q.is_done(last) && !q.all_clear());
     }

@@ -156,12 +156,9 @@ pub struct ShotResult {
     pub eruption: bool,
 }
 
+/// 図鑑に収録できる写りなら 1、そうでなければ 0（星の段階はやめ、収録したかどうかだけにした）
 pub fn stars_of(score: f32) -> u8 {
-    if score >= 78.0 {
-        3
-    } else if score >= 55.0 {
-        2
-    } else if score >= 30.0 {
+    if score >= 30.0 {
         1
     } else {
         0
