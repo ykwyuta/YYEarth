@@ -1,4 +1,4 @@
-# 画像の注文書（古生代）
+# 画像の注文書（古生代・中生代）
 
 このファイルは `cargo test --lib write_asset_requests -- --ignored` でゲームのデータから作り直せます（手で書き換えない）。ツール用の同じ内容が `assets/requests.json` にあります。
 
@@ -12,9 +12,9 @@
 
 ## 進み具合
 
-- 図鑑の画像：225/225（生きもの212・現象13）
-- 観察用スプライト：212/212
-- 遠景（任意）：16/16
+- 図鑑の画像：302/302（生きもの283・現象19）
+- 観察用スプライト：283/283
+- 遠景（任意）：25/25
 
 ## カンブリア紀（Cambrian）
 
@@ -250,7 +250,6 @@
 | `ditomopyge` | ディトモピゲ | *Ditomopyge* | 三葉虫 | 歩く（横から） | ✅ | ✅ |
 | `inostrancevia` | イノストランケビア | *Inostrancevia alexandri* | 単弓類（ゴルゴノプス類） | 歩く（横から） | ✅ | ✅ |
 | `scutosaurus` | スクトサウルス | *Scutosaurus karpinskii* | 爬虫類（パレイアサウルス類） | 歩く（横から） | ✅ | ✅ |
-| `lystrosaurus` | リストロサウルス | *Lystrosaurus* | 単弓類（ディキノドン類） | 歩く（横から） | ✅ | ✅ |
 | `leptodus` | レプトドゥス | *Leptodus* | 腕足動物 | 海底に固着 | ✅ | ✅ |
 | `waagenoceras` | ワーゲノセラス | *Waagenoceras* | 頭足類（アンモノイド） | 泳ぐ・漂う（横から） | ✅ | ✅ |
 | `waagenophyllum` | ワーゲノフィルム | *Waagenophyllum* | 四放サンゴ（群体） | 海底に固着 | ✅ | ✅ |
@@ -280,6 +279,105 @@
 | `siberian-traps` | シベリアの大噴火 | — | 現象 | 巨大噴火 | ✅ | 不要 |
 
 遠景（任意）：`backdrop-permian-land` ✅、`backdrop-permian-sea` ✅、`backdrop-permian-deep` ✅
+
+## 三畳紀（Triassic）
+
+| slug | 名前 | 学名 | 種類 | 観察での姿 | 図鑑 jpg | スプライト png |
+|---|---|---|---|---|---|---|
+| `lystrosaurus` | リストロサウルス | *Lystrosaurus* | 単弓類（ディキノドン類） | 歩く（横から） | ✅ | ✅ |
+| `thrinaxodon` | トリナクソドン | *Thrinaxodon liorhinus* | 単弓類（キノドン類） | 歩く（横から） | ✅ | ✅ |
+| `pleuromeia` | プレウロメイア | *Pleuromeia* | ヒカゲノカズラ類 | 立っている植物 | ✅ | ✅ |
+| `triadobatrachus` | トリアドバトラクス | *Triadobatrachus massinoti* | 両生類（カエルの祖先） | 歩く（横から） | ✅ | ✅ |
+| `cynognathus` | キノグナトゥス | *Cynognathus crateronotus* | 単弓類（キノドン類） | 歩く（横から） | ✅ | ✅ |
+| `mixosaurus` | ミクソサウルス | *Mixosaurus* | 魚竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `nothosaurus` | ノトサウルス | *Nothosaurus* | 偽竜類（海の爬虫類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `tanystropheus` | タニストロフェウス | *Tanystropheus* | 主竜形類（首の長い爬虫類） | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `placodus` | プラコドゥス | *Placodus gigas* | 板歯類（海の爬虫類） | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `ceratites` | セラタイト | *Ceratites nodosus* | 頭足類（アンモナイト） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `eoraptor` | エオラプトル | *Eoraptor lunensis* | 恐竜（初期の竜盤類） | 歩く（横から） | ✅ | ✅ |
+| `herrerasaurus` | ヘレラサウルス | *Herrerasaurus ischigualastensis* | 恐竜（初期の肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `coelophysis` | コエロフィシス | *Coelophysis bauri* | 恐竜（肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `plateosaurus` | プラテオサウルス | *Plateosaurus trossingensis* | 恐竜（竜脚形類） | 歩く（横から） | ✅ | ✅ |
+| `postosuchus` | ポストスクス | *Postosuchus kirkpatricki* | 偽鰐類（ワニの仲間） | 歩く（横から） | ✅ | ✅ |
+| `desmatosuchus` | デスマトスクス | *Desmatosuchus spurensis* | 偽鰐類（アエトサウルス類） | 歩く（横から） | ✅ | ✅ |
+| `eudimorphodon` | エウディモルフォドン | *Eudimorphodon ranzii* | 翼竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `shonisaurus` | ショニサウルス | *Shonisaurus popularis* | 魚竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `metoposaurus` | メトポサウルス | *Metoposaurus* | 両生類（分椎類） | 歩く（横から） | ✅ | ✅ |
+| `dicroidium` | ディクロイディウム | *Dicroidium* | 種子シダ類（木） | 立っている植物 | ✅ | ✅ |
+| `araucarioxylon` | アラウカリオキシロン（化石の森の木） | *Araucarioxylon arizonicum* | 針葉樹 | 立っている植物 | ✅ | ✅ |
+| `camp-eruption` | 中央大西洋の大噴火（CAMP） | — | 現象 | 巨大噴火 | ✅ | 不要 |
+| `gymnosperm-forest` | 恐竜時代の針葉樹とシダの森 | — | 現象 | 陸の景色 | ✅ | 不要 |
+
+遠景（任意）：`backdrop-triassic-land` ✅、`backdrop-triassic-sea` ✅、`backdrop-triassic-deep` ✅
+
+## ジュラ紀（Jurassic）
+
+| slug | 名前 | 学名 | 種類 | 観察での姿 | 図鑑 jpg | スプライト png |
+|---|---|---|---|---|---|---|
+| `megazostrodon` | メガゾストロドン | *Megazostrodon rudnerae* | 哺乳形類（初期の哺乳類） | 歩く（横から） | ✅ | ✅ |
+| `dilophosaurus` | ディロフォサウルス | *Dilophosaurus wetherilli* | 恐竜（肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `ichthyosaurus` | イクチオサウルス | *Ichthyosaurus communis* | 魚竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `plesiosaurus` | プレシオサウルス | *Plesiosaurus dolichodeirus* | 首長竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `dimorphodon` | ディモルフォドン | *Dimorphodon macronyx* | 翼竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `scelidosaurus` | スケリドサウルス | *Scelidosaurus harrisonii* | 恐竜（初期の装盾類） | 歩く（横から） | ✅ | ✅ |
+| `stenopterygius` | ステノプテリギウス | *Stenopterygius quadriscissus* | 魚竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `dapedium` | ダペディウム | *Dapedium* | 条鰭類（硬骨魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `passaloteuthis` | パッサロテウティス（ベレムナイト） | *Passaloteuthis* | 頭足類（ベレムナイト） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `dactylioceras` | ダクチリオセラス | *Dactylioceras commune* | 頭足類（アンモナイト） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `liopleurodon` | リオプレウロドン | *Liopleurodon ferox* | 首長竜（首の短いプリオサウルス類） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `leedsichthys` | リードシクティス | *Leedsichthys problematicus* | 条鰭類（硬骨魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `anchiornis` | アンキオルニス | *Anchiornis huxleyi* | 恐竜（羽毛のある小型の肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `castorocauda` | カストロカウダ | *Castorocauda lutrasimilis* | 哺乳形類（泳ぐ哺乳類） | 歩く（横から） | ✅ | ✅ |
+| `allosaurus` | アロサウルス | *Allosaurus fragilis* | 恐竜（肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `stegosaurus` | ステゴサウルス | *Stegosaurus stenops* | 恐竜（剣竜） | 歩く（横から） | ✅ | ✅ |
+| `diplodocus` | ディプロドクス | *Diplodocus carnegii* | 恐竜（竜脚類） | 歩く（横から） | ✅ | ✅ |
+| `brachiosaurus` | ブラキオサウルス | *Brachiosaurus altithorax* | 恐竜（竜脚類） | 歩く（横から） | ✅ | ✅ |
+| `archaeopteryx` | 始祖鳥（アーケオプテリクス） | *Archaeopteryx lithographica* | 鳥類（最古の鳥の一つ） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `rhamphorhynchus` | ランフォリンクス | *Rhamphorhynchus muensteri* | 翼竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `compsognathus` | コンプソグナトゥス | *Compsognathus longipes* | 恐竜（小型の肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `williamsonia` | ウィリアムソニア（ベネチテス類） | *Williamsonia* | ベネチテス類（ソテツに似た植物） | 立っている植物 | ✅ | ✅ |
+| `ginkgo` | イチョウの仲間 | *Ginkgo* | イチョウ類 | 立っている植物 | ✅ | ✅ |
+| `laurasia` | ローラシア大陸 | — | 現象 | 上空から見た大陸 | ✅ | 不要 |
+
+遠景（任意）：`backdrop-jurassic-land` ✅、`backdrop-jurassic-sea` ✅、`backdrop-jurassic-deep` ✅
+
+## 白亜紀（Cretaceous）
+
+| slug | 名前 | 学名 | 種類 | 観察での姿 | 図鑑 jpg | スプライト png |
+|---|---|---|---|---|---|---|
+| `iguanodon` | イグアノドン | *Iguanodon bernissartensis* | 恐竜（鳥脚類） | 歩く（横から） | ✅ | ✅ |
+| `sinosauropteryx` | シノサウロプテリクス | *Sinosauropteryx prima* | 恐竜（羽毛のある小型の肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `microraptor` | ミクロラプトル | *Microraptor gui* | 恐竜（4枚の翼を持つ小型恐竜） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `psittacosaurus` | プシッタコサウルス | *Psittacosaurus* | 恐竜（初期の角竜） | 歩く（横から） | ✅ | ✅ |
+| `confuciusornis` | コンフキウソルニス（孔子鳥） | *Confuciusornis sanctus* | 鳥類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `repenomamus` | レペノマムス | *Repenomamus giganticus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `archaefructus` | アルカエフルクトゥス（古果） | *Archaefructus sinensis* | 被子植物（初期の花の咲く植物） | 立っている植物 | ✅ | ✅ |
+| `spinosaurus` | スピノサウルス | *Spinosaurus aegyptiacus* | 恐竜（水辺の大型肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `argentinosaurus` | アルゼンチノサウルス | *Argentinosaurus huinculensis* | 恐竜（竜脚類） | 歩く（横から） | ✅ | ✅ |
+| `giganotosaurus` | ギガノトサウルス | *Giganotosaurus carolinii* | 恐竜（大型の肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `elasmosaurus` | エラスモサウルス | *Elasmosaurus platyurus* | 首長竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `tylosaurus` | ティロサウルス | *Tylosaurus proriger* | モササウルス類（海のトカゲ） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `pteranodon` | プテラノドン | *Pteranodon longiceps* | 翼竜 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `xiphactinus` | シファクティヌス | *Xiphactinus audax* | 条鰭類（硬骨魚） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `archelon` | アーケロン | *Archelon ischyros* | カメ（ウミガメ） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `cretoxyrhina` | クレトキシリナ | *Cretoxyrhina mantelli* | 軟骨魚類（サメ） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `baculites` | バキュリテス | *Baculites* | 頭足類（まっすぐなアンモナイト） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `mosasaurus` | モササウルス | *Mosasaurus hoffmannii* | モササウルス類（海のトカゲ） | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `velociraptor` | ヴェロキラプトル | *Velociraptor mongoliensis* | 恐竜（羽毛のある小型の肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `protoceratops` | プロトケラトプス | *Protoceratops andrewsi* | 恐竜（角竜） | 歩く（横から） | ✅ | ✅ |
+| `parasaurolophus` | パラサウロロフス | *Parasaurolophus walkeri* | 恐竜（鳥脚類・ハドロサウルス類） | 歩く（横から） | ✅ | ✅ |
+| `deinosuchus` | デイノスクス | *Deinosuchus* | ワニの仲間 | 歩く（横から） | ✅ | ✅ |
+| `tyrannosaurus` | ティラノサウルス | *Tyrannosaurus rex* | 恐竜（大型の肉食恐竜） | 歩く（横から） | ✅ | ✅ |
+| `triceratops` | トリケラトプス | *Triceratops horridus* | 恐竜（角竜） | 歩く（横から） | ✅ | ✅ |
+| `ankylosaurus` | アンキロサウルス | *Ankylosaurus magniventris* | 恐竜（鎧竜） | 歩く（横から） | ✅ | ✅ |
+| `edmontosaurus` | エドモントサウルス | *Edmontosaurus annectens* | 恐竜（鳥脚類・ハドロサウルス類） | 歩く（横から） | ✅ | ✅ |
+| `quetzalcoatlus` | ケツァルコアトルス | *Quetzalcoatlus northropi* | 翼竜（アズダルコ類） | 歩く（横から） | ✅ | ✅ |
+| `early-magnolia` | 初期のモクレンの仲間 | *Magnoliaceae (early)* | 被子植物（花の咲く木） | 立っている植物 | ✅ | ✅ |
+| `flowering-forest` | 花の咲く森 | — | 現象 | 陸の景色 | ✅ | 不要 |
+| `deccan-traps` | デカン・トラップの噴火 | — | 現象 | 巨大噴火 | ✅ | 不要 |
+| `chicxulub-impact` | チクシュルーブの衝突 | — | 現象 | 巨大噴火 | ✅ | 不要 |
+
+遠景（任意）：`backdrop-cretaceous-land` ✅、`backdrop-cretaceous-sea` ✅、`backdrop-cretaceous-deep` ✅
 
 ## 生成プロンプト（例）
 

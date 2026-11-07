@@ -93,6 +93,8 @@ pub struct Scene {
     pub t: f32,
     /// 噴火の近さ（0〜1）
     pub volcanic: f32,
+    /// Local strength of the Chicxulub impact, independent of volcanoes and lava.
+    pub impact: f32,
     /// 酸素の少ない暗い海
     pub anoxic: bool,
     /// 陸の植物の広がり（0〜1）
@@ -173,10 +175,12 @@ impl Scene {
         let n = (w / FSTEP) as usize + 2;
         let near_site = |s: usize| deg_dist(earth.site_lonlat(s, t), (spot.lon, spot.lat)) < 7.0;
         let cliff = hab == Habitat::Shelf && near_site(S_BURGESS) && t <= SITES[S_BURGESS].t0 + 0.5 && t >= SITES[S_BURGESS].t1 - 0.5;
-        let volcanic = match eruption_at(t) {
-            Some(er) => (1.0 - deg_dist(earth.site_lonlat(er.site, t), (spot.lon, spot.lat)) / 9.0).clamp(0.0, 1.0),
-            None => 0.0,
-        };
+        let strength = |impact| ERUPTIONS.iter()
+            .filter(|er| er.is_impact() == impact && t <= er.t0 + 1e-3 && t >= er.t1 - 1e-3)
+            .map(|er| (1.0 - deg_dist(earth.site_lonlat(er.site, t), (spot.lon, spot.lat)) / 9.0).clamp(0.0, 1.0))
+            .fold(0.0f32, f32::max);
+        let volcanic = strength(false);
+        let impact = strength(true);
         let land = hab == Habitat::Land;
         let icy = land && glacial(t) && spot.lat < -55.0;
         let arid = land && !icy && arid(t, spot.lat);
@@ -224,6 +228,7 @@ impl Scene {
             cap: Capsule { x: cap_x, y: cap_y, vx: 0.0, vy: 0.0, facing: 1.0, tilt: 0.0 },
             t: 0.0,
             volcanic,
+            impact,
             anoxic,
             veg,
             icy,
@@ -597,7 +602,7 @@ impl Scene {
         }
         best.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
         let landscape = self.hab == Habitat::Land;
-        let eruption = self.volcanic > 0.25 && self.lava.iter().any(|&(a, b, _)| b > vx0 && a < vx1);
+        let eruption = self.impact > 0.25 || (self.volcanic > 0.25 && self.lava.iter().any(|&(a, b, _)| b > vx0 && a < vx1));
         ShotResult { subjects: best, landscape, eruption }
     }
 
@@ -665,14 +670,17 @@ impl Scene {
         let deep = [0.02, 0.06, 0.12];
         if self.anoxic {
             (mix(top, [0.22, 0.30, 0.26], 0.6), [0.02, 0.03, 0.03])
-        } else if self.volcanic > 0.2 {
-            (mix(top, [0.42, 0.40, 0.34], self.volcanic * 0.6), deep)
+        } else if self.volcanic.max(self.impact) > 0.2 {
+            (mix(top, [0.42, 0.40, 0.34], self.volcanic.max(self.impact) * 0.6), deep)
         } else {
             (top, deep)
         }
     }
 
     fn sky_cols(&self) -> ([f32; 3], [f32; 3]) {
+        if self.impact > 0.2 {
+            return ([0.16, 0.19, 0.25], [0.90, 0.57, 0.27]);
+        }
         if self.icy {
             return ([0.52, 0.64, 0.80], [0.86, 0.90, 0.94]);
         }
@@ -697,6 +705,16 @@ impl Scene {
             let k = ((yh - y0) / 10.0).clamp(0.3, 1.0);
             let top = mix(hor, top, k);
             g.rect_vgrad(x0, sy0, x1, yh, c4(top, 1.0), c4(hor, 1.0));
+            if self.impact > 0.2 {
+                let hx = x0 + (x1-x0)*0.45;
+                let hy = yh-0.4;
+                let r = 0.45+(self.t*2.0).sin()*0.04;
+                g.line((hx-3.0, hy-3.0), (hx, hy), 0.22, [1.0, 0.65, 0.18, self.impact]);
+                g.radial(hx, hy, r*3.0, 32, [1.0, 0.95, 0.72, self.impact], [1.0, 0.40, 0.08, 0.0]);
+                g.circle(hx, hy, r, 24, [1.0, 0.98, 0.88, self.impact]);
+                let wave = 0.8+(self.t*0.4).fract()*2.5;
+                g.ring(hx, yh, wave, wave-0.06, 48, [1.0, 0.87, 0.62, self.impact*0.6]);
+            }
             if !self.has_water() {
                 g.rect(x0, yh, x1, y1, c4(hor, 1.0));
             }
@@ -1201,6 +1219,20 @@ mod tests {
         for d in [0.0, 10.0, 25.0, 30.0, 150.0, 3000.0] {
             assert!((decompress(compress(d)) - d).abs() < 0.01);
         }
+    }
+
+    #[test]
+    fn chicxulub_is_an_impact_and_never_a_lava_field() {
+        let earth = Earth::new();
+        let t = 66.025;
+        let (lon, lat) = earth.site_lonlat(S_CHICXULUB, t);
+        let sc = Scene::new(&earth, &earth.sample(lon, lat, t), t, 42);
+        assert!(eruption_at(t).unwrap().is_impact());
+        assert!(sc.impact > 0.99);
+        assert_eq!(sc.volcanic, 0.0);
+        assert!(sc.lava.is_empty());
+        let view = View { cx: sc.cap.x, cy: sc.cap.y, ppm: 100.0, w: 1200.0, h: 800.0 };
+        assert!(sc.shoot(&view, true).eruption);
     }
 
     #[test]

@@ -218,6 +218,12 @@ fn ease(t: f32) -> f32 {
     t * t * (3.0 - 2.0 * t)
 }
 
+/// Keep all nine periods readable, including English labels on small screens.
+fn period_tabs(width: f32) -> (usize, usize, f32) {
+    let cols = ((width / 128.0).floor() as usize).clamp(1, PERIODS.len());
+    (cols, PERIODS.len().div_ceil(cols), width / cols as f32)
+}
+
 fn entry_name(e: usize) -> &'static str {
     if e < n_species() {
         SPECIES[e].name.get()
@@ -256,15 +262,15 @@ fn backdrop_slug(sc: &Scene, t: f32) -> Option<&'static str> {
         if sc.icy {
             return first(&["backdrop-ice-land"]);
         }
-        let own = ["barren-land", "backdrop-ordovician-land", "backdrop-silurian-land", "backdrop-devonian-land", "backdrop-carboniferous-land", "backdrop-permian-land"][p];
+        let own = ["barren-land", "backdrop-ordovician-land", "backdrop-silurian-land", "backdrop-devonian-land", "backdrop-carboniferous-land", "backdrop-permian-land", "backdrop-triassic-land", "backdrop-jurassic-land", "backdrop-cretaceous-land"][p];
         // 植物のない大地の絵は、陸に植物が広がる前（シルル紀の前半まで）だけ使う
         return if veg_at(t) < 0.05 { first(&[own, "barren-land"]) } else { first(&[own]) };
     }
     if sc.depth > 100.0 {
-        let own = ["deep-sea", "backdrop-ordovician-deep", "backdrop-silurian-deep", "backdrop-devonian-deep", "backdrop-carboniferous-deep", "backdrop-permian-deep"][p];
+        let own = ["deep-sea", "backdrop-ordovician-deep", "backdrop-silurian-deep", "backdrop-devonian-deep", "backdrop-carboniferous-deep", "backdrop-permian-deep", "backdrop-triassic-deep", "backdrop-jurassic-deep", "backdrop-cretaceous-deep"][p];
         first(&[own, "deep-sea"])
     } else {
-        let own = ["shallow-sea", "backdrop-ordovician-sea", "backdrop-silurian-sea", "backdrop-devonian-sea", "backdrop-carboniferous-sea", "backdrop-permian-sea"][p];
+        let own = ["shallow-sea", "backdrop-ordovician-sea", "backdrop-silurian-sea", "backdrop-devonian-sea", "backdrop-carboniferous-sea", "backdrop-permian-sea", "backdrop-triassic-sea", "backdrop-jurassic-sea", "backdrop-cretaceous-sea"][p];
         first(&[own, "shallow-sea"])
     }
 }
@@ -1282,7 +1288,7 @@ impl Game {
                 }
             }
         }
-        self.follow = self.follow || matches!(tg, Target::Sp(_));
+        self.follow = !matches!(tg, Target::Ph(p) if matches!(PHENOMS[p].kind, PhKind::Continent(_)));
     }
 
     fn enter_dive(&mut self) {
@@ -1575,7 +1581,7 @@ impl Game {
         let sy = -2.0 * z / h;
         self.gfx.set_xform(sx, sy, -self.cam.0 * sx, -self.cam.1 * sy);
         // タイトル画面では大陸がゆっくり動き続ける
-        let t = if self.screen == Screen::Title { 395.0 - (self.title_t * 0.05).sin() * 140.0 } else { self.prog.t };
+        let t = if self.screen == Screen::Title { 302.0 - (self.title_t * 0.04).sin() * 230.0 } else { self.prog.t };
         let g = &mut self.gfx;
         g.draw_textured(&self.ocean_tex, 0.0, 0.0, MAP_W, MAP_H, [1.0, 1.0, 1.0, 1.0], true);
         // 経緯線
@@ -1606,13 +1612,19 @@ impl Game {
             g.rect_vgrad(0.0, y55, MAP_W, MAP_H - 2.0 * DEG, [0.92, 0.96, 1.0, 0.0], [0.92, 0.96, 1.0, 0.72]);
             g.rect(0.0, MAP_H - 2.0 * DEG, MAP_W, MAP_H, [0.92, 0.96, 1.0, 0.72]);
         }
-        // 大噴火
+        // 大噴火と小惑星衝突（衝突には飛来する火球と衝撃波）
         if let Some(er) = eruption_at(t) {
             let (lon, lat) = self.earth.site_lonlat(er.site, t);
             let (mx, my) = lonlat_to_map(lon, lat);
             let tm = (er.t0 + er.t1) * 0.5;
             let k = 1.0 - ((t - tm).abs() / ((er.t0 - er.t1) * 0.5)).clamp(0.0, 1.0) * 0.5;
             let g = &mut self.gfx;
+            if er.is_impact() {
+                g.line((mx-150.0, my-130.0), (mx, my), 6.0, [1.0, 0.85, 0.45, 0.85]);
+                g.radial(mx, my, 45.0, 32, [1.0, 1.0, 0.9, 0.95], [1.0, 0.6, 0.12, 0.0]);
+                let wave = 35.0+(self.clock*0.35).fract()*110.0;
+                g.ring(mx, my, wave, wave-3.0, 64, [1.0, 0.9, 0.65, 0.65]);
+            }
             g.radial(mx, my, 90.0 * k, 32, [1.0, 0.35, 0.1, 0.55], [1.0, 0.2, 0.05, 0.0]);
             for i in 0..18 {
                 let a = i as f32 * 2.39996;
@@ -1703,13 +1715,14 @@ impl Game {
         // 大陸の名前
         if z < 1.6 {
             for (i, d) in PLATES.iter().enumerate() {
-                if !d.label {
+                // まだゴンドワナから離れていないかけらは、名前を出さない
+                if !d.label || still_joined(i, t) {
                     continue;
                 }
-                let (lon, lat, _) = self.earth.pose(i, t);
+                let (lon, lat) = self.earth.plate_center(i, t);
                 let (mx, my) = lonlat_to_map(lon, lat);
                 let (sx, sy) = self.map_to_screen(mx, my);
-                let s = d.name.get();
+                let s = plate_name(i, t);
                 let a = (1.6 - z).clamp(0.0, 1.0) * 0.85;
                 self.gfx.text_shadow(s, sx - 120.0, sy - 12.0, 240.0, 24.0, Font::BigCenter, [1.0, 0.96, 0.86, a]);
             }
@@ -1881,7 +1894,7 @@ impl Game {
                     let (ax, ay) = (sx - mx, sy - my);
                     let l = (ax * ax + ay * ay).sqrt().max(1.0);
                     let ex = sx.clamp(40.0, w - 40.0);
-                    // 左下の情報のカード・右下のレーダーとシャッターに重ならないように
+                    // 左上の情報のカード・右下のレーダーとシャッターに重ならないように
                     let bottom = if ex < 330.0 || ex > w - 160.0 { h - 175.0 } else { h - 40.0 };
                     let ey = sy.clamp(top + 40.0, bottom);
                     self.gfx.fill_circle(ex, ey, 17.0, [1.0, 0.84, 0.3, 0.95]);
@@ -1901,7 +1914,7 @@ impl Game {
         let t = self.prog.t;
         let spot = self.earth.sample(lon, lat, t);
         self.panel_box(x0, y0, x1, y1);
-        let plate = spot.plate.map(|p| PLATES[p].name.get()).unwrap_or(t!("パンサラサ海（外洋）", "Panthalassic Ocean", "泛大洋（远洋）"));
+        let plate = spot.plate.map(|p| if still_joined(p, t) { plate_name(GONDWANA, t) } else { plate_name(p, t) }).unwrap_or(t!("パンサラサ海（外洋）", "Panthalassic Ocean", "泛大洋（远洋）"));
         let where_s = if spot.plate.is_some() && spot.hab == Habitat::Deep { tf!("{}の沖", "Off {}", "{}外海", plate) } else { plate.to_string() };
         self.gfx.text(&where_s, x0 + 12.0, y0 + 8.0, x1 - x0 - 24.0, 20.0, Font::Big, TEXT);
         if let Some(p) = spot.plate {
@@ -1939,7 +1952,7 @@ impl Game {
         self.add_button(mid + 5.0, by, x1 - 10.0, by + bh, t!("撮影 (Space)", "Photo (Space)", "拍摄 (Space)"), Act::Shoot, true, false);
     }
 
-    /// 年表：上の細い帯が古生代の6つの紀、下の帯がいまの紀の期
+    /// 年表：上の細い帯が古生代・中生代の9つの紀、下の帯がいまの紀の期
     fn render_timeline(&mut self) {
         let (x0, y0, x1, y1) = self.timeline_rect();
         let t = self.prog.t;
@@ -2092,7 +2105,7 @@ impl Game {
         let Some((x0, y0, x1, y1)) = self.mission_rect() else { return };
         self.panel_box(x0, y0, x1, y1);
         if self.prog.all_clear() {
-            self.gfx.text(t!("古生代の宿題：すべて合格！", "Paleozoic tasks: all passed!", "古生代作业：全部合格！"), x0 + 12.0, y0 + 7.0, x1 - x0 - 24.0, 20.0, Font::Normal, GOLD);
+            self.gfx.text(t!("宿題：すべて合格！", "All tasks passed!", "作业：全部合格！"), x0 + 12.0, y0 + 7.0, x1 - x0 - 24.0, 20.0, Font::Normal, GOLD);
             return;
         }
         let mi = self.prog.mission;
@@ -2250,7 +2263,7 @@ impl Game {
         self.gfx.stroke_round(x0, y0, x0 + cw, y0 + 150.0, 18.0, 1.5, EDGE);
         self.gfx.text(t!("地球史図鑑", "YYEarth", "地球史图鉴"), x0, y0 + 14.0, cw, 56.0, Font::Title, [0.80, 1.0, 0.96, 1.0]);
         self.gfx.text(t!("時をめぐる観察カプセル", "A Field Guide Through Deep Time", "时光观测舱"), x0, y0 + 72.0, cw, 26.0, Font::BigCenter, TEXT);
-        self.gfx.text(t!("第1〜6巻　古生代（カンブリア紀〜ペルム紀）", "Volumes 1–6: The Paleozoic (Cambrian to Permian)", "第1—6卷　古生代（寒武纪至二叠纪）"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
+        self.gfx.text(t!("第1〜9巻　古生代・中生代（カンブリア紀〜白亜紀）", "Volumes 1–9: Paleozoic & Mesozoic (Cambrian to Cretaceous)", "第1—9卷　古生代·中生代（寒武纪至白垩纪）"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
         let bw = if self.compact() { 300.0 } else { 340.0 };
         let bh = if self.compact() { 40.0 } else { 44.0 };
         let bx = x0 + (cw - bw) * 0.5;
@@ -2274,9 +2287,9 @@ impl Game {
             self.add_button(bx, by, bx + bw, by + 36.0, label, Act::Reload, true, self.confirm_reload > 0.0);
         }
         let foot = t!(
-            "西暦2650年。時間旅行学校の宿題で、5億年前から2億5000万年前の地球へ。",
-            "The year 2650. A time-travel school assignment takes you from 500 to 250 million years into the past.",
-            "公元2650年。为了完成时间旅行学校的作业，你将前往5亿年前至2亿5000万年前的地球。"
+            "西暦2650年。時間旅行学校の宿題で、5億年前から恐竜の時代の終わりまでの地球へ。",
+            "The year 2650. A time-travel school assignment takes you from 500 million years ago to the end of the age of dinosaurs.",
+            "公元2650年。为了完成时间旅行学校的作业，你将前往从5亿年前到恐龙时代结束的地球。"
         );
         self.gfx.text_shadow(foot, 20.0, h - 34.0, w - 40.0, 24.0, Font::NormalCenter, [0.9, 0.96, 0.96, 0.9]);
     }
@@ -2286,7 +2299,8 @@ impl Game {
     fn guide_layout(&self) -> (f32, f32, f32, f32, usize, f32, f32) {
         let (w, h) = (self.w(), self.h());
         let x0 = 20.0;
-        let y0 = self.top_h() + 96.0;
+        let (_, rows, _) = period_tabs(w - 40.0);
+        let y0 = self.top_h() + 56.0 + rows as f32 * 40.0;
         let x1 = w - 20.0;
         let y1 = h - 16.0;
         let cell_w = if self.compact() { 112.0 } else { 132.0 };
@@ -2358,7 +2372,7 @@ impl Game {
                     let t = (ph.t0 + ph.t1) * 0.5;
                     // 大陸の絵（まわりの浅い海を含む）全体が枠に収まるように
                     let (mut mx0, mut my0, mut mx1, mut my1) = (f32::MAX, f32::MAX, f32::MIN, f32::MIN);
-                    for &pi in plates {
+                    for &pi in &expand_plates(plates) {
                         for (x, y) in self.earth.plate_quad(pi, t) {
                             mx0 = mx0.min(x);
                             my0 = my0.min(y);
@@ -2371,7 +2385,7 @@ impl Game {
                     let (ox, oy) = ((x0 + x1) * 0.5 - (mx0 + mx1) * 0.5 * k, (y0 + y1) * 0.5 - (my0 + my1) * 0.5 * k);
                     self.gfx.rect(x0, y0, x1, y1, [0.06, 0.18, 0.36, a]);
                     let veg = veg_at(t);
-                    for &pi in plates {
+                    for &pi in &expand_plates(plates) {
                         let q = self.earth.plate_quad(pi, t).map(|(x, y)| (ox + x * k, oy + y * k));
                         let uv = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)];
                         self.gfx.draw_textured_quad(&self.plate_tex[pi], q, uv, [1.0, 1.0, 1.0, a], true);
@@ -2403,6 +2417,8 @@ impl Game {
                         Scenery::Forest => ([0.42, 0.62, 0.80], [0.30, 0.42, 0.26], [0.40, 0.42, 0.26], [0.22, 0.40, 0.20]),
                         Scenery::CoalForest => ([0.50, 0.62, 0.66], [0.20, 0.32, 0.20], [0.24, 0.28, 0.18], [0.16, 0.34, 0.16]),
                         Scenery::Desert => ([0.56, 0.70, 0.86], [0.80, 0.50, 0.30], [0.86, 0.58, 0.36], [0.70, 0.42, 0.26]),
+                        Scenery::GymnoForest => ([0.44, 0.62, 0.78], [0.24, 0.38, 0.22], [0.36, 0.38, 0.24], [0.18, 0.34, 0.18]),
+                        Scenery::FlowerForest => ([0.46, 0.66, 0.84], [0.30, 0.46, 0.26], [0.40, 0.44, 0.28], [0.32, 0.52, 0.26]),
                     };
                     self.gfx.rect_vgrad(x0, y0, x1, y1, c4(sky, a), [0.82, 0.86, 0.88, a]);
                     let gy = y0 + bh * 0.62;
@@ -2416,7 +2432,7 @@ impl Game {
                         self.gfx.tri((x0 + bw * fa, gy), (x0 + bw * fb, gy - bh * hb), (x0 + bw * fa, gy - bh * ha), c4(hill, a));
                     }
                     self.gfx.rect_vgrad(x0, gy, x1, y1, c4(ground, a), c4([ground[0] * 0.72, ground[1] * 0.72, ground[2] * 0.72], a));
-                    let trees = matches!(k, Scenery::Forest | Scenery::CoalForest);
+                    let trees = matches!(k, Scenery::Forest | Scenery::CoalForest | Scenery::GymnoForest | Scenery::FlowerForest);
                     for i in 0..6 {
                         let rx = x0 + bw * (0.1 + i as f32 * 0.16);
                         let ry = gy + bh * (0.12 + (i % 3) as f32 * 0.06);
@@ -2436,18 +2452,20 @@ impl Game {
     fn render_guide_ui(&mut self) {
         let w = self.w();
         let (x0, y0, _x1, y1, cols, cw, ch) = self.guide_layout();
-        let title = tf!("古生代の図鑑　{}/{}", "Paleozoic field guide  {}/{}", "古生代图鉴　{}/{}", self.prog.found(), n_entries());
+        let title = tf!("地球史図鑑　{}/{}", "Earth history field guide  {}/{}", "地球史图鉴　{}/{}", self.prog.found(), n_entries());
         self.gfx.text(&title, 24.0, self.top_h() + 12.0, w - 200.0, 30.0, Font::Big, TEXT);
         self.add_button(w - 120.0, self.top_h() + 10.0, w - 20.0, self.top_h() + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         // 巻（紀）のタブ
         let ty = self.top_h() + 52.0;
-        let tw = ((w - 40.0) / PERIODS.len() as f32).min(200.0);
+        let (tab_cols, _, tw) = period_tabs(w - 40.0);
         for (i, p) in PERIODS.iter().enumerate() {
+            let ty = ty + (i / tab_cols) as f32 * 40.0;
             let n = (0..n_entries()).filter(|&e| entry_period(e) == i).count();
             let got = (0..n_entries()).filter(|&e| entry_period(e) == i && self.prog.stars[e] > 0).count();
             let fresh = (0..n_entries()).any(|e| entry_period(e) == i && self.prog.fresh[e]);
-            let label = if self.compact() { p.name.get().to_string() } else { format!("{} {}/{}{}", p.name.get(), got, n, if fresh { " ●" } else { "" }) };
-            let bx = 20.0 + i as f32 * tw;
+            // 紀が多いので、タブがせまいときは名前だけ
+            let label = if self.compact() || tw < 150.0 { format!("{}{}", p.name.get(), if fresh { "●" } else { "" }) } else { format!("{} {}/{}{}", p.name.get(), got, n, if fresh { " ●" } else { "" }) };
+            let bx = 20.0 + (i % tab_cols) as f32 * tw;
             let cur = i == self.guide_period;
             if cur {
                 self.gfx.fill_round(bx, ty, bx + tw - 6.0, ty + 34.0, 8.0, c4(p.col, 0.35));
@@ -2622,14 +2640,14 @@ impl Game {
         let y0 = self.top_h() + 16.0;
         let y1 = h - 16.0;
         self.panel_box(x0, y0, x0 + pw, y1);
-        self.gfx.text(t!("学校の宿題：古生代の図鑑づくり", "School assignment: a Paleozoic field guide", "学校作业：制作古生代图鉴"), x0 + 20.0, y0 + 14.0, pw - 160.0, 26.0, Font::Big, TEXT);
+        self.gfx.text(t!("学校の宿題：地球史図鑑づくり", "School assignment: an Earth-history field guide", "学校作业：制作地球史图鉴"), x0 + 20.0, y0 + 14.0, pw - 160.0, 26.0, Font::Big, TEXT);
         self.add_button(x0 + pw - 120.0, y0 + 12.0, x0 + pw - 16.0, y0 + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         let mut y = y0 + 56.0;
         let cur = self.prog.mission;
         let total = self.prog.done_count();
         self.gfx.text(&tf!("合格 {}/{}　好きな順番で取り組めます", "Passed {}/{}  Do them in any order", "合格 {}/{}　可按任意顺序完成", total, MISSIONS.len()), x0 + 20.0, y0 + 40.0, pw - 160.0, 16.0, Font::Small, DIM);
         if self.prog.all_clear() {
-            self.gfx.text(t!("すべての宿題に合格！ 次は中生代（準備中）。", "All tasks passed! Next: the Mesozoic (coming soon).", "全部作业合格！下一站：中生代（准备中）。"), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, GOLD);
+            self.gfx.text(t!("すべての宿題に合格！ 次は新生代（準備中）。", "All tasks passed! Next: the Cenozoic (coming soon).", "全部作业合格！下一站：新生代（准备中）。"), x0 + 20.0, y, pw - 40.0, 22.0, Font::Big, GOLD);
             y += 30.0;
         }
         {
@@ -2659,12 +2677,13 @@ impl Game {
             y += 6.0;
         }
         // 紀のタブ（紀ごとの合格の数）
-        let tw = (pw - 40.0) / PERIODS.len() as f32;
+        let (tab_cols, tab_rows, tw) = period_tabs(pw - 40.0);
         for (pi, p) in PERIODS.iter().enumerate() {
+            let y = y + (pi / tab_cols) as f32 * 40.0;
             let all = MISSIONS.iter().filter(|m| m.period == pi).count();
             let done = (0..MISSIONS.len()).filter(|&i| MISSIONS[i].period == pi && self.prog.is_done(i)).count();
-            let label = if self.compact() || pw < 700.0 { format!("{}{}", if done == all { "✔" } else { "" }, p.name.get()) } else { format!("{}{} {}/{}", if done == all { "✔" } else { "" }, p.name.get(), done, all) };
-            let bx = x0 + 20.0 + pi as f32 * tw;
+            let label = if self.compact() || tw < 120.0 { format!("{}{}", if done == all { "✔" } else { "" }, p.name.get()) } else { format!("{}{} {}/{}", if done == all { "✔" } else { "" }, p.name.get(), done, all) };
+            let bx = x0 + 20.0 + (pi % tab_cols) as f32 * tw;
             let sel = pi == self.mission_tab;
             if sel {
                 self.gfx.fill_round(bx, y, bx + tw - 6.0, y + 32.0, 8.0, c4(p.col, 0.35));
@@ -2672,7 +2691,7 @@ impl Game {
             self.add_button(bx, y, bx + tw - 6.0, y + 32.0, &label, Act::MissionTab(pi), true, sel);
             self.gfx.fill_rect(bx + 6.0, y + 28.0, bx + tw - 12.0, y + 31.0, c4(p.col, if sel { 1.0 } else { 0.5 }));
         }
-        y += 40.0;
+        y += tab_rows as f32 * 40.0;
         // その紀の宿題（押すと選べる）
         // いつも2列（1つの紀の宿題が、小さな画面でも収まるように）
         let col2 = false;
@@ -2806,9 +2825,9 @@ impl Game {
                 "第一站是5亿多年前的古生代寒武纪。那是“寒武纪大爆发”的时代，海中一下子出现了长着眼睛、外壳和腿的动物。陆地上还没有植物。",
             ),
             L(
-                "地図の下の年表で時代を選び、地図で場所を選びます。年表の上の帯でオルドビス紀・シルル紀・デボン紀・石炭紀・ペルム紀へも行けます。大陸はゆっくり動いて、やがて一つの超大陸になりますよ。「潜る」で海の中へ、撮影ボタンで写真を撮ります。",
-                "Choose a time with the timeline under the map and a place on the map. The strip above the timeline takes you on to the Ordovician, Silurian, Devonian, Carboniferous and Permian. The continents drift slowly and finally join into one supercontinent. 'Dive' takes you under the sea; the shutter takes a photo.",
-                "用地图下方的年表选择时代，在地图上选择地点。年表上方的色带可以前往奥陶纪、志留纪、泥盆纪、石炭纪和二叠纪。大陆缓慢移动，最终连成一个超大陆。按“下潜”进入海中，按快门拍照。",
+                "地図の下の年表で時代を選び、地図で場所を選びます。年表の上の帯で、古生代の6つの紀と、恐竜の時代・中生代の3つの紀へ行けます。大陸はゆっくり動いて一つの超大陸になり、やがてまた分かれていきますよ。「潜る」で海の中へ、撮影ボタンで写真を撮ります。",
+                "Choose a time with the timeline under the map and a place on the map. The strip above the timeline takes you to the six Paleozoic periods and the three Mesozoic periods, the age of dinosaurs. The continents drift together into one supercontinent, then break apart again. 'Dive' takes you under the sea; the shutter takes a photo.",
+                "用地图下方的年表选择时代，在地图上选择地点。年表上方的色带可以前往古生代的六个纪和恐龙时代——中生代的三个纪。大陆缓慢移动，连成一个超大陆，后来又分裂开来。按“下潜”进入海中，按快门拍照。",
             ),
             L(
                 "生きものは、大きく・真ん中に・明るく撮れば図鑑に収録されます。右上の宿題のカードの「行く」を押せば、カプセルが目的の時代と場所へ向かいます。では、いってらっしゃい！",
@@ -2826,7 +2845,7 @@ impl Game {
         let mm = &MISSIONS[m];
         let mut text = format!("{}\n\n{}", tf!("宿題{}「{}」合格！", "Task {} '{}' passed!", "作业{}“{}”合格！", m + 1, mm.title.get()), mm.done.get());
         if self.prog.all_clear() {
-            text.push_str(t!("\n\nこれで古生代の宿題はすべて合格です！", "\n\nThat completes every Paleozoic task!", "\n\n古生代的作业全部合格了！"));
+            text.push_str(t!("\n\nこれで古生代と中生代、51の宿題すべて合格です！", "\n\nThat completes all 51 Paleozoic and Mesozoic tasks!", "\n\n古生代和中生代的51个作业全部合格了！"));
         } else if !self.prog.is_done(self.prog.mission) {
             text.push_str(&tf!("\n\n次の宿題：{}（宿題の一覧から好きなものを選べます）", "\n\nNext task: {} (pick any task from the task list)", "\n\n下一个作业：{}（可在作业一览中任选）", MISSIONS[self.prog.mission].title.get()));
         }
@@ -3023,5 +3042,73 @@ mod tests {
         g.frame(&[], 0.016, true);
         g.do_act(Act::Shoot);
         g.frame(&[], 0.016, true);
+    }
+
+    #[test]
+    fn mesozoic_assignment_targets_can_be_visited_photographed_and_completed() {
+        let mut g = game();
+        g.do_act(Act::NewGame);
+        g.prog.intro_done = true;
+        g.panel = Panel::None;
+        for (mi, m) in MISSIONS.iter().enumerate().filter(|(_, m)| m.period >= TRIASSIC) {
+            g.prog.mission = mi;
+            for &(target, _) in m.targets {
+                g.close_photo();
+                g.goto(target);
+                for _ in 0..180 { g.update(0.1); }
+                assert!(g.travel.is_none() && g.cap_target.is_none(), "{}", target.name());
+                if let Target::Sp(sp) = target {
+                    g.enter_dive();
+                    let sc = g.scene.as_mut().unwrap();
+                    let cr = sc.creatures.iter_mut().find(|cr| cr.sp == sp).unwrap_or_else(|| panic!("missing {}", SPECIES[sp].slug));
+                    cr.out = 1.0;
+                    let b = crate::units::bounds(sp, cr.x, cr.y, SPECIES[sp].disp_len()*cr.scale, cr.out);
+                    let center = ((b[0]+b[2])*0.5, (b[1]+b[3])*0.5);
+                    g.dcam = center;
+                    sc.cap.x = center.0;
+                    sc.cap.y = center.1;
+                    g.prog.light = true;
+                    g.lens = ((g.w()/(b[2]-b[0])*0.8).min(g.h()/(b[3]-b[1])*0.8)/(g.h()/4.0)).clamp(1.0, 8.0);
+                } else if let Target::Ph(p) = target {
+                    if matches!(PHENOMS[p].kind, PhKind::Scenery(_)) { g.enter_dive(); }
+                }
+                g.shoot();
+                assert_eq!(g.prog.stars[target.entry()], 1, "could not photograph {} for {}", target.name(), m.title.1);
+            }
+            assert!(g.prog.is_done(mi), "{}", m.title.1);
+        }
+        let saved = Progress::from_bytes(&g.prog.to_bytes()).unwrap();
+        for (i, m) in MISSIONS.iter().enumerate().filter(|(_, m)| m.period >= TRIASSIC) {
+            assert!(saved.is_done(i), "{}", m.title.1);
+        }
+    }
+
+    #[test]
+    fn nine_period_tabs_fit_and_remain_clickable() {
+        for width in [480, 800, 1280, 1600] {
+            let mut g = Game::new(Gfx::new(width, 900));
+            g.panel = Panel::Guide;
+            g.render();
+            let tabs: Vec<_> = g.buttons.iter().filter(|b| matches!(b.act, Act::GuideTab(_))).collect();
+            assert_eq!(tabs.len(), PERIODS.len());
+            let (_, grid_y, _, _, _, _, _) = g.guide_layout();
+            for b in tabs {
+                assert!(b.x0 >= 0.0 && b.x1 <= g.w() && b.y1 < grid_y);
+                assert!(b.x1-b.x0 >= 110.0);
+            }
+        }
+    }
+
+    #[test]
+    fn completion_dialog_only_announces_all_51_after_all_tasks_are_done() {
+        let mut g = game();
+        let last = MISSIONS.len()-1;
+        g.panel = Panel::Done(last);
+        g.render();
+        let announces_all = |text: &str| ["51の宿題", "all 51", "51个作业"].iter().any(|phrase| text.contains(phrase));
+        assert!(!announces_all(&g.dialog_voice));
+        for e in 0..n_entries() { g.prog.record(e, 1); }
+        g.render();
+        assert!(announces_all(&g.dialog_voice));
     }
 }

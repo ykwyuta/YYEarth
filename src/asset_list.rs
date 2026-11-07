@@ -27,10 +27,30 @@ pub const BACKDROPS: &[(&str, usize, &str, &str)] = &[
     ("backdrop-devonian-deep", DEVONIAN, "deep", "Devonian deep oxygen-poor sea: dark petrol-blue water, black shale sea floor, faint light above"),
     ("backdrop-carboniferous-deep", CARBONIFEROUS, "deep", "Paleozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor"),
     ("backdrop-permian-deep", PERMIAN, "deep", "Paleozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor"),
+    ("backdrop-triassic-land", TRIASSIC, "land", "Triassic landscape: red sandy floodplain, conifers, cycad-like plants and seed-fern trees (Dicroidium), seasonal river, warm hazy sky, no flowers or grass"),
+    ("backdrop-jurassic-land", JURASSIC, "land", "Jurassic forest edge: tall conifers (araucarias), cycads, ginkgos and tree ferns over a fern-covered floor, river plain, no flowers or grass"),
+    ("backdrop-cretaceous-land", CRETACEOUS, "land", "Late Cretaceous floodplain forest: conifers and cycads mixed with early flowering trees such as magnolias, ferns on the ground, river, no grass"),
+    ("backdrop-triassic-sea", TRIASSIC, "sea", "Triassic warm lagoon of the Tethys: clear water, scattered ammonites shells and sponge reefs on the sea floor, open centre"),
+    ("backdrop-jurassic-sea", JURASSIC, "sea", "Jurassic shallow sea: sponge and coral patches, crinoids and ammonite shells on a limestone floor, sunbeams, open centre"),
+    ("backdrop-cretaceous-sea", CRETACEOUS, "sea", "Late Cretaceous shallow inland sea: chalky sea floor with oyster beds, sunbeams through greenish water, open centre"),
+    ("backdrop-triassic-deep", TRIASSIC, "deep", "Mesozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor"),
+    ("backdrop-jurassic-deep", JURASSIC, "deep", "Mesozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor"),
+    ("backdrop-cretaceous-deep", CRETACEOUS, "deep", "Mesozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor"),
 ];
 
 const STYLE: &str = "Style: photorealistic museum-quality natural history reconstruction, highly detailed tactile surfaces, natural lighting, restrained teal, indigo and amber palette.";
 const NEG: &str = "No text, labels, borders, watermarks, flowering plants, grass, modern animals, dinosaurs or fantasy ornament.";
+
+/// 時代ごとの「描かないもの」（中生代は恐竜を描いてよく、白亜紀は花も描いてよい）
+fn neg(t: f32) -> &'static str {
+    if t > 252.0 {
+        NEG
+    } else if t > 130.0 {
+        "No text, labels, borders, watermarks, flowering plants, grass, modern mammals, modern birds or fantasy ornament."
+    } else {
+        "No text, labels, borders, watermarks, grass, modern mammals, modern birds or fantasy ornament."
+    }
+}
 
 fn ma(t: f32) -> String {
     format!("{:.0}", t.round())
@@ -38,7 +58,11 @@ fn ma(t: f32) -> String {
 
 fn setting(sp: &Species) -> &'static str {
     if sp.hab & LAND != 0 && sp.hab & (SHALLOW | SHELF | DEEP) == 0 {
-        if sp.t0 > 385.0 {
+        if sp.t0 <= 125.0 {
+            "softly blurred Cretaceous landscape with conifers, cycads, ferns and early flowering shrubs, no grass"
+        } else if sp.t0 <= 252.0 {
+            "softly blurred Mesozoic landscape with conifers, cycads, ginkgos and ferns, no flowers or grass"
+        } else if sp.t0 > 385.0 {
             "softly blurred Paleozoic land: bare rock and sand with only low early plants near water"
         } else if sp.t0 > 300.0 {
             "softly blurred Paleozoic forest floor with early trees, ferns and horsetails, no flowers or grass"
@@ -58,6 +82,7 @@ fn pose(sp: &Species) -> &'static str {
     match (sp.beh, sp.art) {
         (_, Art::Plant(_)) => "Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped.",
         (_, Art::Griffinfly) => "Flying, wings spread, three-quarter side view, head pointing RIGHT.",
+        (_, Art::Pterosaur(0) | Art::Pterosaur(1) | Art::Bird(_)) => "Flying with wings spread, clear side view, head pointing RIGHT and tail LEFT.",
         (_, Art::Starfish | Art::Limulid) => "Seen from above at a low angle, lying flat on its underside, front pointing RIGHT.",
         (Beh::Sessile, _) => "Upright natural pose attached to the bottom, base at the bottom edge.",
         (Beh::Crawl | Beh::FlatCrawl, _) => "Side view walking pose, head pointing RIGHT and tail LEFT, feet at the bottom of the silhouette.",
@@ -68,8 +93,8 @@ fn pose(sp: &Species) -> &'static str {
 /// 図鑑の画像（JPEG、横3:2）の注文
 fn species_art_prompt(sp: &Species) -> String {
     format!(
-        "Use case: scientific-educational. Asset type: individual image for a Paleozoic natural history field guide. Primary request: photorealistic museum-quality life reconstruction of {} ({}), {}, {} period, about {} million years ago. {} Full subject centered, entirely within frame with generous 12% margins, landscape 3:2 composition. Backdrop: {}. {} {} This is an interpretive reconstruction, not a fossil specimen.",
-        sp.name.1, sp.sci, sp.group.1, PERIODS[period_at((sp.t0 + sp.t1.max(sp.t0 - 10.0)) * 0.5)].name.1, ma(sp.t0), sp.desc.1, setting(sp), STYLE, NEG
+        "Use case: scientific-educational. Asset type: individual image for an Earth-history natural history field guide. Primary request: photorealistic museum-quality life reconstruction of {} ({}), {}, {} period, about {} million years ago. {} Full subject centered, entirely within frame with generous 12% margins, landscape 3:2 composition. Backdrop: {}. {} {} This is an interpretive reconstruction, not a fossil specimen.",
+        sp.name.1, sp.sci, sp.group.1, PERIODS[period_at((sp.t0 + sp.t1.max(sp.t0 - 10.0)) * 0.5)].name.1, ma(sp.t0), sp.desc.1, setting(sp), STYLE, neg(sp.t0)
     )
 }
 
@@ -84,19 +109,20 @@ fn species_unit_prompt(sp: &Species) -> String {
 fn phenom_prompt(ph: &Phenom) -> String {
     let what = match ph.kind {
         PhKind::Continent(_) => "Cinematic orbital view of an ancient supercontinent/continent on a curved blue ocean planet, no modern recognizable continents, thin atmospheric rim.",
+        PhKind::Eruption(i) if ERUPTIONS[i].is_impact() => "A huge asteroid strikes a shallow Cretaceous sea: brilliant descending fireball, expanding impact plume, circular shock wave and ejecta over the coast, no volcanic cone.",
         PhKind::Eruption(_) => "Cinematic flood-basalt eruption: immense fissures pouring orange lava across dark basalt plains, towering ash clouds and red glow.",
         PhKind::Scenery(_) => "Cinematic wide landscape photograph, no animals.",
     };
     format!(
         "Use case: scientific-educational. Asset type: cinematic game environment. Subject: {} — {} {} Landscape 16:9 framing (delivered as 3:2 or 16:9). {} {}",
-        ph.name.1, ph.desc.1, what, STYLE, NEG
+        ph.name.1, ph.desc.1, what, STYLE, neg(ph.t0)
     )
 }
 
-fn backdrop_prompt(subject: &str) -> String {
+fn backdrop_prompt(subject: &str, period: usize) -> String {
     format!(
-        "Use case: scientific-educational. Asset type: cinematic game environment. Subject: wide cinematic empty {}, generous open centre for gameplay, dark foreground edges, realistic natural history film still. {} Landscape 16:9 framing. {}",
-        subject, STYLE, NEG
+        "Use case: scientific-educational. Asset type: cinematic game environment. Subject: wide cinematic empty {}, generous open centre for gameplay, dark foreground edges, realistic natural history film still. Empty scenery only: no fish, marine reptiles, squid, living ammonites, dinosaurs, birds or other moving animals; game creatures are drawn separately. {} Landscape 16:9 framing. {}",
+        subject, STYLE, neg((PERIODS[period].t0 + PERIODS[period].t1) * 0.5)
     )
 }
 
@@ -129,7 +155,7 @@ pub fn write() -> (String, String) {
         need_art += 1;
         have_art += find(ph.slug).is_some() as usize;
     }
-    md.push_str("# 画像の注文書（古生代）\n\n");
+    md.push_str("# 画像の注文書（古生代・中生代）\n\n");
     md.push_str("このファイルは `cargo test --lib write_asset_requests -- --ignored` でゲームのデータから作り直せます（手で書き換えない）。ツール用の同じ内容が `assets/requests.json` にあります。\n\n");
     md.push_str("## 置き方\n\n");
     md.push_str("- **図鑑の画像**：`assets/artwork/<slug>.jpg`（横3:2、960×640程度のJPEG。背景つき）。図鑑の一覧・詳細・撮影カードに使う。\n");
@@ -204,10 +230,10 @@ pub fn write() -> (String, String) {
         let a = find(b.0).is_some();
         js.push_str(&format!(
             "  {{\"slug\": \"{}\", \"kind\": \"backdrop\", \"period\": \"{}\", \"scene\": \"{}\",\n   \"artwork\": {{\"path\": \"assets/artwork/{}.jpg\", \"exists\": {}, \"prompt\": \"{}\"}}}}{}\n",
-            b.0, PERIODS[b.1].name.1, b.2, b.0, a, esc(&backdrop_prompt(b.3)), if k + 1 < BACKDROPS.len() { "," } else { "" }
+            b.0, PERIODS[b.1].name.1, b.2, b.0, a, esc(&backdrop_prompt(b.3, b.1)), if k + 1 < BACKDROPS.len() { "," } else { "" }
         ));
         if !a {
-            md.push_str(&format!("### `{}`（遠景・任意）\n\n> {}\n\n", b.0, backdrop_prompt(b.3)));
+            md.push_str(&format!("### `{}`（遠景・任意）\n\n> {}\n\n", b.0, backdrop_prompt(b.3, b.1)));
         }
     }
     js.push_str("]\n");
@@ -216,9 +242,9 @@ pub fn write() -> (String, String) {
 
 #[cfg(test)]
 mod tests {
-    /// Every Paleozoic entry and period backdrop has its requested image.
+    /// Every released entry and period backdrop has its requested image.
     #[test]
-    fn paleozoic_image_requests_are_complete() {
+    fn all_image_requests_are_complete() {
         for sp in crate::life::SPECIES {
             assert!(crate::artwork::find(sp.slug).is_some(), "missing guide image: {}", sp.slug);
             assert!(crate::artwork::find_unit(sp.slug).is_some(), "missing unit sprite: {}", sp.slug);

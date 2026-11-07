@@ -183,6 +183,12 @@ pub fn draw(g: &mut Gfx, sp: usize, x: f32, y: f32, len: f32, facing: f32, pitch
         Art::RayFin => rayfin(g, &pen, c, c2, t),
         Art::Limulid => limulid(g, &pen, c, c2, t),
         Art::Urchin => urchin(g, &pen, c, c2, t),
+        Art::Dino(k) => dino(g, &pen, k, c, c2, t),
+        Art::Marine(k) => marine(g, &pen, k, c, c2, t),
+        Art::Pterosaur(k) => flyer(g, &pen, false, k, c, c2, t),
+        Art::Bird(k) => flyer(g, &pen, true, k, c, c2, t),
+        Art::Mammal(k) => mammal(g, &pen, k, c, c2, t),
+        Art::Archosaur(k) => archosaur(g, &pen, k, c, c2, t),
     }
 }
 
@@ -225,6 +231,20 @@ pub fn extent(sp: usize) -> (f32, f32) {
         Art::RayFin => (1.05, 0.3),
         Art::Limulid => (1.0, 0.75),
         Art::Urchin => (0.9, 0.85),
+        Art::Dino(3) => (1.15, 0.7),
+        Art::Dino(13) => (1.0, 1.0),
+        Art::Dino(2) => (1.05, 0.75),
+        Art::Dino(0) | Art::Dino(11) => (1.05, 0.5),
+        Art::Dino(1) | Art::Dino(4) => (1.05, 0.6),
+        Art::Dino(10) => (1.05, 0.65),
+        Art::Dino(_) => (1.05, 0.55),
+        Art::Marine(5) => (1.0, 0.5),
+        Art::Marine(_) => (1.15, 0.4),
+        Art::Pterosaur(2) => (0.95, 1.0),
+        Art::Pterosaur(_) | Art::Bird(_) => (0.9, 1.0),
+        Art::Mammal(_) => (1.05, 0.4),
+        Art::Archosaur(3) => (1.05, 0.3),
+        Art::Archosaur(_) => (1.05, 0.35),
         _ => (1.0, 0.4),
     }
 }
@@ -1595,6 +1615,10 @@ pub(crate) fn tetrapod(g: &mut Gfx, pen: &Pen, k: u8, c: [f32; 3], c2: [f32; 3],
 }
 
 pub(crate) fn plant(g: &mut Gfx, pen: &Pen, k: u8, c: [f32; 3], c2: [f32; 3], t: f32, seed: u32) {
+    if k >= 12 {
+        plant_meso(g, pen, k, c, c2, t, seed);
+        return;
+    }
     let p0 = Pen { fx: 1.0, ..*pen };
     let sway = (t * 0.6 + seed as f32 * 0.31).sin() * 0.015;
     let h = |i: i32, j: i32| hash2(seed as i32, i * 31 + j, 17);
@@ -2011,6 +2035,497 @@ pub(crate) fn urchin(g: &mut Gfx, pen: &Pen, c: [f32; 3], c2: [f32; 3], t: f32) 
         for q in 1..4 {
             let f = q as f32 / 4.0;
             circ(g, &p0, a.sin() * 0.22 * f, 0.22 + a.cos() * 0.18 * f, 0.016, c2, 0.9);
+        }
+    }
+}
+
+// ============================================================ 中生代
+// 歩く動物の共通の形：胴・首と頭・尾・脚（足の裏が v=0）
+
+struct Walker {
+    /// 胴の中心と半径（u, v, ru, rv）
+    body: (f32, f32, f32, f32),
+    /// 首から頭へ（胴から順に）
+    neck: Vec<(f32, f32)>,
+    neck_w: f32,
+    head: (f32, f32, f32, f32),
+    tail: Vec<(f32, f32)>,
+    tail_w: f32,
+    /// 脚（付け根の u, 付け根の v, 太さ）
+    legs: Vec<(f32, f32, f32)>,
+}
+
+fn walker(g: &mut Gfx, pen: &Pen, w: &Walker, c: [f32; 3], c2: [f32; 3], t: f32, gait: f32) {
+    let dark = mul(c, 0.72);
+    let step = t * gait;
+    // 奥の脚
+    for (k, &(lu, lv, lw)) in w.legs.iter().enumerate() {
+        let sw = (step + k as f32 * PI).sin() * 0.04 * lv.min(0.4) / 0.25;
+        taper(g, pen, &[(lu, lv), (lu + sw * 0.4 + 0.01, lv * 0.5), (lu + sw, 0.0)], lw, lw * 0.7, dark, 1.0);
+    }
+    taper(g, pen, &w.tail, w.tail_w, 0.01, c, 1.0);
+    taper(g, pen, &w.neck, w.neck_w, w.neck_w * 0.6, c, 1.0);
+    let (bu, bv, bru, brv) = w.body;
+    ell(g, pen, bu, bv, bru, brv, 0.0, c, 1.0);
+    ell(g, pen, bu, bv - brv * 0.3, bru * 0.9, brv * 0.6, 0.0, mix(c, c2, 0.25), 1.0);
+    let (hu, hv, hru, hrv) = w.head;
+    ell(g, pen, hu, hv, hru, hrv, -0.05, c, 1.0);
+    seg(g, pen, hu, hv - hrv * 0.35, hu + hru, hv - hrv * 0.2, 0.008, INK, 0.7);
+    eye(g, pen, hu + hru * 0.25, hv + hrv * 0.3, 0.012);
+    // 手前の脚
+    for (k, &(lu, lv, lw)) in w.legs.iter().enumerate() {
+        let sw = (step + k as f32 * PI + PI * 0.5).sin() * 0.05 * lv.min(0.4) / 0.25;
+        taper(g, pen, &[(lu + 0.02, lv), (lu + sw * 0.4 + 0.03, lv * 0.5), (lu + sw + 0.02, 0.0)], lw * 1.1, lw * 0.8, mul(c, 0.9), 1.0);
+        ell(g, pen, lu + sw + 0.04, 0.0, lw * 0.6, 0.012, 0.0, mul(c, 0.8), 1.0);
+    }
+}
+
+fn curve(a: (f32, f32), b: (f32, f32), bend: f32, n: usize) -> Vec<(f32, f32)> {
+    (0..=n)
+        .map(|i| {
+            let f = i as f32 / n as f32;
+            (a.0 + (b.0 - a.0) * f, a.1 + (b.1 - a.1) * f + (f * PI).sin() * bend)
+        })
+        .collect()
+}
+
+pub(crate) fn dino(g: &mut Gfx, pen: &Pen, k: u8, c: [f32; 3], c2: [f32; 3], t: f32) {
+    let sway = (t * 1.6).sin() * 0.015;
+    match k {
+        // 二本足の肉食恐竜：0=小型 1=大型 2=帆のある大型 11=羽毛の小型
+        0 | 1 | 2 | 11 => {
+            let big = k == 1 || k == 2;
+            let hip = if big { 0.26 } else { 0.22 };
+            let body = (0.02, hip + 0.06, if big { 0.17 } else { 0.13 }, if big { 0.09 } else { 0.065 });
+            let head = if big { (0.4, hip + 0.16, 0.1, 0.06) } else { (0.42, hip + 0.18, 0.06, 0.035) };
+            let w = Walker {
+                body,
+                neck: curve((0.14, hip + 0.09), (head.0 - 0.05, head.1), 0.03, 4),
+                neck_w: if big { 0.09 } else { 0.05 },
+                head,
+                tail: curve((-0.12, hip + 0.07), (-0.5, hip + 0.1 + sway), 0.02, 6),
+                tail_w: if big { 0.11 } else { 0.07 },
+                legs: vec![(-0.02, hip, if big { 0.07 } else { 0.045 })],
+            };
+            if k == 2 {
+                // 背中の帆
+                let mut sail = vec![(-0.14, hip + 0.13)];
+                for i in 0..=8 {
+                    let f = i as f32 / 8.0;
+                    sail.push((-0.14 + f * 0.3, hip + 0.13 + (f * PI).sin() * 0.16));
+                }
+                sail.push((0.16, hip + 0.13));
+                poly(g, pen, &sail, c2, 0.95);
+            }
+            walker(g, pen, &w, c, c2, t, 3.0);
+            // 小さな腕
+            seg(g, pen, 0.12, hip + 0.06, 0.18, hip + 0.01, if big { 0.025 } else { 0.018 }, mul(c, 0.85), 1.0);
+            if k == 11 {
+                // 羽毛（腕と尾のふさ）
+                for i in 0..6 {
+                    let f = i as f32 / 6.0;
+                    seg(g, pen, 0.13 + f * 0.04, hip + 0.06, 0.08 + f * 0.05, hip - 0.04, 0.012, c2, 0.8);
+                    let (tu, tv) = (-0.3 - f * 0.18, hip + 0.1);
+                    seg(g, pen, tu, tv, tu - 0.02, tv + 0.05, 0.012, c2, 0.8);
+                    seg(g, pen, tu, tv, tu - 0.02, tv - 0.04, 0.012, c2, 0.8);
+                }
+            }
+            if big {
+                for i in 0..4 {
+                    let u = head.0 + 0.02 + i as f32 * 0.018;
+                    seg(g, pen, u, head.1 - 0.03, u, head.1 - 0.05, 0.006, WHITE, 0.9);
+                }
+            }
+        }
+        // 首の長い竜脚類：3=横にのばす 13=首を高く上げる
+        3 | 13 => {
+            let hip = 0.2;
+            let up = k == 13;
+            let head = if up { (0.4, 0.62, 0.035, 0.022) } else { (0.5, 0.32, 0.03, 0.02) };
+            let w = Walker {
+                body: (-0.02, hip + 0.08, 0.17, 0.1),
+                neck: if up { curve((0.12, hip + 0.12), (head.0 - 0.02, head.1), -0.03, 6) } else { curve((0.12, hip + 0.1), (head.0 - 0.02, head.1), 0.05, 6) },
+                neck_w: 0.07,
+                head,
+                tail: curve((-0.17, hip + 0.08), (-0.55, hip - 0.05 + sway), 0.04, 7),
+                tail_w: 0.08,
+                legs: vec![(-0.1, hip, 0.06), (0.09, hip, 0.06)],
+            };
+            walker(g, pen, &w, c, c2, t, 1.2);
+        }
+        // 古い竜脚形類（プラテオサウルス）
+        4 => {
+            let hip = 0.24;
+            let w = Walker {
+                body: (0.0, hip + 0.06, 0.15, 0.08),
+                neck: curve((0.12, hip + 0.09), (0.36, hip + 0.18), 0.03, 5),
+                neck_w: 0.05,
+                head: (0.4, hip + 0.19, 0.045, 0.03),
+                tail: curve((-0.14, hip + 0.06), (-0.5, hip + 0.04 + sway), 0.03, 6),
+                tail_w: 0.07,
+                legs: vec![(-0.03, hip, 0.055)],
+            };
+            walker(g, pen, &w, c, c2, t, 2.0);
+            seg(g, pen, 0.1, hip + 0.04, 0.16, hip - 0.1, 0.025, mul(c, 0.85), 1.0);
+        }
+        // 四足の植物食恐竜：5=剣竜 6=鎧竜 7=大型角竜 8=小型角竜 9=鳥脚類 10=とさかのある鳥脚類
+        _ => {
+            let (hip, bru, brv, head, neck_u) = match k {
+                5 => (0.18, 0.18, 0.1, (0.36, 0.14, 0.05, 0.03), 0.16),
+                6 => (0.12, 0.2, 0.08, (0.32, 0.12, 0.06, 0.04), 0.18),
+                7 => (0.16, 0.18, 0.1, (0.33, 0.18, 0.1, 0.07), 0.16),
+                8 => (0.12, 0.14, 0.07, (0.3, 0.16, 0.07, 0.05), 0.12),
+                _ => (0.2, 0.16, 0.08, (0.38, 0.26, 0.06, 0.035), 0.14),
+            };
+            let w = Walker {
+                body: (0.0, hip + brv * 0.8, bru, brv),
+                neck: curve((neck_u, hip + brv), (head.0 - 0.03, head.1), 0.02, 4),
+                neck_w: brv * 0.9,
+                head,
+                tail: curve((-bru * 0.9, hip + brv * 0.8), (-0.5, hip + 0.02 + sway), 0.02, 6),
+                tail_w: brv * 1.1,
+                legs: vec![(-bru * 0.55, hip, 0.05), (bru * 0.55, hip * if k >= 9 { 0.7 } else { 1.0 }, 0.045)],
+            };
+            if k == 5 {
+                // 背中の板
+                for i in 0..9 {
+                    let f = i as f32 / 8.0;
+                    let u = -0.24 + f * 0.42;
+                    let v = hip + brv * 1.6 - (f - 0.45).abs() * 0.1;
+                    let hgt = 0.06 + (1.0 - (f - 0.45).abs() * 2.0).max(0.0) * 0.07;
+                    poly(g, pen, &[(u - 0.025, v - 0.02), (u, v + hgt), (u + 0.025, v - 0.02)], c2, 1.0);
+                }
+            }
+            walker(g, pen, &w, c, c2, t, 1.6);
+            match k {
+                5 => {
+                    for s2 in [0.0f32, 0.05] {
+                        seg(g, pen, -0.45 + s2, hip + 0.06, -0.5 + s2, hip + 0.14, 0.012, c2, 1.0);
+                    }
+                }
+                6 => {
+                    for i in 0..8 {
+                        let u = -0.16 + i as f32 * 0.045;
+                        circ(g, pen, u, hip + brv * 1.6, 0.02, c2, 1.0);
+                    }
+                    ell(g, pen, -0.5, hip + 0.03, 0.04, 0.035, 0.0, c2, 1.0);
+                }
+                7 | 8 => {
+                    // えりかざりと角
+                    ell(g, pen, head.0 - head.2 * 0.8, head.1 + head.3 * 0.9, head.2 * if k == 7 { 0.9 } else { 0.6 }, head.3 * 1.6, 0.4, c2, 1.0);
+                    let (hu, hv, hr, hh) = head;
+                    ell(g, pen, hu, hv, hr, hh, -0.05, c, 1.0);
+                    eye(g, pen, hu + hr * 0.2, hv + hh * 0.3, 0.012);
+                    poly(g, pen, &[(hu + hr * 0.8, hv - hh * 0.2), (hu + hr * 1.25, hv - hh * 0.5), (hu + hr * 0.9, hv - hh * 0.7)], INK, 0.8);
+                    if k == 7 {
+                        for du in [0.0f32, 0.04] {
+                            poly(g, pen, &[(hu + du - 0.01, hv + hh * 0.6), (hu + du + 0.06, hv + hh * 1.8), (hu + du + 0.02, hv + hh * 0.6)], WHITE, 0.95);
+                        }
+                        poly(g, pen, &[(hu + hr * 0.7, hv + hh * 0.4), (hu + hr * 0.9, hv + hh * 1.2), (hu + hr * 0.95, hv + hh * 0.4)], WHITE, 0.95);
+                    }
+                }
+                10 => {
+                    let (hu, hv, _, hh) = head;
+                    taper(g, pen, &[(hu, hv + hh * 0.6), (hu - 0.1, hv + hh * 2.2), (hu - 0.18, hv + hh * 2.6)], 0.03, 0.02, c2, 1.0);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+pub(crate) fn marine(g: &mut Gfx, pen: &Pen, k: u8, c: [f32; 3], c2: [f32; 3], t: f32) {
+    let stroke = (t * 2.5).sin();
+    let wv = |f: f32| (f * 5.0 - t * 5.0).sin() * 0.03 * f * f;
+    match k {
+        // 魚竜：イルカのような体
+        0 => {
+            let prof = |f: f32| {
+                let h = if f < 0.12 { 0.03 + f / 0.12 * 0.05 } else if f < 0.45 { 0.08 + (f - 0.12) * 0.1 } else { 0.11 * (1.0 - (f - 0.45) / 0.55 * 0.85) };
+                (h, h * 0.85)
+            };
+            let (top, bot, mid) = body_strip(g, pen, 18, &prof, &wv, c);
+            poly(g, pen, &[(0.02, top[9].1), (-0.08, top[9].1 + 0.1), (-0.1, top[10].1)], mul(c, 0.85), 1.0);
+            let (u, v) = mid[17];
+            poly(g, pen, &[(u + 0.03, v), (u - 0.06, v + 0.14), (u - 0.02, v), (u - 0.06, v - 0.12)], mul(c, 0.85), 1.0);
+            taper(g, pen, &[(0.22, bot[5].1 + 0.02), (0.14 + stroke * 0.02, bot[5].1 - 0.08)], 0.05, 0.02, mul(c, 0.8), 1.0);
+            taper(g, pen, &[(0.48, mid[0].1), (0.6, mid[0].1 - 0.01)], 0.03, 0.01, c, 1.0);
+            eye(g, pen, 0.42, mid[1].1 + 0.02, 0.025);
+        }
+        // 首長竜（1）・偽竜はひれで泳ぐ。3=首の短い大型
+        1 | 3 => {
+            let long = k == 1;
+            let (bu, bru, brv) = if long { (-0.12, 0.17, 0.08) } else { (-0.05, 0.22, 0.1) };
+            for (u, s) in [(bu + bru * 0.5, 1.0f32), (bu - bru * 0.55, -1.0)] {
+                let a = stroke * s * 0.06;
+                taper(g, pen, &[(u, -brv * 0.3), (u - 0.08, -brv * 0.9 + a), (u - 0.16, -brv * 1.2 + a)], 0.06, 0.02, mul(c, 0.75), 1.0);
+            }
+            taper(g, pen, &[(bu - bru, 0.0), (-0.5, 0.01 + stroke * 0.01)], brv * 1.2, 0.01, c, 1.0);
+            ell(g, pen, bu, 0.0, bru, brv, 0.0, c, 1.0);
+            ell(g, pen, bu, -brv * 0.3, bru * 0.9, brv * 0.6, 0.0, mix(c, c2, 0.3), 1.0);
+            let neck = if long { curve((bu + bru * 0.8, 0.02), (0.44, 0.08), 0.06 + stroke * 0.01, 8) } else { curve((bu + bru * 0.8, 0.02), (0.28, 0.03), 0.01, 3) };
+            taper(g, pen, &neck, brv * 0.8, brv * 0.45, c, 1.0);
+            let (hu, hv) = *neck.last().unwrap();
+            let hr = if long { 0.045 } else { 0.14 };
+            ell(g, pen, hu + hr * 0.6, hv, hr, hr * 0.45, 0.0, c, 1.0);
+            seg(g, pen, hu + hr * 0.2, hv - hr * 0.1, hu + hr * 1.5, hv - hr * 0.05, 0.007, INK, 0.7);
+            eye(g, pen, hu + hr * 0.4, hv + hr * 0.15, 0.014);
+            for i in 0..5 {
+                let u = for_teeth(hu, hr, i);
+                seg(g, pen, u, hv - hr * 0.08, u, hv - hr * 0.22, 0.005, WHITE, 0.9);
+            }
+            for (u, s) in [(bu + bru * 0.5, 1.0f32), (bu - bru * 0.55, -1.0)] {
+                let a = -stroke * s * 0.06;
+                taper(g, pen, &[(u + 0.02, -brv * 0.4), (u - 0.06, -brv * 1.0 + a), (u - 0.14, -brv * 1.3 + a)], 0.07, 0.025, mul(c, 0.9), 1.0);
+            }
+        }
+        // 板歯類：ずんぐりした体と、短い脚・ひれ
+        2 => {
+            taper(g, pen, &[(-0.2, 0.0), (-0.5, 0.0)], 0.12, 0.01, c, 1.0);
+            ell(g, pen, -0.02, 0.0, 0.26, 0.12, 0.0, c, 1.0);
+            for i in 0..6 {
+                circ(g, pen, -0.18 + i as f32 * 0.07, 0.1, 0.02, c2, 0.9);
+            }
+            ell(g, pen, 0.3, 0.02, 0.1, 0.07, 0.0, c, 1.0);
+            eye(g, pen, 0.32, 0.05, 0.014);
+            for u in [0.12f32, -0.16] {
+                taper(g, pen, &[(u, -0.08), (u - 0.06 + stroke * 0.02, -0.18)], 0.05, 0.03, mul(c, 0.8), 1.0);
+            }
+        }
+        // モササウルス：トカゲの頭と、ひれ足と尾びれ
+        4 => {
+            let prof = |f: f32| {
+                let h = if f < 0.2 { 0.035 + f / 0.2 * 0.045 } else { 0.08 * (1.0 - (f - 0.2) / 0.8 * 0.75) };
+                (h, h * 0.9)
+            };
+            let (_, bot, mid) = body_strip(g, pen, 20, &prof, &wv, c);
+            let (u, v) = mid[19];
+            poly(g, pen, &[(u + 0.06, v), (u - 0.05, v - 0.1), (u - 0.02, v), (u - 0.04, v + 0.05)], mul(c, 0.85), 1.0);
+            for (i, s) in [(4usize, 1.0f32), (10, -1.0)] {
+                let (fu, fv) = (mid[i].0, bot[i].1);
+                taper(g, pen, &[(fu, fv), (fu - 0.06, fv - 0.06 + stroke * s * 0.02)], 0.04, 0.02, mul(c, 0.8), 1.0);
+            }
+            seg(g, pen, 0.5, mid[0].1 - 0.01, 0.36, mid[2].1 - 0.03, 0.01, INK, 0.7);
+            for i in 0..5 {
+                let u = 0.48 - i as f32 * 0.025;
+                seg(g, pen, u, mid[0].1 - 0.012, u, mid[0].1 - 0.03, 0.005, WHITE, 0.9);
+            }
+            eye(g, pen, 0.4, mid[1].1 + 0.03, 0.015);
+        }
+        // ウミガメ
+        _ => {
+            for (u, s) in [(0.14f32, 1.0f32), (-0.18, -1.0)] {
+                let a = stroke * s * 0.08;
+                taper(g, pen, &[(u, -0.02), (u - 0.1, -0.12 + a), (u - 0.2, -0.16 + a)], 0.07, 0.02, mul(c2, 0.9), 1.0);
+            }
+            dome(g, pen, -0.02, -0.02, 0.32, 0.2, c, 1.0);
+            for i in 0..5 {
+                let u = -0.24 + i as f32 * 0.11;
+                seg(g, pen, u, 0.02, u + 0.02, 0.14, 0.008, mul(c, 0.7), 0.8);
+            }
+            ell(g, pen, 0.36, 0.0, 0.08, 0.055, 0.0, c2, 1.0);
+            eye(g, pen, 0.39, 0.02, 0.012);
+        }
+    }
+}
+
+fn for_teeth(hu: f32, hr: f32, i: i32) -> f32 {
+    hu + hr * 0.5 + i as f32 * hr * 0.2
+}
+
+/// 翼竜・鳥：空を飛ぶ（2=地上を歩く大型の翼竜）
+pub(crate) fn flyer(g: &mut Gfx, pen: &Pen, bird: bool, k: u8, c: [f32; 3], c2: [f32; 3], t: f32) {
+    if !bird && k == 2 {
+        // ケツァルコアトルス：たたんだ翼で四つ足で歩く
+        let w = Walker {
+            body: (-0.05, 0.42, 0.1, 0.08),
+            neck: curve((0.03, 0.47), (0.24, 0.78), -0.02, 6),
+            neck_w: 0.04,
+            head: (0.32, 0.8, 0.12, 0.03),
+            tail: vec![(-0.14, 0.42), (-0.2, 0.42)],
+            tail_w: 0.03,
+            legs: vec![(-0.08, 0.36, 0.03), (0.04, 0.4, 0.035)],
+        };
+        walker(g, pen, &w, c, c2, t, 1.4);
+        poly(g, pen, &[(-0.02, 0.45), (0.04, 0.22), (-0.1, 0.36)], c2, 0.9);
+        poly(g, pen, &[(0.28, 0.82), (0.3, 0.92), (0.36, 0.83)], mul(c2, 1.1), 1.0);
+        return;
+    }
+    let flap = (t * if bird { 9.0 } else { 5.0 }).sin();
+    let wing = |g: &mut Gfx, s: f32, a: f32| {
+        let tip = (0.0 - 0.06 * s, a * 0.48);
+        if bird {
+            for i in 0..6 {
+                let f = i as f32 / 6.0;
+                let (fu, fv) = (0.08 - f * 0.2, a * (0.12 + f * 0.36));
+                ell(g, pen, fu, fv, 0.09, 0.03, 1.2 * a.signum(), if i % 2 == 0 { c2 } else { mix(c2, c, 0.3) }, 0.95);
+            }
+        } else {
+            poly(g, pen, &[(0.1, 0.0), tip, (-0.18, 0.0)], c2, 0.85);
+            seg(g, pen, 0.1, 0.0, tip.0, tip.1, 0.015, mul(c, 0.8), 1.0);
+        }
+    };
+    wing(g, 1.0, 0.55 + flap * 0.45);
+    // 胴と尾
+    if bird || k == 0 {
+        taper(g, pen, &[(-0.08, 0.0), (-0.42, -0.02)], 0.04, 0.01, c, 1.0);
+        if bird {
+            for i in 0..5 {
+                let u = -0.14 - i as f32 * 0.06;
+                if k == 2 {
+                    continue;
+                }
+                seg(g, pen, u, 0.0, u - 0.03, 0.05, 0.012, c2, 0.9);
+                seg(g, pen, u, 0.0, u - 0.03, -0.05, 0.012, c2, 0.9);
+            }
+            if k == 2 {
+                taper(g, pen, &[(-0.1, 0.0), (-0.45, 0.06), (-0.55, 0.02)], 0.012, 0.03, c2, 1.0);
+                taper(g, pen, &[(-0.1, 0.0), (-0.45, -0.04), (-0.55, 0.0)], 0.012, 0.03, c2, 1.0);
+            }
+        } else {
+            poly(g, pen, &[(-0.42, -0.02), (-0.48, 0.03), (-0.5, -0.04)], c2, 1.0);
+        }
+    }
+    ell(g, pen, 0.0, 0.0, 0.12, 0.05, 0.0, c, 1.0);
+    // 首と頭
+    let big = !bird && k == 1;
+    taper(g, pen, &[(0.1, 0.02), (0.2, 0.06)], 0.04, 0.03, c, 1.0);
+    ell(g, pen, 0.25, 0.06, if big { 0.14 } else { 0.07 }, 0.03, -0.1, c, 1.0);
+    if big {
+        poly(g, pen, &[(0.18, 0.08), (0.06, 0.16), (0.2, 0.1)], c2, 1.0);
+    }
+    if bird {
+        poly(g, pen, &[(0.31, 0.07), (0.38, 0.05), (0.31, 0.04)], [0.8, 0.7, 0.4], 1.0);
+    }
+    eye(g, pen, 0.25, 0.08, 0.012);
+    wing(g, -1.0, -(0.35 + flap * 0.45) * 0.6 + 0.2);
+    // 足
+    seg(g, pen, -0.04, -0.03, -0.1, -0.1, 0.01, mul(c, 0.7), 1.0);
+}
+
+/// 小さな哺乳類・キノドン類 0=トガリネズミ形 1=平たい尾で泳ぐ 2=アナグマ形 3=キノドン類
+pub(crate) fn mammal(g: &mut Gfx, pen: &Pen, k: u8, c: [f32; 3], c2: [f32; 3], t: f32) {
+    let hip = if k == 2 { 0.12 } else { 0.1 };
+    let w = Walker {
+        body: (0.0, hip + 0.1, 0.2, 0.11),
+        neck: vec![(0.15, hip + 0.13), (0.24, hip + 0.13)],
+        neck_w: 0.12,
+        head: (0.32, hip + 0.12, 0.12, 0.07),
+        tail: if k == 1 { vec![(-0.18, hip + 0.08), (-0.42, hip + 0.04)] } else { curve((-0.18, hip + 0.09), (-0.5, hip + 0.04), 0.05, 5) },
+        tail_w: if k == 1 { 0.1 } else { 0.035 },
+        legs: vec![(-0.12, hip, 0.05), (0.12, hip, 0.045)],
+    };
+    walker(g, pen, &w, c, c2, t, 4.0);
+    // 毛なみと鼻・ひげ
+    for i in 0..8 {
+        let u = -0.16 + i as f32 * 0.045;
+        seg(g, pen, u, hip + 0.19, u - 0.02, hip + 0.22, 0.008, mix(c, c2, 0.5), 0.8);
+    }
+    circ(g, pen, 0.45, hip + 0.11, 0.015, INK, 0.9);
+    for s in [-1.0f32, 1.0] {
+        seg(g, pen, 0.43, hip + 0.1, 0.52, hip + 0.1 + s * 0.03, 0.004, WHITE, 0.6);
+    }
+    circ(g, pen, 0.27, hip + 0.19, 0.03, mul(c, 0.85), 1.0);
+}
+
+/// ワニの仲間など 0=ラウイスクス類 1=アエトサウルス類（鎧） 2=ワニ 3=首の長いタニストロフェウス
+pub(crate) fn archosaur(g: &mut Gfx, pen: &Pen, k: u8, c: [f32; 3], c2: [f32; 3], t: f32) {
+    let sway = (t * 1.4).sin() * 0.015;
+    let (hip, brv) = match k {
+        2 => (0.05, 0.05),
+        3 => (0.08, 0.05),
+        1 => (0.12, 0.07),
+        _ => (0.16, 0.08),
+    };
+    let head = match k {
+        2 => (0.36, hip + 0.04, 0.14, 0.035),
+        3 => (0.5, hip + 0.1, 0.035, 0.02),
+        1 => (0.3, hip + 0.08, 0.06, 0.03),
+        _ => (0.3, hip + 0.12, 0.1, 0.05),
+    };
+    let w = Walker {
+        body: (if k == 3 { -0.22 } else { -0.04 }, hip + brv * 0.8, if k == 3 { 0.1 } else { 0.18 }, brv),
+        neck: if k == 3 { curve((-0.13, hip + 0.06), (0.48, hip + 0.1), 0.05, 8) } else { vec![(0.12, hip + brv), (head.0 - head.2 * 0.6, head.1)] },
+        neck_w: if k == 3 { 0.025 } else { brv * 1.1 },
+        head,
+        tail: curve((if k == 3 { -0.3 } else { -0.2 }, hip + brv * 0.7), (-0.5, hip + 0.01 + sway), 0.0, 6),
+        tail_w: brv * 1.3,
+        legs: if k == 3 { vec![(-0.28, hip, 0.03), (-0.16, hip, 0.03)] } else { vec![(-0.14, hip, 0.045), (0.08, hip, 0.04)] },
+    };
+    walker(g, pen, &w, c, c2, t, if k == 2 { 1.0 } else { 2.0 });
+    if k == 1 || k == 2 {
+        for i in 0..9 {
+            let u = -0.36 + i as f32 * 0.07;
+            let v = hip + brv * 1.6 - (u + 0.04).abs() * 0.1;
+            if k == 1 && (i == 6 || i == 7) {
+                poly(g, pen, &[(u - 0.02, v), (u + 0.05, v + 0.08), (u + 0.02, v)], WHITE, 0.9);
+            }
+            circ(g, pen, u, v, 0.016, c2, 0.9);
+        }
+    }
+    if k == 0 || k == 2 {
+        let (hu, hv, hr, _) = head;
+        for i in 0..5 {
+            let u = hu + hr * 0.1 + i as f32 * hr * 0.18;
+            seg(g, pen, u, hv - 0.012, u, hv - 0.03, 0.005, WHITE, 0.9);
+        }
+    }
+}
+
+/// 中生代の植物 12=ソテツの仲間 13=イチョウ 14=花の咲く木
+pub(crate) fn plant_meso(g: &mut Gfx, pen: &Pen, k: u8, c: [f32; 3], c2: [f32; 3], t: f32, seed: u32) {
+    let p0 = Pen { fx: 1.0, ..*pen };
+    let sway = (t * 0.6 + seed as f32 * 0.31).sin() * 0.015;
+    match k {
+        12 => {
+            // 太くて短い幹と、かたい羽のような葉
+            taper(g, &p0, &[(0.0, -0.5), (0.0, -0.1)], 0.2, 0.17, c, 1.0);
+            for i in 0..6 {
+                let v = -0.45 + i as f32 * 0.06;
+                seg(g, &p0, -0.09, v, 0.09, v + 0.02, 0.01, mul(c, 0.75), 0.8);
+            }
+            for j in 0..11 {
+                let a = -1.5 + j as f32 * 0.3 + sway;
+                let end = (a.sin() * 0.42, -0.08 + a.cos().max(0.1) * 0.35);
+                taper(g, &p0, &[(0.0, -0.1), ((end.0) * 0.5, -0.1 + (end.1 + 0.1) * 0.6 + 0.04), end], 0.03, 0.01, c2, 1.0);
+                for q in 1..5 {
+                    let f = q as f32 / 5.0;
+                    let (bx, by) = (end.0 * f, -0.1 + (end.1 + 0.1) * f + 0.04 * (1.0 - (f - 0.5).abs() * 2.0));
+                    seg(g, &p0, bx, by, bx + 0.03, by - 0.03, 0.006, mix(c2, WHITE, 0.1), 0.8);
+                }
+            }
+        }
+        13 => {
+            // イチョウ：まっすぐな幹と扇形の葉の茂み
+            taper(g, &p0, &[(0.0, -0.5), (sway * 2.0, 0.42)], 0.08, 0.04, c, 1.0);
+            for i in 0..5 {
+                let v = -0.15 + i as f32 * 0.13;
+                for s in [-1.0f32, 1.0] {
+                    let l = 0.22 - i as f32 * 0.03;
+                    seg(g, &p0, 0.0, v, s * l, v + 0.05, 0.012, mul(c, 0.9), 1.0);
+                    for q in 0..3 {
+                        let bx = s * l * (0.4 + q as f32 * 0.3);
+                        poly(g, &p0, &[(bx, v + 0.03), (bx - 0.04, v + 0.09), (bx + 0.04, v + 0.09)], c2, 0.95);
+                    }
+                }
+            }
+        }
+        _ => {
+            // 花の咲く木：丸い茂みと花
+            taper(g, &p0, &[(0.0, -0.5), (sway * 2.0, 0.0)], 0.07, 0.05, c, 1.0);
+            for (u, v, r) in [(0.0, 0.12, 0.28), (-0.18, 0.02, 0.18), (0.18, 0.04, 0.18), (0.0, 0.3, 0.18)] {
+                ell(g, &p0, u + sway, v, r, r * 0.8, 0.0, c2, 1.0);
+            }
+            for i in 0..12 {
+                let h1 = hash2(seed as i32, i, 41);
+                let h2 = hash2(seed as i32, i, 43);
+                let (u, v) = ((h1 - 0.5) * 0.5 + sway, -0.05 + h2 * 0.45);
+                for q in 0..5 {
+                    let a = q as f32 / 5.0 * TAU;
+                    circ(g, &p0, u + a.cos() * 0.018, v + a.sin() * 0.018, 0.014, [1.0, 0.92, 0.94], 0.95);
+                }
+                circ(g, &p0, u, v, 0.01, [1.0, 0.8, 0.3], 1.0);
+            }
         }
     }
 }

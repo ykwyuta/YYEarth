@@ -139,6 +139,193 @@ pub const SP_INOSTRANCEVIA: usize = 96;
 pub const SP_SCUTOSAURUS: usize = 97;
 pub const SP_LYSTROSAURUS: usize = 98;
 
+pub const SP_MICROBIAL_MAT: usize = 1;
+pub const SP_BURGESSOMEDUSA: usize = 27;
+pub const SP_MACLURITES: usize = 99;
+pub const SP_AMBONYCHIA: usize = 100;
+pub const SP_ORTHIS: usize = 101;
+pub const SP_TRIARTHRUS: usize = 102;
+pub const SP_NESEURETUS: usize = 103;
+pub const SP_ORTHOCERAS: usize = 104;
+pub const SP_HUDSONASTER: usize = 105;
+pub const SP_ARANDASPIS: usize = 106;
+pub const SP_PROMISSUM: usize = 107;
+pub const SP_PENTAMERUS: usize = 108;
+pub const SP_GONIOPHYLLUM: usize = 109;
+pub const SP_DALMANITES: usize = 110;
+pub const SP_DAWSONOCERAS: usize = 111;
+pub const SP_PLATYCERAS: usize = 112;
+pub const SP_CLIMATIUS: usize = 113;
+pub const SP_LOGANELLIA: usize = 114;
+pub const SP_SLIMONIA: usize = 115;
+pub const SP_ZOSTEROPHYLLUM: usize = 116;
+pub const SP_PHACOPS: usize = 117;
+pub const SP_MUCROSPIRIFER: usize = 118;
+pub const SP_HELIOPHYLLUM: usize = 119;
+pub const SP_CEPHALASPIS: usize = 120;
+pub const SP_PTERASPIS: usize = 121;
+pub const SP_CHEIROLEPIS: usize = 122;
+pub const SP_COCCOSTEUS: usize = 123;
+pub const SP_DIPTERUS: usize = 124;
+pub const SP_HYNERIA: usize = 125;
+pub const SP_PSILOPHYTON: usize = 126;
+pub const SP_RHACOPHYTON: usize = 127;
+pub const SP_SPIRIFER: usize = 128;
+pub const SP_LITHOSTROTION: usize = 129;
+pub const SP_ARCHIMEDES: usize = 130;
+pub const SP_GONIATITES: usize = 131;
+pub const SP_PENTREMITES: usize = 132;
+pub const SP_ELONICHTHYS: usize = 133;
+pub const SP_EUPROOPS: usize = 134;
+pub const SP_BELLEROPHON: usize = 135;
+pub const SP_SIGILLARIA: usize = 136;
+pub const SP_CORDAITES: usize = 137;
+pub const SP_MEDULLOSA: usize = 138;
+pub const SP_STENODICTYA: usize = 139;
+pub const SP_AMPHIBAMUS: usize = 140;
+pub const SP_LEPTODUS: usize = 141;
+pub const SP_WAAGENOCERAS: usize = 142;
+pub const SP_WAAGENOPHYLLUM: usize = 143;
+pub const SP_EURYDESMA: usize = 144;
+pub const SP_XENACANTHUS: usize = 145;
+pub const SP_PALAEONISCUM: usize = 146;
+pub const SP_EDAPHOSAURUS: usize = 147;
+pub const SP_SEYMOURIA: usize = 148;
+pub const SP_CAPTORHINUS: usize = 149;
+pub const SP_DICYNODON: usize = 150;
+pub const SP_MOSCHOPS: usize = 151;
+pub const SP_TSHEKARDOCOLEUS: usize = 152;
+pub const SP_GIGANTOPTERIS: usize = 153;
+pub const SP_CANADASPIS: usize = 154;
+pub const SP_WAPTIA: usize = 155;
+pub const SP_YOHOIA: usize = 156;
+pub const SP_ELDONIA: usize = 157;
+pub const SP_CHANCELLORIA: usize = 158;
+pub const SP_ELRATHIA: usize = 159;
+pub const SP_GOGIA: usize = 160;
+pub const SP_MYLLOKUNMINGIA: usize = 161;
+pub const SP_PENTECOPTERUS: usize = 162;
+pub const SP_LUNATASPIS: usize = 163;
+pub const SP_ECHINOSPHAERITES: usize = 164;
+pub const SP_BOTHRIOCIDARIS: usize = 165;
+pub const SP_LITUITES: usize = 166;
+pub const SP_SELENOPELTIS: usize = 167;
+pub const SP_ASTRASPIS: usize = 168;
+pub const SP_HALYSITES: usize = 169;
+pub const SP_RECEPTACULITES: usize = 170;
+pub const SP_BRONTOSCORPIO: usize = 171;
+pub const SP_CARCINOSOMA: usize = 172;
+pub const SP_JAMOYTIUS: usize = 173;
+pub const SP_HELIOLITES: usize = 174;
+pub const SP_ENCRINURUS: usize = 175;
+pub const SP_OPHIOCERAS: usize = 176;
+pub const SP_ATRYPA: usize = 177;
+pub const SP_PTERYGOTUS: usize = 178;
+pub const SP_DREPANOPHYCUS: usize = 179;
+pub const SP_AGLAOPHYTON: usize = 180;
+pub const SP_RHYNIOGNATHA: usize = 181;
+pub const SP_DREPANASPIS: usize = 182;
+pub const SP_HOLOPTYCHIUS: usize = 183;
+pub const SP_TITANICHTHYS: usize = 184;
+pub const SP_PANDERICHTHYS: usize = 185;
+pub const SP_CLYMENIA: usize = 186;
+pub const SP_HELIANTHASTER: usize = 187;
+pub const SP_CALAMOPHYTON: usize = 188;
+pub const SP_ATTERCOPUS: usize = 189;
+pub const SP_FALCATUS: usize = 190;
+pub const SP_EDESTUS: usize = 191;
+pub const SP_RHIZODUS: usize = 192;
+pub const SP_CRASSIGYRINUS: usize = 193;
+pub const SP_WESTLOTHIANA: usize = 194;
+pub const SP_BALANERPETON: usize = 195;
+pub const SP_MEGARACHNE: usize = 196;
+pub const SP_PETROLACOSAURUS: usize = 197;
+pub const SP_ARCHAEOTHYRIS: usize = 198;
+pub const SP_ESSEXELLA: usize = 199;
+pub const SP_LYGINOPTERIS: usize = 200;
+pub const SP_OPHIACODON: usize = 201;
+pub const SP_CACOPS: usize = 202;
+pub const SP_VARANOPS: usize = 203;
+pub const SP_ESTEMMENOSUCHUS: usize = 204;
+pub const SP_TITANOPHONEUS: usize = 205;
+pub const SP_COELUROSAURAVUS: usize = 206;
+pub const SP_PRIONOSUCHUS: usize = 207;
+pub const SP_DORYPTERUS: usize = 208;
+pub const SP_MEGANEUROPSIS: usize = 209;
+pub const SP_EUCHAMBERSIA: usize = 210;
+pub const SP_VOLTZIA: usize = 211;
+pub const SP_THRINAXODON: usize = 212;
+pub const SP_PLEUROMEIA: usize = 213;
+pub const SP_TRIADOBATRACHUS: usize = 214;
+pub const SP_CYNOGNATHUS: usize = 215;
+pub const SP_MIXOSAURUS: usize = 216;
+pub const SP_NOTHOSAURUS: usize = 217;
+pub const SP_TANYSTROPHEUS: usize = 218;
+pub const SP_PLACODUS: usize = 219;
+pub const SP_CERATITES: usize = 220;
+pub const SP_EORAPTOR: usize = 221;
+pub const SP_HERRERASAURUS: usize = 222;
+pub const SP_COELOPHYSIS: usize = 223;
+pub const SP_PLATEOSAURUS: usize = 224;
+pub const SP_POSTOSUCHUS: usize = 225;
+pub const SP_DESMATOSUCHUS: usize = 226;
+pub const SP_EUDIMORPHODON: usize = 227;
+pub const SP_SHONISAURUS: usize = 228;
+pub const SP_METOPOSAURUS: usize = 229;
+pub const SP_DICROIDIUM: usize = 230;
+pub const SP_ARAUCARIOXYLON: usize = 231;
+pub const SP_MEGAZOSTRODON: usize = 232;
+pub const SP_DILOPHOSAURUS: usize = 233;
+pub const SP_ICHTHYOSAURUS: usize = 234;
+pub const SP_PLESIOSAURUS: usize = 235;
+pub const SP_DIMORPHODON: usize = 236;
+pub const SP_SCELIDOSAURUS: usize = 237;
+pub const SP_STENOPTERYGIUS: usize = 238;
+pub const SP_DAPEDIUM: usize = 239;
+pub const SP_PASSALOTEUTHIS: usize = 240;
+pub const SP_DACTYLIOCERAS: usize = 241;
+pub const SP_LIOPLEURODON: usize = 242;
+pub const SP_LEEDSICHTHYS: usize = 243;
+pub const SP_ANCHIORNIS: usize = 244;
+pub const SP_CASTOROCAUDA: usize = 245;
+pub const SP_ALLOSAURUS: usize = 246;
+pub const SP_STEGOSAURUS: usize = 247;
+pub const SP_DIPLODOCUS: usize = 248;
+pub const SP_BRACHIOSAURUS: usize = 249;
+pub const SP_ARCHAEOPTERYX: usize = 250;
+pub const SP_RHAMPHORHYNCHUS: usize = 251;
+pub const SP_COMPSOGNATHUS: usize = 252;
+pub const SP_WILLIAMSONIA: usize = 253;
+pub const SP_GINKGO: usize = 254;
+pub const SP_IGUANODON: usize = 255;
+pub const SP_SINOSAUROPTERYX: usize = 256;
+pub const SP_MICRORAPTOR: usize = 257;
+pub const SP_PSITTACOSAURUS: usize = 258;
+pub const SP_CONFUCIUSORNIS: usize = 259;
+pub const SP_REPENOMAMUS: usize = 260;
+pub const SP_ARCHAEFRUCTUS: usize = 261;
+pub const SP_SPINOSAURUS: usize = 262;
+pub const SP_ARGENTINOSAURUS: usize = 263;
+pub const SP_GIGANOTOSAURUS: usize = 264;
+pub const SP_ELASMOSAURUS: usize = 265;
+pub const SP_TYLOSAURUS: usize = 266;
+pub const SP_PTERANODON: usize = 267;
+pub const SP_XIPHACTINUS: usize = 268;
+pub const SP_ARCHELON: usize = 269;
+pub const SP_CRETOXYRHINA: usize = 270;
+pub const SP_BACULITES: usize = 271;
+pub const SP_MOSASAURUS: usize = 272;
+pub const SP_VELOCIRAPTOR: usize = 273;
+pub const SP_PROTOCERATOPS: usize = 274;
+pub const SP_PARASAUROLOPHUS: usize = 275;
+pub const SP_DEINOSUCHUS: usize = 276;
+pub const SP_TYRANNOSAURUS: usize = 277;
+pub const SP_TRICERATOPS: usize = 278;
+pub const SP_ANKYLOSAURUS: usize = 279;
+pub const SP_EDMONTOSAURUS: usize = 280;
+pub const SP_QUETZALCOATLUS: usize = 281;
+pub const SP_EARLY_MAGNOLIA: usize = 282;
+
 pub static MISSIONS: &[Mission] = &[
     Mission {
         period: CAMBRIAN,
@@ -687,11 +874,183 @@ pub static MISSIONS: &[Mission] = &[
             "最后的课题。2亿5200万年前，西伯利亚发生史上规模最大的喷发之一。从高空记录下来，再找到在大灭绝中幸存的水龙兽，完成古生代图鉴吧。",
         ),
         done: L(
-            "古生代の宿題、すべて合格です！ 3億年近い生命の歴史を、あなたは自分の目で見てきました。次の中生代への旅も、楽しみにしていてください。",
-            "Every Paleozoic assignment passed! You have seen nearly 300 million years of life with your own eyes. Look forward to your next journey, into the Mesozoic.",
-            "古生代作业全部合格！你亲眼见证了近3亿年的生命历史。敬请期待接下来的中生代之旅。",
+            "古生代の宿題はここまで！ 3億年近い生命の歴史を、あなたは自分の目で見てきました。次は中生代、恐竜の時代です。",
+            "That completes the Paleozoic! You have seen nearly 300 million years of life with your own eyes. Next comes the Mesozoic — the age of dinosaurs.",
+            "古生代的作业到此完成！你亲眼见证了近3亿年的生命历史。接下来是中生代——恐龙的时代。",
         ),
         targets: &[(Ph(P_SIBERIAN_TRAPS), 1), (Sp(SP_LYSTROSAURUS), 1)],
+    },
+    // ======================================================== 三畳紀
+    Mission {
+        period: TRIASSIC,
+        title: L("大絶滅のあとで", "After the great dying", "大灭绝之后"),
+        brief: L(
+            "中生代のはじまり、2億5000万年前。史上最大の絶滅を生きのびた生きものたちを記録しましょう。ブタのようなリストロサウルス、巣穴の小さなトリナクソドン、荒れ地に広がった植物プレウロメイアです。",
+            "The dawn of the Mesozoic, 250 million years ago. Record the survivors of the greatest extinction: pig-like Lystrosaurus, little burrowing Thrinaxodon, and Pleuromeia, the plant that spread over the bare land.",
+            "中生代之初，2亿5000万年前。记录史上最大灭绝的幸存者：猪一样的水龙兽、在巢穴中的小型三尖叉齿兽，以及遍布荒地的植物肋木。",
+        ),
+        done: L("生きのびたものたちから、新しい時代が始まります。哺乳類の祖先も、この中にいましたね。", "A new age begins with the survivors — and the ancestors of mammals were among them.", "新的时代从幸存者开始，哺乳动物的祖先也在其中。"),
+        targets: &[(Sp(SP_LYSTROSAURUS), 1), (Sp(SP_THRINAXODON), 1), (Sp(SP_PLEUROMEIA), 1)],
+    },
+    Mission {
+        period: TRIASSIC,
+        title: L("海にもどった爬虫類", "Reptiles return to the sea", "重返海洋的爬行动物"),
+        brief: L(
+            "2億4100万年前、テチス海の入り江（いまのスイスとイタリアの国境）。陸から海にもどった爬虫類たちを撮影してください。首のとても長いタニストロフェウスもいますよ。",
+            "A Tethys lagoon 241 million years ago (now on the Swiss–Italian border). Photograph the reptiles that went back to the sea — including very long-necked Tanystropheus.",
+            "2亿4100万年前特提斯海的海湾（今瑞士与意大利边境）。请拍摄从陆地重返海洋的爬行动物，还有脖子超长的长颈龙哦。",
+        ),
+        done: L("魚竜、偽竜、板歯類。爬虫類はいろいろなやり方で海に適応したのです。", "Ichthyosaurs, nothosaurs, placodonts — reptiles adapted to the sea in many different ways.", "鱼龙、幻龙、楯齿龙——爬行动物以各种方式适应了海洋。"),
+        targets: &[(Sp(SP_MIXOSAURUS), 1), (Sp(SP_NOTHOSAURUS), 1), (Sp(SP_PLACODUS), 1), (Sp(SP_TANYSTROPHEUS), 1)],
+    },
+    Mission {
+        period: TRIASSIC,
+        title: L("最初の恐竜", "The first dinosaurs", "最早的恐龙"),
+        brief: L(
+            "2億3000万年前、パンゲアの南（いまのアルゼンチン）。ついに恐竜が現れました。小さなエオラプトルと、大きなヘレラサウルスを撮影してください。",
+            "Southern Pangaea 230 million years ago (now Argentina). The dinosaurs have finally arrived! Photograph little Eoraptor and big Herrerasaurus.",
+            "2亿3000万年前盘古大陆南部（今阿根廷）。恐龙终于登场了！请把小小的始盗龙和大大的埃雷拉龙拍摄下来。",
+        ),
+        done: L("これが、1億6000万年続く恐竜の時代の始まりです。", "This is the start of the dinosaurs' 160-million-year reign.", "这就是持续1亿6000万年的恐龙时代的开端。"),
+        targets: &[(Sp(SP_EORAPTOR), 1), (Sp(SP_HERRERASAURUS), 1)],
+    },
+    Mission {
+        period: TRIASSIC,
+        title: L("三畳紀の大地", "Triassic lands", "三叠纪的大地"),
+        brief: L(
+            "三畳紀の後半、北アメリカとヨーロッパの大地へ。身軽な恐竜コエロフィシス、首の長いプラテオサウルス、恐竜より強かったワニの仲間ポストスクスとデスマトスクス、そして化石の森の木を記録しましょう。",
+            "Late Triassic North America and Europe. Record nimble Coelophysis, long-necked Plateosaurus, the crocodile relatives Postosuchus and Desmatosuchus that out-ranked the dinosaurs, and the petrified-forest tree.",
+            "三叠纪后期的北美洲和欧洲。记录轻巧的腔骨龙、长颈的板龙、比恐龙更强的鳄类亲戚后鳄和链鳄，以及石化林中的树。",
+        ),
+        done: L("このころ、陸の主役はまだワニの仲間でした。恐竜の天下はもう少し先です。", "At this time crocodile relatives still ruled; the dinosaurs' turn was yet to come.", "这时陆地的主角还是鳄类亲戚，恐龙称霸还要再等一等。"),
+        targets: &[(Sp(SP_COELOPHYSIS), 1), (Sp(SP_PLATEOSAURUS), 1), (Sp(SP_POSTOSUCHUS), 1), (Sp(SP_DESMATOSUCHUS), 1), (Sp(SP_ARAUCARIOXYLON), 1)],
+    },
+    Mission {
+        period: TRIASSIC,
+        title: L("三畳紀の終わり", "The end of the Triassic", "三叠纪的终结"),
+        brief: L(
+            "空を飛ぶ最初の翼竜と、巨大な魚竜を撮影したら、2億150万年前、パンゲアが裂ける場所で起きた大噴火を上空から記録してください。",
+            "Photograph one of the first pterosaurs and a giant ichthyosaur, then record from the sky the eruptions that tore Pangaea apart 201.5 million years ago.",
+            "拍下最早的翼龙和巨型鱼龙后，从高空记录2亿150万年前在盘古大陆裂开处发生的大喷发。",
+        ),
+        done: L("この噴火で多くの生きものが消え、生きのびた恐竜がジュラ紀の主役になります。", "Many lineages vanished in these eruptions, and the surviving dinosaurs took over the Jurassic.", "许多生物在这次喷发中消失，幸存的恐龙成为侏罗纪的主角。"),
+        targets: &[(Sp(SP_EUDIMORPHODON), 1), (Sp(SP_SHONISAURUS), 1), (Ph(P_CAMP), 1)],
+    },
+    // ======================================================== ジュラ紀
+    Mission {
+        period: JURASSIC,
+        title: L("メアリー・アニングの海", "Mary Anning's sea", "玛丽·安宁的海"),
+        brief: L(
+            "1億9500万年前、いまのイギリス南部の海。のちに少女メアリー・アニングが化石を掘り出した魚竜・首長竜・翼竜と、うろこの美しい魚を撮影しましょう。",
+            "The sea of southern England 195 million years ago. Photograph the ichthyosaurs, plesiosaurs and pterosaurs whose fossils the young Mary Anning later dug up, plus a beautifully scaled fish.",
+            "1亿9500万年前的英格兰南部海域。请拍摄后来被少女玛丽·安宁发掘出化石的鱼龙、蛇颈龙、翼龙，以及鳞片美丽的鱼。",
+        ),
+        done: L("メアリー・アニングの発見は、恐竜時代の海の研究のはじまりになりました。", "Mary Anning's discoveries launched the study of the dinosaur-age seas.", "玛丽·安宁的发现开启了恐龙时代海洋的研究。"),
+        targets: &[(Sp(SP_ICHTHYOSAURUS), 1), (Sp(SP_PLESIOSAURUS), 1), (Sp(SP_DIMORPHODON), 1), (Sp(SP_DAPEDIUM), 1)],
+    },
+    Mission {
+        period: JURASSIC,
+        title: L("アンモナイトとイカの海", "Ammonites and squid-like seas", "菊石与箭石之海"),
+        brief: L(
+            "ジュラ紀の海は、アンモナイトとベレムナイトでいっぱい。それを食べた魚竜ステノプテリギウスも撮影し、陸に降りて恐竜時代の森も記録しましょう。",
+            "Jurassic seas teemed with ammonites and belemnites. Photograph them and the ichthyosaur Stenopterygius that ate them, then land and record a dinosaur-age forest.",
+            "侏罗纪的海洋满是菊石和箭石。请拍摄它们以及以它们为食的狭翼鱼龙，再降落到陆地上记录恐龙时代的森林。",
+        ),
+        done: L("アンモナイトは種類の移り変わりが速く、地層の年代を決める「時計」になります。", "Ammonites changed so quickly that they serve as clocks for dating rocks.", "菊石演化变化很快，成为测定地层年代的“时钟”。"),
+        targets: &[(Sp(SP_DACTYLIOCERAS), 1), (Sp(SP_PASSALOTEUTHIS), 1), (Sp(SP_STENOPTERYGIUS), 1), (Ph(P_GYMNO_FOREST), 1)],
+    },
+    Mission {
+        period: JURASSIC,
+        title: L("羽毛の恐竜と泳ぐ哺乳類", "Feathered dinosaurs and a swimming mammal", "长羽毛的恐龙与会游泳的哺乳类"),
+        brief: L(
+            "1億6000万年前、いまの中国北東部の湖のほとり。手足に羽を持つ小さな恐竜アンキオルニスと、ビーバーのように泳ぐカストロカウダ、そしてイチョウの木を探してください。",
+            "Lakeshores of north-east China 160 million years ago. Find Anchiornis, a little dinosaur with feathered arms and legs, beaver-like Castorocauda, and a ginkgo tree.",
+            "1亿6000万年前的中国东北湖畔。寻找手脚长羽毛的小恐龙近鸟龙、像河狸一样游泳的獭形狸尾兽，以及银杏树。",
+        ),
+        done: L("鳥の祖先も、わたしたちの祖先も、恐竜の足もとで新しい暮らし方を広げていました。", "Both birds' ancestors and our own were trying new ways of life at the dinosaurs' feet.", "鸟类的祖先和我们的祖先，都在恐龙脚下开拓着新的生活方式。"),
+        targets: &[(Sp(SP_ANCHIORNIS), 1), (Sp(SP_CASTOROCAUDA), 1), (Sp(SP_GINKGO), 1)],
+    },
+    Mission {
+        period: JURASSIC,
+        title: L("モリソンの巨人たち", "Giants of the Morrison", "莫里森的巨人们"),
+        brief: L(
+            "1億5200万年前、北アメリカの大平原。巨大な竜脚類ディプロドクスとブラキオサウルス、背中に板を持つステゴサウルス、そして肉食恐竜アロサウルスを記録しましょう。",
+            "The great plains of North America 152 million years ago. Record giant Diplodocus and Brachiosaurus, plated Stegosaurus, and the predator Allosaurus.",
+            "1亿5200万年前北美洲大平原。记录巨型蜥脚类梁龙和腕龙、背有骨板的剑龙，以及肉食恐龙异特龙。",
+        ),
+        done: L("地球の歴史で、いちばん大きな動物たちが大地を歩いた時代です。", "This was when the biggest animals in Earth's history walked the land.", "这是地球史上最大的动物在大地上行走的时代。"),
+        targets: &[(Sp(SP_DIPLODOCUS), 1), (Sp(SP_BRACHIOSAURUS), 1), (Sp(SP_STEGOSAURUS), 1), (Sp(SP_ALLOSAURUS), 1)],
+    },
+    Mission {
+        period: JURASSIC,
+        title: L("始祖鳥の潟", "The Archaeopteryx lagoon", "始祖鸟的潟湖"),
+        brief: L(
+            "1億5000万年前、いまのドイツ南部の島々。恐竜と鳥の両方の特徴を持つ始祖鳥を撮影してください。翼竜ランフォリンクスと、小さな恐竜コンプソグナトゥスもいます。",
+            "Islands of southern Germany 150 million years ago. Photograph Archaeopteryx — half dinosaur, half bird —, along with the pterosaur Rhamphorhynchus and tiny Compsognathus.",
+            "1亿5000万年前的德国南部群岛。请把兼具恐龙与鸟类特征的始祖鸟拍摄下来，还有喙嘴翼龙和小恐龙美颌龙。",
+        ),
+        done: L("鳥は、恐竜から生まれたのです。ジュラ紀の宿題、合格です！", "Birds came from dinosaurs. Your Jurassic assignments are complete!", "鸟类起源于恐龙。侏罗纪作业合格！"),
+        targets: &[(Sp(SP_ARCHAEOPTERYX), 1), (Sp(SP_RHAMPHORHYNCHUS), 1), (Sp(SP_COMPSOGNATHUS), 1)],
+    },
+    // ======================================================== 白亜紀
+    Mission {
+        period: CRETACEOUS,
+        title: L("熱河の湖", "The Jehol lakes", "热河的湖泊"),
+        brief: L(
+            "1億2300万年前、いまの中国・遼寧省。羽毛の恐竜、4枚の翼の恐竜、初期の鳥、恐竜を食べた哺乳類、そして最古の花の一つを記録しましょう。花の咲く森の景色も撮ってください。",
+            "Liaoning, China, 123 million years ago. Record a feathered dinosaur, a four-winged dinosaur, an early bird, a mammal that ate dinosaurs and one of the oldest flowers — and photograph a flowering forest.",
+            "1亿2300万年前的中国辽宁。记录长羽毛的恐龙、四翼恐龙、早期鸟类、吃恐龙的哺乳动物和最古老的花之一，也请拍下开花的森林。",
+        ),
+        done: L("熱河の化石は、羽毛や花の進化を教えてくれる宝物です。", "The Jehol fossils are treasures that reveal how feathers and flowers evolved.", "热河化石是揭示羽毛和花朵演化的宝藏。"),
+        targets: &[(Sp(SP_SINOSAUROPTERYX), 1), (Sp(SP_MICRORAPTOR), 1), (Sp(SP_CONFUCIUSORNIS), 1), (Sp(SP_REPENOMAMUS), 1), (Sp(SP_ARCHAEFRUCTUS), 1), (Ph(P_FLOWER_FOREST), 1)],
+    },
+    Mission {
+        period: CRETACEOUS,
+        title: L("南の大陸の巨人", "Giants of the southern continents", "南方大陆的巨人"),
+        brief: L(
+            "白亜紀の中ごろ、分かれていくゴンドワナの大陸へ。アフリカの大河の帆を持つスピノサウルス、南アメリカの史上最大級の恐竜アルゼンチノサウルスとギガノトサウルスを探してください。",
+            "Mid-Cretaceous Gondwana, breaking apart. Find sail-backed Spinosaurus in Africa's great rivers, and in South America record-breaking Argentinosaurus and Giganotosaurus.",
+            "白垩纪中期，分裂中的冈瓦纳大陆。寻找非洲大河中背有大帆的棘龙，以及南美洲史上最大级的阿根廷龙和南方巨兽龙。",
+        ),
+        done: L("大陸が分かれると、それぞれの大陸で恐竜も別々の進化をしていきました。", "As the continents separated, dinosaurs evolved differently on each one.", "大陆分离后，各大陆上的恐龙也各自演化。"),
+        targets: &[(Sp(SP_SPINOSAURUS), 1), (Sp(SP_ARGENTINOSAURUS), 1), (Sp(SP_GIGANOTOSAURUS), 1)],
+    },
+    Mission {
+        period: CRETACEOUS,
+        title: L("西部内陸海路", "The Western Interior Seaway", "西部内陆海道"),
+        brief: L(
+            "8000万年前、北アメリカを南北に分けた浅い海。モササウルス類、首のとても長い首長竜、大きな魚、巨大なウミガメ、そして空の翼竜プテラノドンを記録しましょう。",
+            "The shallow sea that split North America 80 million years ago. Record a mosasaur, a very long-necked plesiosaur, a giant fish, a huge sea turtle and Pteranodon soaring overhead.",
+            "8000万年前把北美洲一分为二的浅海。记录沧龙类、超长颈的蛇颈龙、大鱼、巨型海龟和在空中翱翔的无齿翼龙。",
+        ),
+        done: L("恐竜が陸を歩いていたころ、海も爬虫類の王国でした。", "While dinosaurs walked the land, the seas were a kingdom of reptiles too.", "恐龙在陆地上行走的时候，海洋也是爬行动物的王国。"),
+        targets: &[(Sp(SP_TYLOSAURUS), 1), (Sp(SP_ELASMOSAURUS), 1), (Sp(SP_XIPHACTINUS), 1), (Sp(SP_ARCHELON), 1), (Sp(SP_PTERANODON), 1)],
+    },
+    Mission {
+        period: CRETACEOUS,
+        title: L("ゴビの砂丘", "The Gobi dunes", "戈壁沙丘"),
+        brief: L(
+            "7300万年前、いまのモンゴルの砂丘。羽毛を持つ肉食恐竜ヴェロキラプトルを、その獲物プロトケラトプスと一緒に撮影してください。それから上空からローラシア大陸の全体を撮りましょう。",
+            "The dunes of Mongolia 73 million years ago. Photograph feathered Velociraptor along with its prey Protoceratops, then photograph the whole of Laurasia from the sky.",
+            "7300万年前的蒙古沙丘。请把长羽毛的伶盗龙拍摄下来，连同它的猎物原角龙一起，然后从高空拍下整个劳亚大陆。",
+        ),
+        done: L("映画のヴェロキラプトルとちがって、本物は七面鳥ほどの大きさで、羽毛がありました。", "Unlike in the movies, the real Velociraptor was turkey-sized and feathered.", "与电影里不同，真正的伶盗龙只有火鸡那么大，而且长着羽毛。"),
+        targets: &[(Sp(SP_VELOCIRAPTOR), 1), (Sp(SP_PROTOCERATOPS), 1), (Ph(P_LAURASIA), 1)],
+    },
+    Mission {
+        period: CRETACEOUS,
+        title: L("中生代の終わり", "The end of the Mesozoic", "中生代的终结"),
+        brief: L(
+            "最後の課題です。6600万年前、北アメリカのヘルクリーク。王者ティラノサウルスを画面いっぱいに、そしてトリケラトプスを撮影したら、インドの大噴火と、小惑星の衝突を上空から記録してください。",
+            "Your final assignment. Hell Creek, North America, 66 million years ago. Fill the frame with Tyrannosaurus and photograph Triceratops, then record from the sky the eruptions in India and the asteroid impact.",
+            "最后的课题。6600万年前北美洲的地狱溪。请把霸王龙拍满画面，再拍下三角龙，然后从高空记录印度的大喷发和小行星撞击。",
+        ),
+        done: L(
+            "鳥以外の恐竜はここで姿を消し、生きのびた小さな哺乳類と鳥の時代、新生代が始まります。次の旅も楽しみにしていてください。",
+            "The non-bird dinosaurs vanish here, and the age of the surviving mammals and birds — the Cenozoic — begins. Look forward to your next journey.",
+            "非鸟恐龙在此消失，幸存的小型哺乳动物和鸟类的时代——新生代开始了。敬请期待下一段旅程。",
+        ),
+        targets: &[(Sp(SP_TYRANNOSAURUS), 1), (Sp(SP_TRICERATOPS), 1), (Ph(P_DECCAN), 1), (Ph(P_CHICXULUB), 1)],
     },
 ];
 
@@ -723,7 +1082,7 @@ mod tests {
         }
         for m in MISSIONS {
             for &(t, n) in m.targets {
-                assert!((1..=3).contains(&n));
+                assert_eq!(n, 1, "a single successful photograph must complete each target");
                 let ok = match t {
                     Target::Sp(i) => SPECIES[i].t0 > PERIODS[m.period].t1 - 1e-3 && SPECIES[i].t1 < PERIODS[m.period].t0 + 1e-3,
                     Target::Ph(i) => PHENOMS[i].t0 > PERIODS[m.period].t1 - 1e-3 && PHENOMS[i].t1 < PERIODS[m.period].t0 + 1e-3,
