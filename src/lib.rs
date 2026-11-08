@@ -20,6 +20,7 @@ mod earth;
 mod game;
 mod life;
 mod guide;
+mod phylogeny;
 mod mission;
 mod progress;
 mod rng;

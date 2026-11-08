@@ -57,6 +57,7 @@ enum Screen {
 enum Panel {
     None,
     Guide,
+    Tree,
     Entry(usize),
     Missions,
     Help,
@@ -80,6 +81,7 @@ enum Act {
     Surface,
     Shoot,
     Guide,
+    Tree,
     Missions,
     Help,
     Close,
@@ -216,6 +218,10 @@ pub struct Game {
     flash: f32,
     clock: f32,
     guide_scroll: f32,
+    tree_scroll: f32,
+    tree_max: f32,
+    tree_focus: Option<usize>,
+    entry_from_tree: bool,
     guide_max: f32,
     entry_page: usize,
     entry_book: Option<EntryBook>,
@@ -368,6 +374,10 @@ impl Game {
             flash: 0.0,
             clock: 0.0,
             guide_scroll: 0.0,
+            tree_scroll: 0.0,
+            tree_max: 0.0,
+            tree_focus: None,
+            entry_from_tree: false,
             entry_page: 0,
             entry_book: None,
             guide_period: 0,
@@ -520,7 +530,7 @@ impl Game {
         let (x, y) = (x / self.gfx.ui, y / self.gfx.ui);
         // Cards are tappable buttons, but a swipe anywhere in the grid scrolls.
         // Keep the header (period tabs and Close) outside this gesture region.
-        if self.panel == Panel::Guide {
+        if matches!(self.panel, Panel::Guide | Panel::Tree) {
             let (x0, y0, x1, y1, _, _, _) = self.guide_layout();
             if x >= x0 && x <= x1 && y >= y0 && y <= y1 {
                 return 3;
@@ -621,6 +631,7 @@ impl Game {
                 entry_name(e).to_string()
             }
             Panel::Missions => format!("{}。{}", m.title.get(), m.brief.get()),
+            Panel::Tree => tf!("{}。枝はなかまの分かれ方を示すよ。代表的な生きものを押して図鑑を開こう。上下になぞると続きが見られるよ。", "{}. Branches show relationships. Choose an example to open the guide. Scroll to see more.", "{}。分支表示亲缘关系。点击代表生物打开图鉴，上下滑动查看更多。", PERIODS[self.guide_period].name.get()),
             Panel::Guide => t!("生きものの絵を押すと、お話が聞けるよ。", "Choose a creature's picture to hear about it.", "点击生物图片，听听它的故事吧。").to_string(),
             Panel::Help => t!("地図で行きたいところを押そう。潜るボタンで海へ。生きものに近づいて、撮影ボタンで写真を撮ろう。左上のスピーカーで声を切り替え、丸い矢印でもう一度聞けるよ。", "Choose a place on the map. Press Dive, move closer to a creature, then press Photo. The speaker turns voice on or off. The round arrow repeats the guide.", "点击地图选择地点。按下潜，靠近生物，再按拍摄。左上角的喇叭开关语音，圆箭头可以重听。").to_string(),
             _ => match self.screen {
@@ -969,6 +980,8 @@ impl Game {
             Ev::Wheel(d) => {
                 if self.panel == Panel::Guide {
                     self.guide_scroll = (self.guide_scroll - d * 60.0).clamp(0.0, self.guide_max);
+                } else if self.panel == Panel::Tree {
+                    self.tree_scroll = (self.tree_scroll - d * 60.0).clamp(0.0, self.tree_max);
                 } else if matches!(self.panel, Panel::Entry(_)) {
                     if d != 0.0 { self.do_act(Act::EntryPage(if d < 0.0 { 1 } else { -1 })); }
                 } else if self.panel == Panel::None {
@@ -991,6 +1004,8 @@ impl Game {
             Ev::Scroll(d) => {
                 if self.panel == Panel::Guide {
                     self.guide_scroll = (self.guide_scroll - d).clamp(0.0, self.guide_max);
+                } else if self.panel == Panel::Tree {
+                    self.tree_scroll = (self.tree_scroll - d).clamp(0.0, self.tree_max);
                 }
             }
             Ev::Key(k, down) => {
@@ -1053,7 +1068,18 @@ impl Game {
                 } else if k == VK_UP || k == 0x21 {
                     self.do_act(Act::EntryPage(-1));
                 } else if k == VK_ESCAPE || k == VK_BACK || k == VK_F2 || k == 0x47 {
-                    self.panel = Panel::Guide;
+                    self.do_act(Act::Close);
+                }
+                return;
+            }
+            Panel::Tree => {
+                if k == VK_ESCAPE || k == VK_BACK || k == VK_F2 || k == 0x47 {
+                    self.do_act(Act::Close);
+                } else if k == VK_UP || k == VK_DOWN || k == 0x21 || k == 0x22 {
+                    let step = if k == VK_UP || k == 0x21 { -120.0 } else { 120.0 };
+                    self.tree_scroll = (self.tree_scroll + step).clamp(0.0, self.tree_max);
+                } else if k == VK_LEFT || k == VK_RIGHT {
+                    self.do_act(Act::GuideTab((self.guide_period as i32 + if k == VK_LEFT { -1 } else { 1 }).rem_euclid(PERIODS.len() as i32) as usize));
                 }
                 return;
             }
@@ -1187,6 +1213,19 @@ impl Game {
                     self.guide_scroll = 0.0;
                 }
             }
+            Act::Tree => {
+                if let Panel::Entry(e) = self.panel {
+                    self.guide_period = entry_period(e);
+                    self.tree_focus = crate::phylogeny::node_for_entry(e);
+                } else { self.tree_focus = None; }
+                self.panel = Panel::Tree;
+                self.tree_scroll = 0.0;
+                if let Some(focus) = self.tree_focus {
+                    if let Some(row) = self.tree_rows().iter().find(|row| row.0 == focus) {
+                        self.tree_scroll = (row.1 - 60.0).max(0.0);
+                    }
+                }
+            }
             Act::Missions => {
                 self.panel = if self.panel == Panel::Missions { Panel::None } else { Panel::Missions };
                 self.mission_tab = MISSIONS[self.prog.mission].period;
@@ -1196,12 +1235,16 @@ impl Game {
             }
             Act::Close => {
                 self.panel = match self.panel {
-                    Panel::Entry(_) => Panel::Guide,
+                    Panel::Entry(_) if self.entry_from_tree => Panel::Tree,
+                    Panel::Entry(_) | Panel::Tree => Panel::Guide,
                     _ => Panel::None,
                 };
             }
             Act::Entry(i) => {
                 if i < n_entries() {
+                    if !matches!(self.panel, Panel::Entry(_)) {
+                        self.entry_from_tree = self.panel == Panel::Tree;
+                    }
                     self.prog.fresh[i] = false;
                     self.entry_page = 0;
                     self.entry_book = None;
@@ -1269,6 +1312,8 @@ impl Game {
                 if period != self.guide_period {
                     self.guide_period = period;
                     self.guide_scroll = 0.0;
+                    self.tree_scroll = 0.0;
+                    self.tree_focus = None;
                 }
             }
             Act::StepStage(d) => {
@@ -1563,6 +1608,7 @@ impl Game {
         // 画面部品のうち、絵を含むもの（WebGL / Direct3D で描く）
         match self.panel {
             Panel::Guide => self.render_guide_gl(),
+            Panel::Tree => self.render_tree_gl(),
             Panel::Entry(i) => self.render_entry_gl(i),
             _ => {}
         }
@@ -1573,7 +1619,7 @@ impl Game {
         }
         self.gfx.flush();
         if self.gfx.d2d_begin() {
-            let full = self.photo.is_some() || matches!(self.panel, Panel::Guide | Panel::Entry(_) | Panel::Missions | Panel::Help);
+            let full = self.photo.is_some() || matches!(self.panel, Panel::Guide | Panel::Tree | Panel::Entry(_) | Panel::Missions | Panel::Help);
             if !full {
                 match self.screen {
                     Screen::Title => self.render_title(),
@@ -1593,6 +1639,7 @@ impl Game {
             }
             match self.panel {
                 Panel::Guide => self.render_guide_ui(),
+                Panel::Tree => self.render_tree_ui(),
                 Panel::Entry(i) => self.render_entry_ui(i),
                 Panel::Missions => self.render_missions(),
                 Panel::Help => self.render_help(),
@@ -2398,6 +2445,134 @@ impl Game {
         (0..n_entries()).filter(|&e| entry_period(e) == self.guide_period).collect()
     }
 
+    /// Visible branches and their content positions (before scrolling).
+    fn tree_rows(&self) -> Vec<(usize, f32, f32, Vec<usize>)> {
+        use crate::phylogeny::{self, NODES};
+        let examples: Vec<_> = (0..NODES.len()).map(|n| phylogeny::examples(n, self.guide_period)).collect();
+        let mut active = vec![false; NODES.len()];
+        for (n, list) in examples.iter().enumerate() {
+            if !list.is_empty() {
+                let mut current = Some(n);
+                while let Some(i) = current { active[i] = true; current = NODES[i].parent; }
+            }
+        }
+        let cols = self.tree_columns();
+        let mut y = 0.0;
+        examples.into_iter().enumerate().filter_map(|(n, list)| {
+            if !active[n] { return None; }
+            // Compress unbranched stretches without examples, keeping the
+            // actual branching points readable alongside the fossil cards.
+            if n != 0 && list.is_empty() && NODES.iter().enumerate().filter(|(child, node)| node.parent == Some(n) && active[*child]).count() == 1 {
+                return None;
+            }
+            let height = if list.is_empty() { 38.0 } else { ((list.len() + cols - 1) / cols) as f32 * 78.0 + 8.0 };
+            let row = (n, y, height, list);
+            y += height;
+            Some(row)
+        }).collect()
+    }
+
+    fn tree_columns(&self) -> usize { if self.compact() { 2 } else { 3 } }
+
+    fn tree_depth(n: usize, visible: &[usize]) -> usize {
+        visible.iter().filter(|&&ancestor| ancestor != n && crate::phylogeny::on_path(ancestor, n)).count()
+    }
+
+    fn tree_bounds(&self) -> (f32, f32, f32) {
+        let (_, y0, _, y1, _, _, _) = self.guide_layout();
+        (y0 + 58.0, y1 - 28.0, self.w() * 0.46)
+    }
+
+    fn render_tree_gl(&mut self) {
+        use crate::phylogeny;
+        let (w, h) = (self.w(), self.h());
+        let (top, bottom, split) = self.tree_bounds();
+        self.gfx.rect(0.0, 0.0, w, h, [0.02, 0.07, 0.11, 1.0]);
+        let rows = self.tree_rows();
+        let visible: Vec<_> = rows.iter().map(|r| r.0).collect();
+        self.tree_max = (rows.last().map_or(0.0, |r| r.1 + r.2) - (bottom - top)).max(0.0);
+        self.tree_scroll = self.tree_scroll.clamp(0.0, self.tree_max);
+        let cols = self.tree_columns();
+        let cw = (w - split - 28.0) / cols as f32;
+        for (n, offset, height, list) in &rows {
+            let y = top + offset - self.tree_scroll;
+            let x = 28.0 + Self::tree_depth(*n, &visible) as f32 * 20.0;
+            let highlight = self.tree_focus.is_some_and(|focus| phylogeny::on_path(*n, focus));
+            let color = if highlight { GOLD } else { EDGE };
+            if let Some(row) = rows.iter().rev().find(|r| r.0 != *n && phylogeny::on_path(r.0, *n)) {
+                    let px = 28.0 + Self::tree_depth(row.0, &visible) as f32 * 20.0;
+                    let py = top + row.1 - self.tree_scroll + 18.0;
+                    if y + 18.0 >= top && py <= bottom {
+                        self.gfx.line((px, py.max(top)), (px, (y + 18.0).min(bottom)), 2.0, color);
+                    }
+                    if y + 18.0 >= top && y + 18.0 <= bottom {
+                        self.gfx.line((px, y + 18.0), (x, y + 18.0), 2.0, color);
+                    }
+            }
+            if y >= bottom || y + height <= top { continue; }
+            if y >= top && y + 34.0 <= bottom {
+                self.gfx.rect(x - 3.0, y + 15.0, x + 3.0, y + 21.0, color);
+            }
+            for (k, &e) in list.iter().enumerate() {
+                let cy = y + (k / cols) as f32 * 78.0;
+                if cy < top || cy + 72.0 > bottom { continue; }
+                let cx = split + (k % cols) as f32 * cw;
+                self.gfx.rect(cx, cy, cx + cw - 8.0, cy + 72.0, BG2);
+                self.gfx.rect_outline(cx, cy, cx + cw - 8.0, cy + 72.0, 1.0, if self.tree_focus == Some(*n) { GOLD } else { EDGE });
+                self.draw_entry_art(e, cx + 3.0, cy + 3.0, cx + 65.0, cy + 68.0, if self.prog.stars[e] > 0 { 1.0 } else { 0.25 });
+                self.gfx.flush();
+            }
+        }
+        // A proportional scroll indicator, outside the interactive cards.
+        if self.tree_max > 0.0 {
+            let track = bottom - top;
+            let thumb = (track * track / (track + self.tree_max)).max(24.0);
+            let y = top + (track - thumb) * self.tree_scroll / self.tree_max;
+            self.gfx.rect(w - 10.0, top, w - 6.0, bottom, BG2);
+            self.gfx.rect(w - 10.0, y, w - 6.0, y + thumb, EDGE);
+        }
+    }
+
+    fn render_tree_ui(&mut self) {
+        use crate::phylogeny::{self, NODES};
+        let w = self.w();
+        let header = self.top_h();
+        let (_, y0, _, _, _, _, _) = self.guide_layout();
+        let (top, bottom, split) = self.tree_bounds();
+        self.gfx.text(t!("生きものの系統樹マップ", "Tree of life through time", "生命系统树地图"), 24.0, header + 12.0, w - 230.0, 30.0, Font::Big, TEXT);
+        self.add_button(w - 180.0, header + 10.0, w - 20.0, header + 44.0, t!("図鑑一覧へ", "Guide index", "返回图鉴"), Act::Close, true, false);
+        let (tab_cols, _, tw) = period_tabs(w - 40.0);
+        for (i, p) in PERIODS.iter().enumerate() {
+            let x = 20.0 + (i % tab_cols) as f32 * tw;
+            let y = header + 52.0 + (i / tab_cols) as f32 * 40.0;
+            self.add_button(x, y, x + tw - 6.0, y + 34.0, p.name.get(), Act::GuideTab(i), true, i == self.guide_period);
+        }
+        let p = &PERIODS[self.guide_period];
+        self.gfx.text(&format!("{}  ·  {}", p.name.get(), span_text(p.t0, p.t1)), 24.0, y0, w - 48.0, 22.0, Font::Big, ACCENT);
+        self.gfx.text(t!("枝＝近縁関係（長さは時間を表しません）／代表例を押すと図鑑へ", "Branches = relationships (not a time scale). Choose an example for its guide entry.", "分支表示亲缘关系（长度不代表时间）。点击代表生物打开图鉴。"), 24.0, y0 + 27.0, w - 48.0, 22.0, Font::Normal, DIM);
+        let cols = self.tree_columns();
+        let cw = (w - split - 28.0) / cols as f32;
+        let rows = self.tree_rows();
+        let visible: Vec<_> = rows.iter().map(|r| r.0).collect();
+        for (n, offset, _, list) in rows {
+            let y = top + offset - self.tree_scroll;
+            let x = 38.0 + Self::tree_depth(n, &visible) as f32 * 20.0;
+            if y >= top && y + 34.0 <= bottom {
+                let color = if self.tree_focus.is_some_and(|f| phylogeny::on_path(n, f)) { GOLD } else { TEXT };
+                self.gfx.text(NODES[n].name.get(), x, y + 4.0, split - x - 10.0, 30.0, Font::Normal, color);
+            }
+            for (k, e) in list.into_iter().enumerate() {
+                let cy = y + (k / cols) as f32 * 78.0;
+                if cy < top || cy + 72.0 > bottom { continue; }
+                let cx = split + (k % cols) as f32 * cw;
+                self.gfx.text(entry_name(e), cx + 69.0, cy + 6.0, cw - 83.0, 39.0, Font::Normal, TEXT);
+                self.gfx.text(if self.prog.stars[e] > 0 { t!("収録済み · 図鑑へ", "Recorded · Open", "已收录 · 打开") } else { t!("未撮影 · 図鑑へ", "Unseen · Open", "未拍摄 · 打开") }, cx + 69.0, cy + 49.0, cw - 83.0, 18.0, Font::Small, DIM);
+                self.buttons.push(Button { x0: cx, y0: cy, x1: cx + cw - 8.0, y1: cy + 72.0, act: Act::Entry(e), label: entry_name(e).to_string(), enabled: true });
+            }
+        }
+        self.gfx.text(t!("この紀の代表例がある枝を抜粋。掲載種が直接の祖先とは限りません。上下になぞる／↑↓でスクロール。", "Selected branches with examples in this period; examples need not be ancestors. Swipe / ↑↓ to scroll.", "仅显示本纪有代表生物的分支；所列物种不一定是直接祖先。滑动或↑↓滚动。"), 24.0, bottom + 5.0, w - 48.0, 22.0, Font::Small, DIM);
+    }
+
     fn render_guide_gl(&mut self) {
         let (w, h) = (self.w(), self.h());
         self.gfx.rect(0.0, 0.0, w, h, [0.02, 0.07, 0.11, 0.97]);
@@ -2537,7 +2712,8 @@ impl Game {
         let w = self.w();
         let (x0, y0, _x1, y1, cols, cw, ch) = self.guide_layout();
         let title = tf!("地球史図鑑　{}/{}", "Earth history field guide  {}/{}", "地球史图鉴　{}/{}", self.prog.found(), n_entries());
-        self.gfx.text(&title, 24.0, self.top_h() + 12.0, w - 200.0, 30.0, Font::Big, TEXT);
+        self.gfx.text(&title, 24.0, self.top_h() + 12.0, w - 380.0, 30.0, Font::Big, TEXT);
+        self.add_button(w - 290.0, self.top_h() + 10.0, w - 130.0, self.top_h() + 44.0, t!("系統樹マップ", "Tree of life", "系统树地图"), Act::Tree, true, false);
         self.add_button(w - 120.0, self.top_h() + 10.0, w - 20.0, self.top_h() + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         // 時代名だけのタブ。選択中の時代だけを強調する。
         let ty = self.top_h() + 52.0;
@@ -2636,7 +2812,10 @@ impl Game {
                 30.0, y1 - 43.0, split - 50.0, 20.0, Font::NormalCenter, DIM);
         }
         self.gfx.text(&tf!("図鑑 No.{:02}　{}", "Guide No.{:02}  {}", "图鉴 No.{:02}　{}", e + 1, PERIODS[entry_period(e)].name.get()), 24.0, top + 14.0, 420.0, 24.0, Font::Big, DIM);
-        self.add_button(w - 120.0, top + 10.0, w - 20.0, top + 44.0, t!("一覧へ", "Back", "返回"), Act::Close, true, false);
+        self.add_button(w - 120.0, top + 10.0, w - 20.0, top + 44.0, if self.entry_from_tree { t!("系統樹へ", "Tree", "返回系统树") } else { t!("一覧へ", "Back", "返回") }, Act::Close, true, false);
+        if crate::phylogeny::node_for_entry(e).is_some() {
+            self.add_button(w - 400.0, top + 10.0, w - 240.0, top + 44.0, t!("系統樹で見る", "Show in tree", "在系统树中查看"), Act::Tree, true, false);
+        }
         let list: Vec<usize> = (0..n_entries()).filter(|&x| entry_period(x) == entry_period(e)).collect();
         let k = list.iter().position(|&x| x == e).unwrap_or(0);
         let prev = list[(k + list.len() - 1) % list.len()];
@@ -3232,7 +3411,7 @@ mod tests {
         let mut g = game();
         g.frame(&[], 0.016, true);
         g.do_act(Act::NewGame);
-        for p in [Panel::Intro(0), Panel::Guide, Panel::Entry(3), Panel::Entry(n_entries() - 1), Panel::Missions, Panel::Help, Panel::Done(0)] {
+        for p in [Panel::Intro(0), Panel::Guide, Panel::Tree, Panel::Entry(3), Panel::Entry(n_entries() - 1), Panel::Missions, Panel::Help, Panel::Done(0)] {
             g.panel = p;
             g.frame(&[], 0.016, true);
         }
@@ -3243,6 +3422,47 @@ mod tests {
         g.frame(&[], 0.016, true);
         g.do_act(Act::Shoot);
         g.frame(&[], 0.016, true);
+    }
+
+    #[test]
+    fn phylogeny_periods_scroll_and_guide_round_trip() {
+        let mut g = game();
+        g.do_act(Act::NewGame);
+        g.panel = Panel::Guide;
+        for compact in [false, true] {
+            g.gfx.set_compact(compact);
+            for period in 0..PERIODS.len() {
+                g.do_act(Act::Tree);
+                g.do_act(Act::GuideTab(period));
+                g.frame(&[], 0.016, true);
+                assert_eq!(g.buttons.iter().filter(|b| matches!(b.act, Act::GuideTab(_))).count(), PERIODS.len());
+                let (top, bottom, split) = g.tree_bounds();
+                assert!(bottom - top >= 80.0);
+                for b in g.buttons.iter().filter(|b| matches!(b.act, Act::Entry(_))) {
+                    assert!(b.x0 >= split && b.y0 >= top && b.y1 <= bottom);
+                    assert!(b.x1 <= g.w());
+                }
+                assert_eq!(g.hit_kind((split + 5.0) * g.gfx.ui, (top + 5.0) * g.gfx.ui), 3);
+                g.frame(&[Ev::Scroll(-100000.0)], 0.016, true);
+                assert_eq!(g.tree_scroll, g.tree_max);
+                let e = g.buttons.iter().find_map(|b| if let Act::Entry(e) = b.act { Some(e) } else { None }).expect("last branches have examples");
+                let scroll = g.tree_scroll;
+                g.do_act(Act::Entry(e));
+                assert_eq!(g.panel, Panel::Entry(e));
+                g.do_act(Act::Close);
+                assert_eq!(g.panel, Panel::Tree);
+                assert_eq!(g.tree_scroll, scroll);
+                g.do_act(Act::Close);
+                assert_eq!(g.panel, Panel::Guide);
+            }
+        }
+        let mammoth = SPECIES.iter().position(|s| s.slug == "woolly-mammoth").unwrap();
+        g.do_act(Act::Entry(mammoth));
+        g.do_act(Act::Tree);
+        assert_eq!(g.guide_period, QUATERNARY);
+        assert_eq!(g.tree_focus, crate::phylogeny::node_for_entry(mammoth));
+        g.frame(&[], 0.016, true);
+        assert!(g.buttons.iter().any(|b| b.act == Act::Entry(mammoth)));
     }
 
     #[test]
