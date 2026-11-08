@@ -259,7 +259,7 @@ fn ease(t: f32) -> f32 {
     t * t * (3.0 - 2.0 * t)
 }
 
-/// Keep all nine periods readable, including English labels on small screens.
+/// Keep all periods readable, including English labels on small screens.
 fn period_tabs(width: f32) -> (usize, usize, f32) {
     let cols = ((width / 128.0).floor() as usize).clamp(1, PERIODS.len());
     (cols, PERIODS.len().div_ceil(cols), width / cols as f32)
@@ -1265,8 +1265,11 @@ impl Game {
                 }
             }
             Act::GuideTab(i) => {
-                self.guide_period = i.min(PERIODS.len() - 1);
-                self.guide_scroll = 0.0;
+                let period = i.min(PERIODS.len() - 1);
+                if period != self.guide_period {
+                    self.guide_period = period;
+                    self.guide_scroll = 0.0;
+                }
             }
             Act::StepStage(d) => {
                 let t = self.travel.as_ref().map_or(self.prog.t, |tr| tr.to);
@@ -2536,23 +2539,17 @@ impl Game {
         let title = tf!("地球史図鑑　{}/{}", "Earth history field guide  {}/{}", "地球史图鉴　{}/{}", self.prog.found(), n_entries());
         self.gfx.text(&title, 24.0, self.top_h() + 12.0, w - 200.0, 30.0, Font::Big, TEXT);
         self.add_button(w - 120.0, self.top_h() + 10.0, w - 20.0, self.top_h() + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
-        // 巻（紀）のタブ
+        // 時代名だけのタブ。選択中の時代だけを強調する。
         let ty = self.top_h() + 52.0;
         let (tab_cols, _, tw) = period_tabs(w - 40.0);
         for (i, p) in PERIODS.iter().enumerate() {
             let ty = ty + (i / tab_cols) as f32 * 40.0;
-            let n = (0..n_entries()).filter(|&e| entry_period(e) == i).count();
-            let got = (0..n_entries()).filter(|&e| entry_period(e) == i && self.prog.stars[e] > 0).count();
-            let fresh = (0..n_entries()).any(|e| entry_period(e) == i && self.prog.fresh[e]);
-            // 紀が多いので、タブがせまいときは名前だけ
-            let label = if self.compact() || tw < 150.0 { format!("{}{}", p.name.get(), if fresh { "●" } else { "" }) } else { format!("{} {}/{}{}", p.name.get(), got, n, if fresh { " ●" } else { "" }) };
             let bx = 20.0 + (i % tab_cols) as f32 * tw;
             let cur = i == self.guide_period;
+            self.add_button(bx, ty, bx + tw - 6.0, ty + 34.0, p.name.get(), Act::GuideTab(i), true, cur);
             if cur {
-                self.gfx.fill_round(bx, ty, bx + tw - 6.0, ty + 34.0, 8.0, c4(p.col, 0.35));
+                self.gfx.fill_rect(bx + 6.0, ty + 30.0, bx + tw - 12.0, ty + 33.0, [1.0, 0.9, 0.7, 1.0]);
             }
-            self.add_button(bx, ty, bx + tw - 6.0, ty + 34.0, &label, Act::GuideTab(i), true, cur || fresh);
-            self.gfx.fill_rect(bx + 6.0, ty + 30.0, bx + tw - 12.0, ty + 33.0, c4(p.col, if cur { 1.0 } else { 0.5 }));
         }
         let list = self.guide_entries();
         for (k, &e) in list.iter().enumerate() {
