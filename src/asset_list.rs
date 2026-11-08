@@ -36,6 +36,15 @@ pub const BACKDROPS: &[(&str, usize, &str, &str)] = &[
     ("backdrop-triassic-deep", TRIASSIC, "deep", "Mesozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor"),
     ("backdrop-jurassic-deep", JURASSIC, "deep", "Mesozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor"),
     ("backdrop-cretaceous-deep", CRETACEOUS, "deep", "Mesozoic deep open ocean: dark indigo water fading to black, faint light above, distant sea floor"),
+    ("backdrop-paleogene-land", PALEOGENE, "land", "Cenozoic warm broadleaf woodland, flowering trees and ferns"),
+    ("backdrop-paleogene-sea", PALEOGENE, "sea", "Cenozoic shallow marine shelf with molluscs, no ammonites"),
+    ("backdrop-paleogene-deep", PALEOGENE, "deep", "Cenozoic dark deep ocean, faint light above"),
+    ("backdrop-neogene-land", NEOGENE, "land", "Cenozoic open grassland with scattered broadleaf trees"),
+    ("backdrop-neogene-sea", NEOGENE, "sea", "Cenozoic shallow marine shelf with molluscs, no ammonites"),
+    ("backdrop-neogene-deep", NEOGENE, "deep", "Cenozoic dark deep ocean, faint light above"),
+    ("backdrop-quaternary-land", QUATERNARY, "land", "Cenozoic cold dry steppe near distant northern ice sheets"),
+    ("backdrop-quaternary-sea", QUATERNARY, "sea", "Cenozoic shallow marine shelf with molluscs, no ammonites"),
+    ("backdrop-quaternary-deep", QUATERNARY, "deep", "Cenozoic dark deep ocean, faint light above"),
 ];
 
 const STYLE: &str = "Style: photorealistic museum-quality natural history reconstruction, highly detailed tactile surfaces, natural lighting, restrained teal, indigo and amber palette.";
@@ -43,7 +52,9 @@ const NEG: &str = "No text, labels, borders, watermarks, flowering plants, grass
 
 /// 時代ごとの「描かないもの」（中生代は恐竜を描いてよく、白亜紀は花も描いてよい）
 fn neg(t: f32) -> &'static str {
-    if t > 252.0 {
+    if t <= 66.0 {
+        "No text, labels, borders, watermarks, non-avian dinosaurs, ammonites, marine reptiles or fantasy ornament."
+    } else if t > 252.0 {
         NEG
     } else if t > 130.0 {
         "No text, labels, borders, watermarks, flowering plants, grass, modern mammals, modern birds or fantasy ornament."
@@ -53,12 +64,14 @@ fn neg(t: f32) -> &'static str {
 }
 
 fn ma(t: f32) -> String {
-    format!("{:.0}", t.round())
+    format!("{:.4}", t)
 }
 
 fn setting(sp: &Species) -> &'static str {
     if sp.hab & LAND != 0 && sp.hab & (SHALLOW | SHELF | DEEP) == 0 {
-        if sp.t0 <= 125.0 {
+        if sp.t0 <= 66.0 {
+            "softly blurred Cenozoic habitat appropriate to the subject: broadleaf woodland, grassland or cold steppe, no buildings or modern objects"
+        } else if sp.t0 <= 125.0 {
             "softly blurred Cretaceous landscape with conifers, cycads, ferns and early flowering shrubs, no grass"
         } else if sp.t0 <= 252.0 {
             "softly blurred Mesozoic landscape with conifers, cycads, ginkgos and ferns, no flowers or grass"
@@ -81,7 +94,12 @@ fn setting(sp: &Species) -> &'static str {
 fn pose(sp: &Species) -> &'static str {
     match (sp.beh, sp.art) {
         (_, Art::Plant(_)) => "Whole plant upright from ground level to its top, base at the bottom edge, nothing cropped.",
-        (_, Art::Griffinfly) => "Flying, wings spread, three-quarter side view, head pointing RIGHT.",
+        (_, Art::Bird(3)) => "Flightless bird walking on two legs, wings folded, entire body and both feet visible, head pointing RIGHT. Do not depict flying.",
+        (_, Art::Bird(5)) => "Flightless diving seabird swimming, short flipper-like wings, feet and entire body visible, head pointing RIGHT. No spread flight feathers.",
+        (_, Art::Bird(6)) => "Long-legged wetland bird standing, wings folded, both legs and broad bill visible, head pointing RIGHT.",
+        (_, Art::Mammal(9)) => "One early human or hominin, upright walking on TWO legs, two arms naturally lowered, entire body visible, face towards RIGHT. Anatomically appropriate, nonsexual natural-history reconstruction with discreet draping; no modern objects.",
+        (_, Art::Tetrapod(11)) => "One limbless snake, entire gently curved body and tail visible, head pointing RIGHT; absolutely no legs.",
+        (_, Art::Griffinfly | Art::Arthro(6) | Art::Mammal(15)) => "Flying, wings spread, three-quarter side view, head pointing RIGHT.",
         (_, Art::Pterosaur(0) | Art::Pterosaur(1) | Art::Bird(_)) => "Flying with wings spread, clear side view, head pointing RIGHT and tail LEFT.",
         (_, Art::Starfish | Art::Limulid) => "Seen from above at a low angle, lying flat on its underside, front pointing RIGHT.",
         (Beh::Sessile, _) => "Upright natural pose attached to the bottom, base at the bottom edge.",
@@ -155,7 +173,7 @@ pub fn write() -> (String, String) {
         need_art += 1;
         have_art += find(ph.slug).is_some() as usize;
     }
-    md.push_str("# 画像の注文書（古生代・中生代）\n\n");
+    md.push_str("# 画像の注文書（古生代・中生代・新生代）\n\n");
     md.push_str("このファイルは `cargo test --lib write_asset_requests -- --ignored` でゲームのデータから作り直せます（手で書き換えない）。ツール用の同じ内容が `assets/requests.json` にあります。\n\n");
     md.push_str("## 置き方\n\n");
     md.push_str("- **図鑑の画像**：`assets/artwork/<slug>.jpg`（横3:2、960×640程度のJPEG。背景つき）。図鑑の一覧・詳細・撮影カードに使う。\n");

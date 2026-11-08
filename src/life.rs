@@ -1,4 +1,4 @@
-//! 古生代・中生代（カンブリア紀〜白亜紀）の生きもの（図鑑の項目）と、上空・陸から撮る現象
+//! 古生代・中生代・新生代（カンブリア紀〜1万年前）の生きもの（図鑑の項目）と、上空・陸から撮る現象
 //!
 //! 時代（百万年前）・すみか・産地はおおよそ。体の大きさは代表的な化石の長さ。
 
@@ -162,7 +162,7 @@ impl Species {
         (0.40 * (self.len_cm / 25.0).powf(0.38)).max(0.11)
     }
     pub fn alive_at(&self, t: f32) -> bool {
-        t <= self.t0 + 1e-3 && t >= self.t1 - 1e-3
+        t <= self.t0 + 1e-6 && t >= self.t1 - 1e-6
     }
 }
 
@@ -4277,6 +4277,876 @@ pub static SPECIES: &[Species] = &[
         desc: L("今のワニにつながる多様な仲間。水辺だけでなく、陸を歩いて暮らすものもいた。", "Diverse crocodile relatives, including forms that walked on land as well as shore dwellers.", "通向现代鳄类的多样类群，既有水岸成员也有陆地行走的成员。"),
         fact: L("単一の種ではなく、各地の近縁な動物をまとめた項目。姿と大きさは代表例で、時代・分布はゲーム用の概略。", "This entry groups related animals, rather than one species. Appearance and size are representative; dates and distribution are simplified for the game.", "本条目汇总各地近缘动物，并非单一物种。形态和大小为代表例，年代及分布为游戏简化。"),
     },
+    // Cenozoic: append entries to preserve saved species IDs.
+    Species { slug: "purgatorius", name: L("プルガトリウス", "Purgatorius", "炼狱灵长形兽"), sci: "Purgatorius", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 15.0, t0: 66.000000, t1: 63.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("恐竜絶滅の前後に生きた小さな霊長類の近縁。", "A tiny relative of primates living around the end-Cretaceous extinction.", "生活在白垩纪末灭绝事件前后的小型灵长类近亲。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "pantolambda", name: L("パントラムダ", "Pantolambda", "全齿兽"), sci: "Pantolambda", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 100.0, t0: 63.000000, t1: 60.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(4), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("暁新世の森に暮らした、がっしりした草食哺乳類。", "A stocky herbivorous mammal of Paleocene forests.", "生活在古新世森林中的粗壮食草哺乳动物。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "gastornis", name: L("ガストルニス", "Gastornis", "冠恐鸟"), sci: "Gastornis", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 180.0, t0: 56.000000, t1: 45.000000, hab: LAND | TIDAL, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Bird(3), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("大きなくちばしを持つ飛べない鳥。植物を食べたと考えられる。", "A flightless bird with a huge beak, probably a plant eater.", "有巨大喙的不会飞的鸟，可能以植物为食。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "hyracotherium", name: L("ヒラコテリウム", "Hyracotherium", "始祖马"), sci: "Hyracotherium", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 60.0, t0: 56.000000, t1: 47.000000, hab: LAND | TIDAL, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(4), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("始新世の森を歩いた、小型で複数の指を持つウマの近縁。", "A small, many-toed horse relative of Eocene forests.", "生活在始新世森林中的小型多趾马类近亲。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "basilosaurus", name: L("バシロサウルス", "Basilosaurus", "龙王鲸"), sci: "Basilosaurus", group: L("海の動物", "Marine animal", "海洋动物"),
+        len_cm: 1800.0, t0: 41.000000, t1: 34.000000, hab: SHALLOW | SHELF | DEEP, regions: &[Tropics],
+        beh: Beh::Swim, art: Art::Mammal(8), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("細長い体と小さな後ろ脚を持つ、完全に水中で暮らす古いクジラ。", "An early fully aquatic whale with an elongated body and tiny hind limbs.", "体形细长、有微小后肢的早期完全水栖鲸类。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "arsinoitherium", name: L("アルシノイテリウム", "Arsinoitherium", "重脚兽"), sci: "Arsinoitherium", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 300.0, t0: 34.000000, t1: 27.000000, hab: LAND | TIDAL, regions: &[Site(S_FAYUM), Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(6), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("鼻先に大きな2本の角を持つアフリカの草食獣。サイとは別の仲間。", "An African herbivore with two huge nasal horns, unrelated to rhinos.", "鼻部有两只巨角的非洲食草兽，与犀牛并无近亲关系。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "paraceratherium", name: L("パラケラテリウム", "Paraceratherium", "巨犀"), sci: "Paraceratherium", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 750.0, t0: 30.000000, t1: 23.030000, hab: LAND | TIDAL, regions: &[Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(5), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("長い首で高い木の葉を食べた、角のない巨大なサイの仲間。", "A giant hornless rhino relative that browsed high leaves with its long neck.", "无角的巨型犀类近亲，用长颈取食高处树叶。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "paleogene-insects", name: L("森の昆虫たち（古第三紀）", "Paleogene forest insects", "古近纪森林昆虫"), sci: "Insecta (representative group)", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 3.0, t0: 66.000000, t1: 23.030000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Arthro(4), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("森の落ち葉や木に暮らす昆虫の仲間をまとめた観察項目。", "A representative group of insects living among forest leaves and trees.", "汇总生活在落叶与树木间的森林昆虫。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "paleogene-mammals", name: L("小型哺乳類（古第三紀）", "Small Paleogene mammals", "古近纪小型哺乳动物"), sci: "Mammalia (representative group)", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 25.0, t0: 66.000000, t1: 23.030000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("各地で多様化した小型哺乳類の代表像。単一種の世界分布ではない。", "Representative small mammals that diversified locally; not one worldwide species.", "各地多样化的小型哺乳动物代表，并非同一物种全球分布。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "paleogene-trees", name: L("広葉樹の森（古第三紀）", "Paleogene broadleaf trees", "古近纪阔叶树"), sci: "Angiosperms (representative group)", group: L("植物", "Plant", "植物"),
+        len_cm: 1500.0, t0: 66.000000, t1: 23.030000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Sessile, art: Art::Plant(14), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.0,
+        desc: L("花と実をつける木々がさまざまな森をつくった。", "Flowering and fruiting trees formed diverse forests.", "开花结果的树木构成多样的森林。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "deinotherium", name: L("デイノテリウム", "Deinotherium", "恐象"), sci: "Deinotherium", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 650.0, t0: 20.000000, t1: 2.580000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(13), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("下あごから下向きに曲がる牙を持つゾウの仲間。", "An elephant relative with downward-curving lower tusks.", "下颌有向下弯曲的长牙的象类近亲。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "hipparion", name: L("ヒッパリオン", "Hipparion", "三趾马"), sci: "Hipparion", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 140.0, t0: 11.000000, t1: 2.580000, hab: LAND | TIDAL, regions: &[Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(4), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("3本の指を残しながら、草原を走ったウマの仲間。", "A three-toed horse relative that ran across open country.", "保留三趾、奔跑于开阔地带的马类。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "megalodon", name: L("メガロドン", "Megalodon", "巨齿鲨"), sci: "Otodus megalodon", group: L("海の動物", "Marine animal", "海洋动物"),
+        len_cm: 1600.0, t0: 20.000000, t1: 3.600000, hab: SHALLOW | SHELF | DEEP, regions: &[Global],
+        beh: Beh::Swim, art: Art::Shark(0), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("巨大な歯で知られる新第三紀の大型サメ。", "A giant Neogene shark known for its enormous teeth.", "以巨大牙齿闻名的新近纪大型鲨鱼。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "livyatan", name: L("リヴィアタン", "Livyatan", "利维坦鲸"), sci: "Livyatan melvillei", group: L("海の動物", "Marine animal", "海洋动物"),
+        len_cm: 1400.0, t0: 10.000000, t1: 9.000000, hab: SHALLOW | SHELF | DEEP, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Swim, art: Art::Mammal(8), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("上下のあごに大きな歯を持つ、肉食のマッコウクジラの近縁。", "A predatory sperm-whale relative with large teeth in both jaws.", "上下颌均有巨大牙齿的捕食性抹香鲸近亲。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "sivatherium", name: L("シヴァテリウム", "Sivatherium", "西瓦兽"), sci: "Sivatherium", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 300.0, t0: 5.000000, t1: 2.580000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(5), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("枝分かれした骨の突起と丈夫な体を持つキリンの仲間。", "A robust giraffe relative with branching bony head ornaments.", "体形粗壮、头部有分叉骨质突起的长颈鹿近亲。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "australopithecus", name: L("アウストラロピテクス", "Australopithecus", "南方古猿"), sci: "Australopithecus afarensis", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 110.0, t0: 3.900000, t1: 2.900000, hab: LAND | TIDAL, regions: &[Site(S_HADAR), Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(9), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("アフリカで暮らし、2本の脚で歩いた初期の人類。", "An early African hominin that walked on two legs.", "生活在非洲、能够两足行走的早期人族。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "neogene-birds", name: L("草原の鳥たち（新第三紀）", "Neogene birds", "新近纪鸟类"), sci: "Aves (representative group)", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 40.0, t0: 23.030000, t1: 2.580000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Swim, art: Art::Bird(4), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("林や草原に暮らした多様な鳥をまとめた項目。", "Representative diverse birds of woodland and grassland.", "汇总林地与草原中的多种鸟类。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "neogene-mammals", name: L("小型哺乳類（新第三紀）", "Small Neogene mammals", "新近纪小型哺乳动物"), sci: "Mammalia (representative group)", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 25.0, t0: 23.030000, t1: 2.580000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("げっ歯類などの小さな哺乳類も、各地の環境で繁栄した。", "Small mammals, including rodents, thrived in many local habitats.", "包括啮齿类在内的小型哺乳动物繁盛于各地环境。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "neogene-insects", name: L("草原の昆虫たち（新第三紀）", "Neogene insects", "新近纪昆虫"), sci: "Insecta (representative group)", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 3.0, t0: 23.030000, t1: 2.580000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Arthro(4), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("草原や林の昆虫をまとめた代表像。", "Representative insects of grasslands and woodlands.", "草原与林地昆虫的代表。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "neogene-grass", name: L("イネ科の草原", "Neogene grasses", "新近纪禾本科草原"), sci: "Poaceae (representative group)", group: L("植物", "Plant", "植物"),
+        len_cm: 80.0, t0: 23.030000, t1: 2.580000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Sessile, art: Art::Plant(15), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.0,
+        desc: L("乾燥や草食獣に耐えるイネ科の植物が草原を広げた。", "Grasses tolerant of grazing and dryness expanded into grasslands.", "耐受啃食与干旱的禾本科植物扩展形成草原。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "woolly-mammoth", name: L("ケナガマンモス", "Woolly mammoth", "猛犸象"), sci: "Mammuthus primigenius", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 600.0, t0: 0.400000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Site(S_MAMMOTH_STEPPE), Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(7), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("厚い毛と曲がった牙を持ち、寒冷な草原に暮らしたゾウ。", "A shaggy elephant with curved tusks adapted to cold steppe.", "有浓密长毛与弯曲长牙、适应寒冷草原的象。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "smilodon", name: L("スミロドン", "Smilodon", "剑齿虎"), sci: "Smilodon", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 220.0, t0: 2.500000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Site(S_LABREA), Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(10), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("長い犬歯と力強い前脚を持つアメリカ大陸のネコの仲間。", "An American cat with long canine teeth and powerful forelimbs.", "有长犬齿与强壮前肢的美洲猫科动物。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "megatherium", name: L("メガテリウム", "Megatherium", "大地懒"), sci: "Megatherium", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 600.0, t0: 0.400000, t1: 0.012000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Mammal(11), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("南アメリカの地上で暮らした巨大なナマケモノ。", "A giant ground sloth from South America.", "生活在南美洲地面的巨型树懒。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "woolly-rhino", name: L("ケブカサイ", "Woolly rhinoceros", "披毛犀"), sci: "Coelodonta antiquitatis", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 350.0, t0: 0.460000, t1: 0.014000, hab: LAND | TIDAL, regions: &[Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(6), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("厚い毛と大きな鼻の角を持つ氷期のサイ。", "An Ice Age rhinoceros with thick fur and a large nasal horn.", "有厚毛和大鼻角的冰期犀牛。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "megaloceros", name: L("メガロケロス", "Giant deer", "大角鹿"), sci: "Megaloceros giganteus", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 250.0, t0: 0.400000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(12), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("大きく横に広がる角を持つシカの仲間。", "A deer with enormous spreading antlers.", "鹿角向两侧巨大展开的鹿类。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "homo-sapiens", name: L("ホモ・サピエンス", "Homo sapiens", "智人"), sci: "Homo sapiens", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 170.0, t0: 0.300000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Mammal(9), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("アフリカに現れ、道具や文化を発達させて世界に広がった私たちの種。", "Our species arose in Africa and spread worldwide, developing tools and cultures.", "我们的物种起源于非洲，发展工具与文化并扩散到世界。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "quaternary-birds", name: L("第四紀の鳥たち", "Quaternary birds", "第四纪鸟类"), sci: "Aves (representative group)", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 40.0, t0: 2.580000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Swim, art: Art::Bird(4), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("氷期と間氷期に分布を変えた鳥の仲間の代表像。", "Representative birds whose ranges shifted with glacial cycles.", "分布随冰期与间冰期变化的鸟类代表。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "quaternary-mammals", name: L("第四紀の小型哺乳類", "Small Quaternary mammals", "第四纪小型哺乳动物"), sci: "Mammalia (representative group)", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 25.0, t0: 2.580000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("ネズミなど、地域ごとに入れ替わる小型哺乳類の代表像。", "Representative small mammals, including rodents, varying by region.", "包括鼠类在内、随地区变化的小型哺乳动物代表。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "quaternary-insects", name: L("第四紀の昆虫たち", "Quaternary insects", "第四纪昆虫"), sci: "Insecta (representative group)", group: L("陸の生きもの", "Land life", "陆地生物"),
+        len_cm: 3.0, t0: 2.580000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Arthro(4), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.2,
+        desc: L("気候とともにすみかを変えた各地の昆虫の代表像。", "Representative regional insects whose habitats shifted with climate.", "栖息地随气候变化的各地昆虫代表。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "holocene-oak", name: L("完新世のオーク", "Holocene oak", "全新世栎树"), sci: "Quercus (representative group)", group: L("植物", "Plant", "植物"),
+        len_cm: 1500.0, t0: 0.011700, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(BALTICA)],
+        beh: Beh::Sessile, art: Art::Plant(14), col: [0.48, 0.36, 0.25], col2: [0.72, 0.62, 0.43], rarity: 2.5, shy: 0.5, speed: 0.0,
+        desc: L("氷期が終わったあと、温暖な地域に広がった落葉広葉樹。", "A broadleaf tree that expanded in temperate regions after the last glacial period.", "末次冰期后扩展到温带的阔叶树。"),
+        fact: L("時代・分布・大きさはゲーム用の概略。群の項目は地域ごとの近縁種をまとめた代表像。", "Dates, ranges and sizes are simplified. Group entries represent related regional species.", "年代、分布及大小为游戏简化。类群条目代表各地近缘物种。"),
+    },
+    Species { slug: "cenozoic-birds", name: L("新生代の小鳥", "Small Cenozoic birds", "新生代小型鸟类"), sci: "Aves (representative group)", group: L("広域の生きもの", "Widespread life", "广布生物"),
+        len_cm: 40.0, t0: 66.0, t1: 0.01, hab: LAND | TIDAL, regions: &[Global], beh: Beh::Swim, art: Art::Bird(4),
+        col: [0.43, 0.49, 0.35], col2: [0.70, 0.73, 0.54], rarity: 3.0, shy: 0.5, speed: 0.15,
+        desc: L("地域や時代によって入れ替わる近縁種をまとめた観察項目。姿と大きさは代表例です。", "A representative group of related species varying by region and time; appearance and size are examples.", "汇总随地区与年代变化的近缘物种，形态及大小为代表例。"),
+        fact: L("単一の種が世界中にいたという意味ではありません。", "This does not imply one species lived worldwide.", "不表示同一物种遍布全球。"),
+    },
+    Species { slug: "cenozoic-lizards", name: L("新生代のトカゲ", "Cenozoic lizards", "新生代蜥蜴"), sci: "Squamata (representative group)", group: L("広域の生きもの", "Widespread life", "广布生物"),
+        len_cm: 30.0, t0: 66.0, t1: 0.01, hab: LAND | TIDAL, regions: &[Global], beh: Beh::Crawl, art: Art::Tetrapod(2),
+        col: [0.43, 0.49, 0.35], col2: [0.70, 0.73, 0.54], rarity: 3.0, shy: 0.5, speed: 0.15,
+        desc: L("地域や時代によって入れ替わる近縁種をまとめた観察項目。姿と大きさは代表例です。", "A representative group of related species varying by region and time; appearance and size are examples.", "汇总随地区与年代变化的近缘物种，形态及大小为代表例。"),
+        fact: L("単一の種が世界中にいたという意味ではありません。", "This does not imply one species lived worldwide.", "不表示同一物种遍布全球。"),
+    },
+    Species { slug: "cenozoic-fish", name: L("新生代の魚", "Cenozoic fishes", "新生代鱼类"), sci: "Actinopterygii (representative group)", group: L("広域の生きもの", "Widespread life", "广布生物"),
+        len_cm: 40.0, t0: 66.0, t1: 0.01, hab: SHALLOW | SHELF | DEEP, regions: &[Global], beh: Beh::Swim, art: Art::RayFin,
+        col: [0.43, 0.49, 0.35], col2: [0.70, 0.73, 0.54], rarity: 3.0, shy: 0.5, speed: 0.15,
+        desc: L("地域や時代によって入れ替わる近縁種をまとめた観察項目。姿と大きさは代表例です。", "A representative group of related species varying by region and time; appearance and size are examples.", "汇总随地区与年代变化的近缘物种，形态及大小为代表例。"),
+        fact: L("単一の種が世界中にいたという意味ではありません。", "This does not imply one species lived worldwide.", "不表示同一物种遍布全球。"),
+    },
+    Species { slug: "cenozoic-bivalves", name: L("新生代の二枚貝", "Cenozoic bivalves", "新生代双壳类"), sci: "Bivalvia (representative group)", group: L("広域の生きもの", "Widespread life", "广布生物"),
+        len_cm: 10.0, t0: 66.0, t1: 0.01, hab: SHALLOW | SHELF, regions: &[Global], beh: Beh::Crawl, art: Art::Mollusc(1),
+        col: [0.43, 0.49, 0.35], col2: [0.70, 0.73, 0.54], rarity: 3.0, shy: 0.5, speed: 0.15,
+        desc: L("地域や時代によって入れ替わる近縁種をまとめた観察項目。姿と大きさは代表例です。", "A representative group of related species varying by region and time; appearance and size are examples.", "汇总随地区与年代变化的近缘物种，形态及大小为代表例。"),
+        fact: L("単一の種が世界中にいたという意味ではありません。", "This does not imply one species lived worldwide.", "不表示同一物种遍布全球。"),
+    },
+    Species { slug: "cenozoic-gastropods", name: L("新生代の巻貝", "Cenozoic gastropods", "新生代腹足类"), sci: "Gastropoda (representative group)", group: L("広域の生きもの", "Widespread life", "广布生物"),
+        len_cm: 8.0, t0: 66.0, t1: 0.01, hab: TIDAL | SHALLOW, regions: &[Global], beh: Beh::Crawl, art: Art::Mollusc(0),
+        col: [0.43, 0.49, 0.35], col2: [0.70, 0.73, 0.54], rarity: 3.0, shy: 0.5, speed: 0.15,
+        desc: L("地域や時代によって入れ替わる近縁種をまとめた観察項目。姿と大きさは代表例です。", "A representative group of related species varying by region and time; appearance and size are examples.", "汇总随地区与年代变化的近缘物种，形态及大小为代表例。"),
+        fact: L("単一の種が世界中にいたという意味ではありません。", "This does not imply one species lived worldwide.", "不表示同一物种遍布全球。"),
+    },
+    Species { slug: "cenozoic-crabs", name: L("新生代のカニ", "Cenozoic crabs", "新生代蟹类"), sci: "Brachyura (representative group)", group: L("広域の生きもの", "Widespread life", "广布生物"),
+        len_cm: 20.0, t0: 66.0, t1: 0.01, hab: TIDAL | SHALLOW, regions: &[Global], beh: Beh::Crawl, art: Art::Arthro(5),
+        col: [0.43, 0.49, 0.35], col2: [0.70, 0.73, 0.54], rarity: 3.0, shy: 0.5, speed: 0.15,
+        desc: L("地域や時代によって入れ替わる近縁種をまとめた観察項目。姿と大きさは代表例です。", "A representative group of related species varying by region and time; appearance and size are examples.", "汇总随地区与年代变化的近缘物种，形态及大小为代表例。"),
+        fact: L("単一の種が世界中にいたという意味ではありません。", "This does not imply one species lived worldwide.", "不表示同一物种遍布全球。"),
+    },
+
+    // Additional Cenozoic fauna: 24 entries per volume; existing IDs stay fixed.
+    Species {
+        slug: "eritherium", name: L("エリテリウム", "Eritherium", "始象兽"), sci: "Eritherium azzouzorum", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 50.00, t0: 60.000000, t1: 59.000000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("暁新世のモロッコにいた小型の長鼻類。ゾウの仲間だが長い鼻はまだない。", "A small Paleocene proboscidean from Morocco, related to elephants but lacking a long trunk.", "生活在古新世摩洛哥的小型长鼻类，虽与象有亲缘关系但还没有长鼻。"),
+        fact: L("大きなゾウへ至る前にも、小さな体の多様な長鼻類がいました。", "Early proboscideans included small-bodied forms long before giant elephants.", "在巨型象类出现之前，长鼻类也曾有多种小型成员。"),
+    },
+    Species {
+        slug: "plesiadapis", name: L("プレシアダピス", "Plesiadapis", "更猴"), sci: "Plesiadapis", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 60.00, t0: 58.000000, t1: 55.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA), Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(29), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("長い尾と前歯を持ち、木に登った霊長類の近縁。", "A climbing primate relative with a long tail and prominent front teeth.", "有长尾与突出的门齿、善于攀树的灵长类近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "trigonostylops", name: L("トリゴノスティロプス", "Trigonostylops", "三角柱兽"), sci: "Trigonostylops", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 150.00, t0: 53.000000, t1: 38.000000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Mammal(26), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("始新世の南アメリカ独自の有蹄類。大きな頭と特徴的な奥歯を持つ。", "An endemic Eocene South American ungulate with a large head and distinctive cheek teeth.", "有大头与独特臼齿、南美洲特有的始新世有蹄类。"),
+        fact: L("南アメリカでは、ほかの大陸と異なる草食哺乳類の仲間が発達しました。", "South America developed herbivorous mammal lineages distinct from those on other continents.", "南美洲演化出了与其他大陆不同的食草哺乳动物支系。"),
+    },
+    Species {
+        slug: "uintatherium", name: L("ウインタテリウム", "Uintatherium", "尤因他兽"), sci: "Uintatherium", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 400.00, t0: 46.000000, t1: 40.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(30), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("頭の3対の骨の突起と、長い上あごの犬歯を持つ大型草食獣。", "A large herbivore with three pairs of bony skull knobs and long upper canines.", "头上有三对骨质突起、上犬齿很长的大型食草兽。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "mesohippus", name: L("メソヒップス", "Mesohippus", "渐新马"), sci: "Mesohippus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 120.00, t0: 37.000000, t1: 32.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(4), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("3本の指で歩き、木の葉などを食べた小型のウマ。", "A small three-toed horse that browsed on leaves and other vegetation.", "用三趾行走、取食树叶等植物的小型马类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "onychonycteris", name: L("オニコニクテリス", "Onychonycteris", "爪蝠"), sci: "Onychonycteris finneyi", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 15.00, t0: 52.500000, t1: 52.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Swim, art: Art::Mammal(15), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("翼のすべての指に爪を残した、始新世の古いコウモリ。", "An early Eocene bat retaining claws on all its wing fingers.", "翼部各指仍保留爪的始新世早期蝙蝠。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "leptictidium", name: L("レプティクティディウム", "Leptictidium", "细齿猬兽"), sci: "Leptictidium", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 75.00, t0: 48.000000, t1: 40.000000, hab: LAND | TIDAL, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(28), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("長い後ろ脚と尾を持ち、森の地面で小動物を探した哺乳類。", "A forest-floor mammal with long hind legs and a balancing tail, hunting small prey.", "有长后肢与平衡用长尾、在林地寻找小动物的哺乳动物。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "diplocynodon", name: L("ディプロキノドン", "Diplocynodon", "双犬齿鳄"), sci: "Diplocynodon", group: L("爬虫類", "Reptile", "爬行动物"),
+        len_cm: 250.00, t0: 50.000000, t1: 23.030000, hab: TIDAL | SHALLOW, regions: &[Plate(BALTICA)],
+        beh: Beh::NearFloor, art: Art::Archosaur(2), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("ヨーロッパの川や湖に暮らした、小型のワニの仲間。", "A small alligator relative from European rivers and lakes.", "生活在欧洲河湖中的小型短吻鳄近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "embolotherium", name: L("エンボロテリウム", "Embolotherium", "雷兽"), sci: "Embolotherium", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 450.00, t0: 37.000000, t1: 34.000000, hab: LAND | TIDAL, regions: &[Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(31), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("鼻の上に大きな板のような骨を持つ、アジアのブロントテリウム類。", "An Asian brontothere with a large shield-like bony structure above its nose.", "鼻上有巨大板状骨突的亚洲雷兽类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "pakicetus", name: L("パキケトゥス", "Pakicetus", "巴基鲸"), sci: "Pakicetus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 180.00, t0: 50.000000, t1: 48.000000, hab: LAND | TIDAL, regions: &[Plate(INDIA)],
+        beh: Beh::Crawl, art: Art::Mammal(17), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("4本の脚で歩いた初期のクジラ。耳の骨にクジラの特徴がある。", "An early whale that walked on four legs; its ear bones reveal its whale affinities.", "能够四足行走的早期鲸类，耳骨具有鲸类特征。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "moeritherium", name: L("モエリテリウム", "Moeritherium", "始祖象"), sci: "Moeritherium", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 250.00, t0: 37.000000, t1: 35.000000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(26), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("北アフリカの水辺に暮らした、短い脚と小さな牙を持つゾウの遠い親戚。", "A distant elephant relative with short legs and small tusks, from North African wetlands.", "生活在北非湿地、有短腿与小牙的象类远亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "aegyptopithecus", name: L("アエギュプトピテクス", "Aegyptopithecus", "埃及猿"), sci: "Aegyptopithecus zeuxis", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 60.00, t0: 30.000000, t1: 29.000000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(29), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("ファイユームの森で木に登った、尾を持つ古い狭鼻類。", "A tailed early catarrhine primate that climbed in the forests of Fayum.", "生活在法尤姆森林、善于攀树的有尾早期狭鼻类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "pyrotherium", name: L("ピロテリウム", "Pyrotherium", "火兽"), sci: "Pyrotherium", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 300.00, t0: 30.000000, t1: 26.000000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Mammal(20), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("南アメリカ独自の大型草食獣。大きな体と前方に伸びる牙を持つ。", "A large endemic South American herbivore with a bulky body and projecting tusks.", "南美洲特有的大型食草兽，身体粗壮并有向前伸出的牙。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "carodnia", name: L("カロドニア", "Carodnia", "卡罗兽"), sci: "Carodnia", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 220.00, t0: 59.000000, t1: 55.000000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Mammal(26), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("暁新世の南アメリカにいた、丈夫な体を持つ草食性哺乳類。", "A robust herbivorous mammal of Paleocene South America.", "生活在古新世南美洲、体形粗壮的食草哺乳动物。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "tingamarra", name: L("ティンガマラ", "Tingamarra", "廷加马拉兽"), sci: "Tingamarra porterorum", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 20.00, t0: 54.600000, t1: 54.500000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("オーストラリアの古い哺乳類。主に歯などから知られ、全身の姿は不確か。", "An early Australian mammal known mainly from teeth; its full body shape remains uncertain.", "主要由牙齿等化石得知的早期澳大利亚哺乳动物，全身形态仍不确定。"),
+        fact: L("歯をもとにした生態や分類には議論があり、ここでは小型哺乳類の姿を仮の復元として使っています。", "Its classification and ecology are debated; a small-mammal silhouette is used as a provisional reconstruction.", "依据牙齿推断的分类及生态仍有争论，这里使用小型哺乳动物轮廓作为暂定复原。"),
+    },
+    Species {
+        slug: "anthropornis", name: L("アントロポルニス", "Anthropornis", "古冠企鹅"), sci: "Anthropornis", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 170.00, t0: 45.000000, t1: 34.000000, hab: SHALLOW | SHELF | DEEP, regions: &[Plate(ANTARCTICA)],
+        beh: Beh::Swim, art: Art::Bird(5), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("始新世の南極の海にいた大型ペンギン。翼をひれとして使った。", "A giant penguin of Eocene Antarctic seas, using its wings as flippers.", "生活在始新世南极海域、以翼作鳍的巨型企鹅。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "dorudon", name: L("ドルドン", "Dorudon", "矛齿鲸"), sci: "Dorudon", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 500.00, t0: 40.000000, t1: 34.000000, hab: SHALLOW | SHELF | DEEP, regions: &[Tropics],
+        beh: Beh::Swim, art: Art::Mammal(8), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("ひれと尾びれで泳ぎ、小さな後ろ脚を残した始新世のクジラ。", "An Eocene whale propelled by flippers and tail flukes, retaining tiny hind limbs.", "用鳍肢与尾鳍游泳、仍保留微小后肢的始新世鲸类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "otodus-obliquus", name: L("オトドゥス・オブリクス", "Otodus obliquus", "斜齿鲨"), sci: "Otodus obliquus", group: L("魚類", "Fish", "鱼类"),
+        len_cm: 900.00, t0: 60.000000, t1: 45.000000, hab: SHALLOW | SHELF | DEEP, regions: &[Global],
+        beh: Beh::Swim, art: Art::Shark(0), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("太い三角形の歯を持つ、暁新世から始新世の大型サメ。", "A large Paleocene–Eocene shark with thick triangular teeth.", "有粗厚三角形牙齿的古新世至始新世大型鲨鱼。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "nummulites", name: L("ヌンムリテス", "Nummulites", "货币虫"), sci: "Nummulites", group: L("有孔虫", "Foraminifer", "有孔虫"),
+        len_cm: 5.00, t0: 56.000000, t1: 34.000000, hab: SHALLOW | SHELF, regions: &[Tropics],
+        beh: Beh::Crawl, art: Art::Mollusc(2), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("硬貨のような円盤形の殻を持つ大型有孔虫。暖かい浅海にすんだ。", "Large foraminifera with coin-shaped shells, living in warm shallow seas.", "有硬币状扁平壳、生活在温暖浅海的大型有孔虫。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "metasequoia", name: L("メタセコイア", "Metasequoia", "水杉"), sci: "Metasequoia", group: L("植物", "Plant", "植物"),
+        len_cm: 2500.00, t0: 66.000000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA), Plate(SIBERIA)],
+        beh: Beh::Sessile, art: Art::Plant(8), col: [0.34, 0.3, 0.21], col2: [0.54, 0.5, 0.41], rarity: 0.8, shy: 0.7, speed: 0.0,
+        desc: L("湿った森に広がった落葉する針葉樹。化石と生きた木の両方が知られる。", "A deciduous conifer of moist forests, known both as fossils and living trees.", "生长于湿润森林、既有化石也有现生树木的落叶针叶树。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "presbyornis", name: L("プレスビオルニス", "Presbyornis", "鹤形古鸭"), sci: "Presbyornis", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 100.00, t0: 58.000000, t1: 48.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Bird(6), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("長い脚と幅広いくちばしを持つ、水辺に暮らす古いカモの近縁。", "An early duck relative with long legs and a broad bill, living along wetlands.", "有长腿与宽喙、生活在湿地的早期鸭类近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "cenozoic-equisetum", name: L("トクサ属の水辺", "Cenozoic horsetails", "新生代木贼"), sci: "Equisetum", group: L("植物", "Plant", "植物"),
+        len_cm: 120.00, t0: 66.000000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Global],
+        beh: Beh::Sessile, art: Art::Plant(5), col: [0.34, 0.3, 0.21], col2: [0.54, 0.5, 0.41], rarity: 1.5, shy: 0.7, speed: 0.0,
+        desc: L("節のある茎を伸ばすトクサ属。新生代にも湿った地面に生えていた。", "Jointed-stem horsetails growing on damp ground through the Cenozoic.", "有节状茎、在新生代湿润地面生长的木贼属植物。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "palaeocarpilius", name: L("パレオカルピリウス", "Palaeocarpilius", "古瓢蟹"), sci: "Palaeocarpilius", group: L("節足動物", "Arthropod", "节肢动物"),
+        len_cm: 15.00, t0: 48.000000, t1: 34.000000, hab: SHALLOW | SHELF, regions: &[Tropics],
+        beh: Beh::Crawl, art: Art::Arthro(5), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("丸みのある甲羅と大きなはさみを持つ、始新世の暖かい海のカニ。", "An Eocene warm-water crab with a rounded carapace and strong claws.", "有圆形背甲与强大螯、生活在始新世温暖海域的蟹类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "venericardia", name: L("ベネリカルディア", "Venericardia", "美心蛤"), sci: "Venericardia", group: L("二枚貝", "Bivalve", "双壳类"),
+        len_cm: 8.00, t0: 66.000000, t1: 23.030000, hab: SHALLOW | SHELF, regions: &[Global],
+        beh: Beh::Crawl, art: Art::Mollusc(1), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("放射状の太いすじを持つ二枚貝。古第三紀の浅い海で見られる。", "A shallow-water Paleogene bivalve with strong radial ribs.", "有粗大放射肋、生活在古近纪浅海的双壳类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "merychippus", name: L("メリキップス", "Merychippus", "草原古马"), sci: "Merychippus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 170.00, t0: 17.000000, t1: 11.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(4), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("3本の指を残しながら、草を食べるのに向いた高い歯を発達させたウマ。", "A three-toed horse with high-crowned teeth suited to grazing.", "保留三趾、具有适合食草的高冠齿的马类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "teleoceras", name: L("テレオケラス", "Teleoceras", "远角犀"), sci: "Teleoceras", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 350.00, t0: 17.000000, t1: 5.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(6), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("短い脚と樽のような胴を持つ北アメリカのサイ。", "A North American rhinoceros with short legs and a barrel-shaped body.", "有短腿与桶状躯干的北美洲犀牛。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "pygoscelis", name: L("アデリーペンギン属", "Brush-tailed penguins", "阿德利企鹅属"), sci: "Pygoscelis", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 80.00, t0: 7.500000, t1: 0.010000, hab: SHALLOW | SHELF | DEEP, regions: &[Plate(SOUTH_AMERICA), Plate(ANTARCTICA)],
+        beh: Beh::Swim, art: Art::Bird(5), col: [0.27, 0.30, 0.34], col2: [0.75, 0.77, 0.78], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("南の海で暮らすペンギンの属。南アメリカの新第三紀の化石と、現在の南極周辺の仲間が知られる。", "A penguin genus known from Neogene fossils in South America and living relatives around Antarctica.", "既见于南美洲新近纪化石、也有现生近亲生活在南极周边的企鹅属。"),
+        fact: L("属をまとめた項目で、種の入れ替わりや南極への分布拡大の時期は簡略化しています。", "This genus-level entry simplifies species turnover and the timing of its spread around Antarctica.", "本条目以属为单位，简化了物种更替与扩散到南极周边的时间。"),
+    },
+    Species {
+        slug: "platybelodon", name: L("プラティベロドン", "Platybelodon", "铲齿象"), sci: "Platybelodon", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 400.00, t0: 15.000000, t1: 4.000000, hab: LAND | TIDAL, regions: &[Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(34), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("下あごと下の牙が幅広く、シャベルのように見えるゾウの仲間。", "An elephant relative with broad, shovel-like lower jaws and tusks.", "下颌与下门齿宽大如铲的象类近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "chalicotherium", name: L("カリコテリウム", "Chalicotherium", "爪兽"), sci: "Chalicotherium", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 300.00, t0: 16.000000, t1: 7.000000, hab: LAND | TIDAL, regions: &[Plate(SIBERIA), Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(35), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("長い前脚と大きな爪を持つ、ウマやサイの遠い親戚。", "A distant horse and rhino relative with long forelimbs and large claws.", "有长前肢与大爪、与马和犀牛有远亲关系的爪兽。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "dryopithecus", name: L("ドリオピテクス", "Dryopithecus", "森林古猿"), sci: "Dryopithecus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 100.00, t0: 12.000000, t1: 9.000000, hab: LAND | TIDAL, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(36), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("中新世のヨーロッパの森に暮らした、尾のない類人猿。", "A tailless ape from the Miocene forests of Europe.", "生活在中新世欧洲森林中的无尾类人猿。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "gomphotherium", name: L("ゴンフォテリウム", "Gomphotherium", "嵌齿象"), sci: "Gomphotherium", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 500.00, t0: 19.000000, t1: 5.000000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA), Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(33), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("上下のあごに牙を持つゾウの仲間。さまざまな地域へ広がった。", "An elephant relative with upper and lower tusks that spread across several regions.", "上下颌均有牙、扩散到多个地区的象类近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "proconsul", name: L("プロコンスル", "Proconsul", "原康修尔猿"), sci: "Proconsul", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 80.00, t0: 23.030000, t1: 14.000000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(36), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("アフリカの森に暮らした初期の類人猿。現生の類人猿と異なる特徴も持つ。", "An early African ape with a mixture of features differing from living apes.", "生活在非洲森林、具有多种不同于现生类人猿特征的早期猿类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "ardipithecus", name: L("アルディピテクス", "Ardipithecus", "地猿"), sci: "Ardipithecus ramidus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 120.00, t0: 4.400000, t1: 4.300000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(9), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("木登りに適した足と、地上での二足歩行につながる特徴を持つ初期人類。", "An early hominin combining climbing adaptations with features related to bipedal walking.", "兼具攀树适应与两足行走相关特征的早期人族。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "phorusrhacos", name: L("フォルスラコス", "Phorusrhacos", "骇鸟"), sci: "Phorusrhacos", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 250.00, t0: 20.000000, t1: 13.000000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Bird(3), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("大きく曲がったくちばしと長い脚を持つ、南アメリカの飛べない肉食鳥。", "A flightless South American predatory bird with long legs and a large hooked beak.", "有长腿与巨大钩喙、不能飞的南美洲食肉鸟。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "argentavis", name: L("アルゲンタビス", "Argentavis", "阿根廷巨鹰"), sci: "Argentavis magnificens", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 150.00, t0: 7.000000, t1: 6.000000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Swim, art: Art::Bird(4), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("非常に大きな翼を持ち、上昇気流を利用して滑空したと考えられる鳥。", "A huge-winged bird thought to have soared using rising air currents.", "翼展巨大、被认为借助上升气流滑翔的鸟类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "thalassocnus", name: L("タラッソクヌス", "Thalassocnus", "海懒兽"), sci: "Thalassocnus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 250.00, t0: 8.000000, t1: 3.000000, hab: SHALLOW | SHELF, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Swim, art: Art::Mammal(14), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("南アメリカ沿岸に暮らし、水中の植物を食べる生活に適応したナマケモノ。", "A coastal South American sloth adapted to feeding on aquatic vegetation.", "生活在南美洲海岸、适应取食水生植物的树懒类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "astrapotherium", name: L("アストラポテリウム", "Astrapotherium", "雷兽型南美兽"), sci: "Astrapotherium", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 300.00, t0: 21.000000, t1: 12.000000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Mammal(20), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("短い鼻と大きな牙を持つ、南アメリカ独自の大型草食獣。", "A large endemic South American herbivore with a short trunk and large tusks.", "有短鼻与大牙、南美洲特有的大型食草哺乳动物。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "dromornis", name: L("ドロモルニス", "Dromornis", "雷鸣鸟"), sci: "Dromornis", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 280.00, t0: 12.000000, t1: 5.000000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Bird(3), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("オーストラリアの大型の飛べない鳥。太い脚と大きなくちばしを持つ。", "A giant flightless Australian bird with thick legs and a large beak.", "有粗壮腿与巨大喙、不能飞的澳大利亚巨鸟。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "obdurodon", name: L("オブドゥロドン", "Obdurodon", "硬齿鸭嘴兽"), sci: "Obdurodon", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 80.00, t0: 23.030000, t1: 5.000000, hab: TIDAL | SHALLOW, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::NearFloor, art: Art::Mammal(37), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("大人にも歯がある、カモノハシの絶滅した近縁。水辺で食べものを探した。", "An extinct platypus relative retaining teeth as an adult, foraging along waterways.", "成年仍有牙齿、在水边觅食的灭绝鸭嘴兽近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "nimbadon", name: L("ニンバドン", "Nimbadon", "雨林袋兽"), sci: "Nimbadon lavarackorum", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 100.00, t0: 16.000000, t1: 12.000000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(26), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("オーストラリアの雨林で木に登った、丈夫な体と大きな爪を持つ有袋類。", "A stocky, large-clawed marsupial that climbed in Australian rainforests.", "有粗壮身体与大爪、在澳大利亚雨林攀树的有袋类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "odobenocetops", name: L("オドベノケトプス", "Odobenocetops", "海象鲸"), sci: "Odobenocetops", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 250.00, t0: 5.000000, t1: 3.000000, hab: SHALLOW | SHELF, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Swim, art: Art::Mammal(38), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("南アメリカ沿岸のハクジラ。セイウチを思わせる長い牙を持つ。", "A coastal South American toothed whale with long, walrus-like tusks.", "有类似海象长牙、生活在南美洲海岸的齿鲸。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "desmostylus", name: L("デスモスチルス", "Desmostylus", "束柱兽"), sci: "Desmostylus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 250.00, t0: 23.030000, t1: 7.000000, hab: TIDAL | SHALLOW, regions: &[Plate(LAURENTIA), Plate(SIBERIA)],
+        beh: Beh::NearFloor, art: Art::Mammal(14), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("北太平洋沿岸の水辺に暮らした、柱を束ねたような歯を持つ哺乳類。", "A North Pacific coastal mammal with teeth resembling bundles of columns.", "牙齿形似成束柱子、生活在北太平洋海岸的哺乳动物。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "carcharodon-hastalis", name: L("カーカロドン・ハスタリス", "Broad-toothed mako", "宽齿鲭鲨"), sci: "Carcharodon hastalis", group: L("魚類", "Fish", "鱼类"),
+        len_cm: 700.00, t0: 20.000000, t1: 3.500000, hab: SHALLOW | SHELF | DEEP, regions: &[Global],
+        beh: Beh::Swim, art: Art::Shark(0), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("幅広く、なめらかな縁の歯を持つ、新第三紀の大型サメ。", "A large Neogene shark with broad, smooth-edged teeth.", "有宽大光滑齿缘牙齿的新近纪大型鲨鱼。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "isurus", name: L("アオザメ属", "Mako sharks", "鲭鲨属"), sci: "Isurus", group: L("魚類", "Fish", "鱼类"),
+        len_cm: 350.00, t0: 23.030000, t1: 0.010000, hab: SHALLOW | SHELF | DEEP, regions: &[Global],
+        beh: Beh::Swim, art: Art::Shark(0), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("流線形の体で外洋を泳ぐサメ。新第三紀にも仲間の化石が見つかる。", "Streamlined open-ocean sharks whose relatives are known from Neogene fossils.", "体形流线、游于外洋，其近亲见于新近纪化石的鲨鱼。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "clypeaster", name: L("タコノマクラ属", "Sea biscuits", "楯海胆属"), sci: "Clypeaster", group: L("ウニの仲間", "Echinoid", "海胆类"),
+        len_cm: 15.00, t0: 23.030000, t1: 0.010000, hab: SHALLOW | SHELF, regions: &[Tropics],
+        beh: Beh::Crawl, art: Art::Urchin, col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("平たい殻に花びらのような模様を持つ、砂地の海底のウニの仲間。", "Flattened sea urchins with petal-like markings, living on sandy sea floors.", "生活在沙质海底、扁平壳上有花瓣状纹路的海胆类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "sequoia", name: L("セコイア", "Sequoia", "红杉"), sci: "Sequoia", group: L("植物", "Plant", "植物"),
+        len_cm: 5000.00, t0: 23.030000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Sessile, art: Art::Plant(8), col: [0.34, 0.3, 0.21], col2: [0.54, 0.5, 0.41], rarity: 0.8, shy: 0.7, speed: 0.0,
+        desc: L("高く育つ針葉樹。新第三紀の森林にもセコイアの仲間があった。", "Tall conifers whose relatives also grew in Neogene forests.", "生长高大的针叶树，其近亲也见于新近纪森林。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "acacia", name: L("アカシア属", "Acacias", "金合欢属"), sci: "Acacia", group: L("植物", "Plant", "植物"),
+        len_cm: 600.00, t0: 23.030000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Sessile, art: Art::Plant(14), col: [0.34, 0.3, 0.21], col2: [0.54, 0.5, 0.41], rarity: 0.8, shy: 0.7, speed: 0.0,
+        desc: L("花をつけ、乾燥した環境にも適応する木々。オーストラリアで多様化した。", "Flowering trees and shrubs, many adapted to dry conditions, diversifying in Australia.", "在澳大利亚多样化、许多种适应干旱环境的开花乔灌木。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "proplebeia", name: L("プロプレベイア", "Proplebeia", "古无刺蜂"), sci: "Proplebeia dominicana", group: L("節足動物", "Arthropod", "节肢动物"),
+        len_cm: 1.00, t0: 20.000000, t1: 15.000000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Swim, art: Art::Arthro(6), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("ドミニカの琥珀から知られる、ハリナシバチの絶滅した仲間。", "An extinct stingless bee known from Dominican amber.", "由多米尼加琥珀得知的灭绝无刺蜂近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "mastodon", name: L("アメリカマストドン", "American mastodon", "美洲乳齿象"), sci: "Mammut americanum", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 550.00, t0: 2.580000, t1: 0.011000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(20), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("木の枝や葉を食べた北アメリカのゾウの仲間。歯の形がマンモスと異なる。", "A North American elephant relative that browsed on branches and leaves, with teeth unlike mammoths.", "取食枝叶、牙齿形态不同于猛犸象的北美洲象类近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "elasmotherium", name: L("エラスモテリウム", "Elasmotherium", "板齿犀"), sci: "Elasmotherium sibiricum", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 450.00, t0: 2.580000, t1: 0.039000, hab: LAND | TIDAL, regions: &[Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(40), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("額の大きな角の土台と、草を食べるのに適した歯を持つ大型のサイ。", "A large rhino with a prominent forehead horn base and teeth adapted to grazing.", "额部有巨大角基、牙齿适合食草的大型犀牛。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "glyptodon", name: L("グリプトドン", "Glyptodon", "雕齿兽"), sci: "Glyptodon", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 300.00, t0: 2.500000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Mammal(18), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("小さな骨板がつながったドーム状の甲羅を持つ、アルマジロの近縁。", "An armadillo relative with a domed shell made from interlocking bony plates.", "由小骨板拼成穹顶背甲的犰狳近亲。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "mylodon", name: L("ミロドン", "Mylodon", "磨齿地懒"), sci: "Mylodon darwinii", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 300.00, t0: 1.000000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Mammal(11), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("南アメリカの地上性ナマケモノ。洞窟から毛や皮膚も見つかる。", "A South American ground sloth whose hair and skin have been found in caves.", "洞穴中发现过毛发与皮肤的南美洲地懒。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "loxodonta", name: L("アフリカゾウ属", "African elephants", "非洲象属"), sci: "Loxodonta", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 650.00, t0: 1.500000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(20), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("大きな耳と長い鼻を持つアフリカのゾウ。草や木の葉を食べる。", "African elephants with large ears and long trunks, feeding on grasses and leaves.", "有大耳与长鼻、取食草和树叶的非洲象。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "dire-wolf", name: L("ダイアウルフ", "Dire wolf", "恐狼"), sci: "Aenocyon dirus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 150.00, t0: 0.250000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(LAURENTIA)],
+        beh: Beh::Crawl, art: Art::Mammal(17), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("アメリカ大陸に暮らした、丈夫なあごと大きな体を持つイヌの仲間。", "A large American canid with robust jaws and a heavy build.", "生活在美洲、有粗壮颌与大体形的犬科动物。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "panthera-leo", name: L("ライオン", "Lion", "狮"), sci: "Panthera leo", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 250.00, t0: 1.000000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(23), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("アフリカの開けた環境に暮らす大型ネコ科。氷期にも仲間が生きていた。", "A large African cat of open habitats, with relatives also living during the Ice Age.", "生活在非洲开阔环境、近亲也见于冰期的大型猫科动物。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "giraffa", name: L("キリン属", "Giraffes", "长颈鹿属"), sci: "Giraffa", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 450.00, t0: 1.000000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA)],
+        beh: Beh::Crawl, art: Art::Mammal(5), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("長い首で高い木の葉を食べる草食獣。頭には皮膚で覆われた骨の突起がある。", "Long-necked browsers with skin-covered bony ossicones on the head.", "以长颈取食高处树叶、头上有皮肤覆盖骨角的食草兽。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "equus-ferus", name: L("野生のウマ", "Wild horse", "野马"), sci: "Equus ferus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 240.00, t0: 0.600000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(BALTICA), Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(4), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("1本の大きなひづめで走り、草を食べた氷期の野生のウマ。", "An Ice Age wild horse running on a single large hoof and grazing on grasses.", "用单一大蹄奔跑、取食草的冰期野马。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "diprotodon", name: L("ディプロトドン", "Diprotodon", "双门齿兽"), sci: "Diprotodon optatum", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 380.00, t0: 1.600000, t1: 0.044000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(26), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("オーストラリアの大型草食性有袋類。ウォンバットやコアラの遠い親戚。", "A giant Australian herbivorous marsupial, distantly related to wombats and koalas.", "与袋熊、考拉有远亲关系的澳大利亚巨型食草有袋类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "thylacoleo", name: L("ティラコレオ", "Marsupial lion", "袋狮"), sci: "Thylacoleo carnifex", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 150.00, t0: 2.000000, t1: 0.046000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(27), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("大きな刃のような歯と強い前脚を持つ、肉食の有袋類。ネコ科ではない。", "A carnivorous marsupial with large blade-like teeth and powerful forelimbs, unrelated to cats.", "有刀刃状大齿与强壮前肢、并非猫科的食肉有袋类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "macropus", name: L("ハイイロカンガルーの仲間", "Grey kangaroos", "灰袋鼠类"), sci: "Macropus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 220.00, t0: 1.000000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(28), col: [0.47, 0.45, 0.41], col2: [0.67, 0.65, 0.61], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("長い後ろ脚と尾を持つオーストラリアの草食性有袋類。氷期を越えて生き残った仲間もいる。", "Australian herbivorous marsupials with long hind legs and tails, including forms that survived the Ice Age.", "有长后肢与尾、部分成员度过冰期而存活的澳大利亚食草有袋类。"),
+        fact: L("属をまとめた代表像です。更新世の化石種と現生の種を含み、表示年代は観察窓の概略です。", "A genus-level representative including fossil Pleistocene and living species; dates are approximate observation windows.", "以属为单位的代表形态，包括更新世化石种与现生种，显示年代为大致观察窗口。"),
+    },
+    Species {
+        slug: "genyornis", name: L("ゲニオルニス", "Genyornis", "牛顿巨鸟"), sci: "Genyornis newtoni", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 200.00, t0: 0.500000, t1: 0.050000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Bird(3), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("更新世のオーストラリアにいた大型の飛べない鳥。大きな卵も知られる。", "A large flightless bird of Pleistocene Australia, also known from its large eggs.", "生活在更新世澳大利亚、也以巨大鸟蛋闻名的不会飞的鸟。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "homo-erectus", name: L("ホモ・エレクトス", "Homo erectus", "直立人"), sci: "Homo erectus", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 170.00, t0: 1.890000, t1: 0.110000, hab: LAND | TIDAL, regions: &[Plate(GONDWANA), Plate(SIBERIA)],
+        beh: Beh::Crawl, art: Art::Mammal(9), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("長い脚で地上を歩き、アフリカからアジアへ広がった初期の人類。", "An early human with long legs, spreading from Africa into Asia.", "有长腿、由非洲扩散到亚洲的早期人类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "neanderthal", name: L("ネアンデルタール人", "Neanderthal", "尼安德特人"), sci: "Homo neanderthalensis", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 165.00, t0: 0.400000, t1: 0.040000, hab: LAND | TIDAL, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(9), col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("ヨーロッパなどで暮らした、丈夫な体と大きな脳を持つ人類。", "A robust, large-brained human living in Europe and nearby regions.", "生活在欧洲及邻近地区、身体粗壮且脑容量大的人类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "great-auk", name: L("オオウミガラス", "Great auk", "大海雀"), sci: "Pinguinus impennis", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 80.00, t0: 0.500000, t1: 0.010000, hab: SHALLOW | SHELF | DEEP, regions: &[Plate(BALTICA), Plate(LAURENTIA)],
+        beh: Beh::Swim, art: Art::Bird(5), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("北大西洋の沿岸で暮らした、翼で潜る飛べない海鳥。ペンギンではない。", "A flightless North Atlantic seabird diving with its wings, unrelated to penguins.", "在北大西洋沿岸用翼潜水、并非企鹅的不会飞的海鸟。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "hydrodamalis", name: L("ステラーカイギュウ", "Steller's sea cow", "大海牛"), sci: "Hydrodamalis gigas", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 800.00, t0: 0.100000, t1: 0.010000, hab: SHALLOW | SHELF, regions: &[Plate(SIBERIA)],
+        beh: Beh::Swim, art: Art::Mammal(39), col: [0.61, 0.55, 0.4], col2: [0.81, 0.75, 0.60], rarity: 0.8, shy: 0.7, speed: 0.18,
+        desc: L("北太平洋沿岸の冷たい海で、海藻を食べた大型のカイギュウ。", "A giant sea cow feeding on seaweed in cold North Pacific coastal waters.", "在北太平洋寒冷近岸水域取食海藻的巨型海牛。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "quaternary-betula", name: L("氷期のカバノキ属", "Ice Age birches", "冰期桦木属"), sci: "Betula", group: L("植物", "Plant", "植物"),
+        len_cm: 1200.00, t0: 2.580000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(BALTICA), Plate(SIBERIA)],
+        beh: Beh::Sessile, art: Art::Plant(14), col: [0.34, 0.3, 0.21], col2: [0.54, 0.5, 0.41], rarity: 0.8, shy: 0.7, speed: 0.0,
+        desc: L("寒冷な地域にも広がる落葉樹。氷床が退いたあとにも森林をつくった。", "Deciduous trees tolerant of cold climates, also forming forests after ice sheets retreated.", "能耐寒、在冰盖退缩后也形成森林的落叶树。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "chelonoidis", name: L("南アメリカのリクガメ", "South American tortoises", "南美洲陆龟"), sci: "Chelonoidis", group: L("爬虫類", "Reptile", "爬行动物"),
+        len_cm: 100.00, t0: 2.580000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(SOUTH_AMERICA)],
+        beh: Beh::Crawl, art: Art::Marine(7), col: [0.47, 0.36, 0.27], col2: [0.67, 0.56, 0.47], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("高い甲羅と丈夫な脚を持ち、地上で植物を食べるカメの仲間。", "High-shelled turtles with sturdy legs, feeding on plants on land.", "有高背甲与粗壮腿、在陆地取食植物的龟类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "megadyptes", name: L("キンメペンギン属", "Yellow-eyed penguins", "黄眼企鹅属"), sci: "Megadyptes", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 70.00, t0: 0.129000, t1: 0.010000, hab: SHALLOW | SHELF | DEEP, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Swim, art: Art::Bird(5), col: [0.37, 0.44, 0.5], col2: [0.57, 0.64, 0.7], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("南の冷たい海で魚を追うペンギン。南西太平洋の沿岸を代表する項目。", "Penguins pursuing fish in cool southern seas, representing southwest Pacific coasts.", "在南方凉海中追鱼、代表西南太平洋海岸的企鹅。"),
+        fact: L("地図にニュージーランドの独立した地形がないため、観察場所はオーストラリア周辺の南西太平洋へ簡略化しています。", "The map has no separate New Zealand landmass, so its observation area is simplified to southwest Pacific waters around Australia.", "地图没有单独的新西兰陆块，因此观察区域简化为澳大利亚周边的西南太平洋海域。"),
+    },
+    Species {
+        slug: "salmo", name: L("サケ・マスの仲間", "Salmon and trout", "鲑鳟类"), sci: "Salmo", group: L("魚類", "Fish", "鱼类"),
+        len_cm: 90.00, t0: 2.580000, t1: 0.010000, hab: SHALLOW | SHELF, regions: &[Plate(BALTICA), Plate(LAURENTIA)],
+        beh: Beh::Swim, art: Art::RayFin, col: [0.57, 0.43, 0.31], col2: [0.77, 0.63, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("川と沿岸の海を利用する種類を含む魚。移動する魚の代表像として収録。", "Fishes including forms using rivers and coastal seas, representing migratory fish.", "包括利用河流与近岸海域的种类、作为洄游鱼代表收录的鱼类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "bombus", name: L("マルハナバチ属", "Bumblebees", "熊蜂属"), sci: "Bombus", group: L("節足動物", "Arthropod", "节肢动物"),
+        len_cm: 2.00, t0: 2.580000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(BALTICA), Plate(SIBERIA)],
+        beh: Beh::Swim, art: Art::Arthro(6), col: [0.32, 0.48, 0.31], col2: [0.52, 0.68, 0.51], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("毛に覆われた体で花を訪れるハチ。寒冷な地域でも花粉を運ぶ。", "Hairy bees visiting flowers and carrying pollen even in cool regions.", "身体多毛、即使在寒冷地区也访花传粉的蜂类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "quaternary-picea", name: L("氷期のトウヒ属", "Ice Age spruces", "冰期云杉属"), sci: "Picea", group: L("植物", "Plant", "植物"),
+        len_cm: 2500.00, t0: 2.580000, t1: 0.010000, hab: LAND | TIDAL, regions: &[Plate(BALTICA), Plate(SIBERIA)],
+        beh: Beh::Sessile, art: Art::Plant(8), col: [0.34, 0.3, 0.21], col2: [0.54, 0.5, 0.41], rarity: 0.8, shy: 0.7, speed: 0.0,
+        desc: L("針のような葉を持ち、寒冷な地域の森をつくる針葉樹。", "Needle-leaved conifers forming forests in cold regions.", "叶呈针状、在寒冷地区形成森林的针叶树。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+    Species {
+        slug: "ostrea", name: L("ヨーロッパのカキ", "European oysters", "欧洲牡蛎"), sci: "Ostrea edulis", group: L("二枚貝", "Bivalve", "双壳类"),
+        len_cm: 12.00, t0: 2.580000, t1: 0.010000, hab: SHALLOW | SHELF, regions: &[Plate(BALTICA)],
+        beh: Beh::Crawl, art: Art::Mollusc(1), col: [0.41, 0.4, 0.37], col2: [0.61, 0.60, 0.57], rarity: 1.5, shy: 0.7, speed: 0.18,
+        desc: L("浅い沿岸の海で硬い場所に付着し、水中の小さな粒をこし取る二枚貝。", "A shallow coastal bivalve attaching to firm surfaces and filtering small particles from water.", "附着于浅海近岸硬基底、滤食水中微粒的双壳类。"),
+        fact: L("表示する年代は観察できる期間の概略で、登場・絶滅の厳密な年代とは限りません。色や姿には復元上の推定を含みます。", "The displayed dates are approximate observation windows, not necessarily exact origin or extinction dates. Colours and reconstruction include inference.", "显示年代为大致观察时段，不一定是精确的起源或灭绝年代。颜色与复原形态包含推测。"),
+    },
+
+    // Southern Paleogene regional coverage; append-only IDs 403..426.
+    Species {
+        slug: "djarthia", name: L("ジャルティア", "Djarthia", "贾氏袋兽"), sci: "Djarthia murgonensis", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 15.00, t0: 54.600000, t1: 54.500000, hab: LAND | TIDAL, regions: &[Site(S_MURGON), Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("マルゴンで見つかった小型の有袋類の近縁。足の骨から木登りの能力が推定される。", "A small marsupial relative from Murgon, with ankle bones suggesting climbing abilities.", "发现于穆尔贡的小型有袋类近亲，踝骨显示其可能善于攀爬。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "thylacotinga", name: L("ティラコティンガ", "Thylacotinga", "袋琴兽"), sci: "Thylacotinga bartholomaii", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 20.00, t0: 54.600000, t1: 54.500000, hab: LAND | TIDAL, regions: &[Site(S_MURGON), Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("マルゴンの歯の化石から知られる、有袋類の古い仲間。丸みを帯びた歯を持つ。", "An early marsupial relative known from Murgon teeth with rounded cusps.", "由穆尔贡具有圆钝齿尖的牙齿化石得知的早期有袋类近亲。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "australonycteris", name: L("アウストラロニクテリス", "Australonycteris", "澳洲古蝠"), sci: "Australonycteris clarkae", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 12.00, t0: 54.600000, t1: 54.500000, hab: LAND | TIDAL, regions: &[Site(S_MURGON), Plate(AUSTRALIA)],
+        beh: Beh::Swim, art: Art::Mammal(15), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("マルゴンにいた初期のコウモリ。オーストラリアの空を飛ぶ哺乳類の古い記録。", "An early bat from Murgon, documenting ancient flying mammals in Australia.", "来自穆尔贡的早期蝙蝠，是澳大利亚飞行哺乳动物的古老记录。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "murgonemys", name: L("ムルゴネミス", "Murgonemys", "穆尔贡鳖"), sci: "Murgonemys braithwaitei", group: L("爬虫類", "Reptile", "爬行动物"),
+        len_cm: 60.00, t0: 54.600000, t1: 54.500000, hab: TIDAL | SHALLOW, regions: &[Site(S_MURGON), Plate(AUSTRALIA)],
+        beh: Beh::NearFloor, art: Art::Marine(8), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("約50cmの甲羅が知られるスッポンの仲間。始新世の淡水に暮らした。", "A soft-shelled turtle from Eocene freshwater habitats, known from a shell about 50 cm long.", "生活在始新世淡水中的鳖类，已知背甲长约50厘米。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "kambara", name: L("カンバラ", "Kambara", "坎巴拉鳄"), sci: "Kambara", group: L("爬虫類", "Reptile", "爬行动物"),
+        len_cm: 150.00, t0: 54.600000, t1: 48.000000, hab: TIDAL | SHALLOW, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::NearFloor, art: Art::Archosaur(2), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("マルゴンやランドルの化石から知られるオーストラリアの古いワニの属。", "An early Australian crocodile genus recorded at Murgon and Rundle.", "化石见于穆尔贡与兰德尔的澳大利亚早期鳄类属。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "platyplectrum-casca", name: L("マルゴンのカエル", "Murgon frog", "穆尔贡蛙"), sci: "Platyplectrum casca", group: L("両生類", "Amphibian", "两栖动物"),
+        len_cm: 8.00, t0: 54.600000, t1: 54.500000, hab: LAND | TIDAL, regions: &[Site(S_MURGON), Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(12), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("マルゴンの腸骨などから知られるカエル。湿った地面の小動物を代表する。", "A frog known from Murgon hip bones, representing small animals of damp ground.", "由穆尔贡髂骨等化石得知的蛙类，代表湿润地面的小动物。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "alamitophis", name: L("アラミトフィス", "Alamitophis", "阿拉米蛇"), sci: "Alamitophis tingamarra", group: L("爬虫類", "Reptile", "爬行动物"),
+        len_cm: 100.00, t0: 54.600000, t1: 54.500000, hab: LAND | TIDAL, regions: &[Site(S_MURGON), Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(11), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("マルゴンで椎骨が見つかった、絶滅したマッツォイア科のヘビの仲間。", "An extinct madtsoiid snake relative known from Murgon vertebrae.", "由穆尔贡椎骨化石得知的灭绝马德佐蛇科近亲。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "balbaroo", name: L("バルバルー", "Balbaroo", "古袋鼠"), sci: "Balbaroo", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 70.00, t0: 26.000000, t1: 24.000000, hab: LAND | TIDAL, regions: &[Site(S_ETADUNNA), Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(29), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("漸新世後期の森に暮らした古いカンガルーの仲間。四足歩行にも適した骨格。", "An early kangaroo relative from late Oligocene forests, with adaptations for quadrupedal movement.", "生活在晚渐新世森林、骨骼也适合四足行走的早期袋鼠近亲。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "badjcinus", name: L("バジキヌス", "Badjcinus", "古袋狼"), sci: "Badjcinus turnbulli", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 60.00, t0: 26.000000, t1: 24.000000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(17), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("リヴァースレーの漸新世後期の地層から知られる、小型のフクロオオカミの近縁。", "A small thylacinid known from late Oligocene deposits at Riversleigh.", "由里弗斯利晚渐新世地层得知的小型袋狼科近亲。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "ngapakaldia", name: L("ンガパカルディア", "Ngapakaldia", "恩加帕兽"), sci: "Ngapakaldia tedfordi", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 100.00, t0: 26.000000, t1: 24.000000, hab: LAND | TIDAL, regions: &[Site(S_ETADUNNA), Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(26), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("エタダナ層の湖のまわりにいた、ヒツジほどの大きさの草食性有袋類。", "A sheep-sized herbivorous marsupial from the lake environments of the Etadunna Formation.", "生活在埃塔丹纳组湖泊环境中、体形如羊的食草有袋类。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "muramura", name: L("ムラムラ", "Muramura", "穆拉兽"), sci: "Muramura williamsi", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 90.00, t0: 26.000000, t1: 24.000000, hab: LAND | TIDAL, regions: &[Site(S_ETADUNNA), Plate(AUSTRALIA)],
+        beh: Beh::Crawl, art: Art::Mammal(26), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("漸新世後期の南オーストラリアで知られる、コアラやウォンバットに近い草食性有袋類。", "A late Oligocene South Australian herbivorous marsupial related to koalas and wombats.", "来自南澳大利亚晚渐新世、与考拉和袋熊接近的食草有袋类。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "janjucetus", name: L("ヤンユケトゥス", "Janjucetus", "詹朱克鲸"), sci: "Janjucetus hunderi", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 300.00, t0: 25.000000, t1: 24.000000, hab: SHALLOW | SHELF | DEEP, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Swim, art: Art::Mammal(8), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("歯を使って獲物をとらえた、小型の古いヒゲクジラの近縁。ビクトリア州沿岸で見つかった。", "A small early baleen-whale relative that caught prey with teeth, found on the Victorian coast.", "发现于维多利亚州海岸、用牙齿捕猎的小型早期须鲸近亲。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "mammalodon", name: L("マンマロドン", "Mammalodon", "乳齿鲸"), sci: "Mammalodon colliveri", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 300.00, t0: 25.000000, t1: 24.000000, hab: SHALLOW | SHELF | DEEP, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Swim, art: Art::Mammal(8), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("漸新世のオーストラリアの沿岸にいた、歯を残すヒゲクジラの近縁。", "A toothed relative of baleen whales from Oligocene Australian coastal waters.", "生活在渐新世澳大利亚近岸、保留牙齿的须鲸近亲。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "crossvallia", name: L("クロスヴァリア", "Crossvallia", "克罗斯谷企鹅"), sci: "Crossvallia unienwillia", group: L("鳥類", "Bird", "鸟类"),
+        len_cm: 140.00, t0: 59.300000, t1: 59.100000, hab: SHALLOW | SHELF | DEEP, regions: &[Site(S_CROSS_VALLEY), Plate(ANTARCTICA)],
+        beh: Beh::Swim, art: Art::Bird(5), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("南極のクロス・ヴァレー層で見つかった、暁新世後期の古いペンギン。", "An early penguin from the late Paleocene Cross Valley Formation of Antarctica.", "发现于南极克罗斯谷组、生活在晚古新世的早期企鹅。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "notiolofos", name: L("ノティオロフォス", "Notiolofos", "南脊齿兽"), sci: "Notiolofos", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 150.00, t0: 53.000000, t1: 34.100000, hab: LAND | TIDAL, regions: &[Site(S_SEYMOUR), Plate(ANTARCTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(26), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("セイモア島で歯が見つかった、南アメリカの有蹄類に近い南極の草食哺乳類。", "An Antarctic herbivorous mammal related to South American ungulates, known from Seymour Island teeth.", "由西摩岛牙齿得知、与南美洲有蹄类接近的南极食草哺乳动物。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "antarctodolops", name: L("アンタルクトドロプス", "Antarctodolops", "南极袋兽"), sci: "Antarctodolops", group: L("哺乳類", "Mammal", "哺乳动物"),
+        len_cm: 25.00, t0: 45.000000, t1: 34.100000, hab: LAND | TIDAL, regions: &[Site(S_SEYMOUR), Plate(ANTARCTICA)],
+        beh: Beh::Crawl, art: Art::Mammal(0), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("始新世の南極の森にいた、ポリドロプス類の小型哺乳類。主に歯から知られる。", "A small polydolopid mammal of Eocene Antarctic forests, known mainly from teeth.", "主要由牙齿得知、生活在始新世南极森林的小型多突袋兽类。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "antarctic-frog", name: L("南極のカエル", "Antarctic helmeted frog relative", "南极盔蛙近亲"), sci: "Calyptocephalellidae (Antarctic fossil)", group: L("両生類", "Amphibian", "两栖动物"),
+        len_cm: 10.00, t0: 45.000000, t1: 40.000000, hab: LAND | TIDAL, regions: &[Site(S_SEYMOUR), Plate(ANTARCTICA)],
+        beh: Beh::Crawl, art: Art::Tetrapod(12), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("セイモア島の約4000万〜4500万年前の地層から見つかった、暖かい湿地のカエル。", "A frog of temperate wetlands, found in roughly 40–45 Ma deposits on Seymour Island.", "发现于西摩岛约4000万至4500万年前地层、生活在温暖湿地的蛙类。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "cucullaea-raea", name: L("ククレア・ラエア", "Cucullaea raea", "南极厚壳蚶"), sci: "Cucullaea raea", group: L("貝の仲間", "Mollusc", "软体动物"),
+        len_cm: 15.00, t0: 53.000000, t1: 34.100000, hab: SHALLOW | SHELF, regions: &[Plate(ANTARCTICA)],
+        beh: Beh::Crawl, art: Art::Mollusc(1), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("セイモア島の浅い海にいた、大きく厚い殻の二枚貝。", "A large, thick-shelled bivalve of shallow seas around Seymour Island.", "生活在西摩岛周边浅海、壳厚而大的双壳类。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "struthiolarella", name: L("ストルティオラレラ", "Struthiolarella", "南极古螺"), sci: "Struthiolarella steinmanni", group: L("貝の仲間", "Mollusc", "软体动物"),
+        len_cm: 15.00, t0: 50.000000, t1: 34.100000, hab: SHALLOW | SHELF, regions: &[Plate(ANTARCTICA)],
+        beh: Beh::Crawl, art: Art::Mollusc(0), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.16,
+        desc: L("始新世の南極の海底にいた、丈夫な殻を持つ巻貝。", "A thick-shelled gastropod living on the sea floor of Eocene Antarctica.", "生活在始新世南极海底、有坚固外壳的腹足类。"), fact: L("年代は化石の産地に基づく観察窓の概略です。単一産地の年代を、その世の全期間へ広げてはいません。色や全身の姿には推定を含みます。", "Dates are approximate observation windows based on fossil localities, not extended to fill an entire epoch. Colours and whole-body shapes include reconstruction.", "年代是依据化石地点的大致观察窗口，不为填满整个世而延长。颜色与全身形态包含推测。"),
+    },
+    Species {
+        slug: "southern-nothofagus", name: L("南方のナンキョクブナの森", "Southern beech forests", "南方山毛榉林"), sci: "Nothofagaceae (Paleogene regional group)", group: L("植物", "Plant", "植物"),
+        len_cm: 1800.00, t0: 66.000000, t1: 23.030000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA), Plate(ANTARCTICA), Plate(SOUTH_AMERICA)],
+        beh: Beh::Sessile, art: Art::Plant(14), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.0,
+        desc: L("葉・花粉・材の化石から知られる南方の森林。古第三紀の豪州・南極・南米をつなぐ。", "Southern forests known from fossil leaves, pollen and wood, linking Paleogene Australia, Antarctica and South America.", "由叶、花粉与木材化石得知、联系古近纪澳大利亚、南极与南美洲的南方森林。"), fact: L("単一の種ではなく、地域と時代で入れ替わる科・群の代表像です。南極の漸新世の森林は、氷のない沿岸だけに表示します。", "This represents a family or group varying by region and time, not a single species. Oligocene Antarctic forests are restricted to ice-free coastal refugia.", "代表随地区与年代更替的科或类群，而非单一物种。南极渐新世森林只在无冰沿岸显示。"),
+    },
+    Species {
+        slug: "southern-podocarps", name: L("南方のマキ科の森", "Southern podocarp forests", "南方罗汉松科林"), sci: "Podocarpaceae (Paleogene regional group)", group: L("植物", "Plant", "植物"),
+        len_cm: 2000.00, t0: 66.000000, t1: 23.030000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA), Plate(ANTARCTICA), Plate(SOUTH_AMERICA)],
+        beh: Beh::Sessile, art: Art::Plant(8), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.0,
+        desc: L("南の湿った森の針葉樹。南極では氷床の発達後も、沿岸の避難地に仲間が残った。", "Conifers of southern wet forests, with Antarctic relatives persisting in coastal refugia after ice sheets developed.", "南方湿润森林中的针叶树，其南极近亲在冰盖形成后仍留存于沿岸避难地。"), fact: L("単一の種ではなく、地域と時代で入れ替わる科・群の代表像です。南極の漸新世の森林は、氷のない沿岸だけに表示します。", "This represents a family or group varying by region and time, not a single species. Oligocene Antarctic forests are restricted to ice-free coastal refugia.", "代表随地区与年代更替的科或类群，而非单一物种。南极渐新世森林只在无冰沿岸显示。"),
+    },
+    Species {
+        slug: "southern-araucarians", name: L("南方のナンヨウスギ科", "Southern araucarians", "南方南洋杉科"), sci: "Araucariaceae (Paleogene regional group)", group: L("植物", "Plant", "植物"),
+        len_cm: 2500.00, t0: 66.000000, t1: 34.100000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA), Plate(ANTARCTICA), Plate(SOUTH_AMERICA)],
+        beh: Beh::Sessile, art: Art::Plant(8), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.0,
+        desc: L("暁新世と始新世の南の森にあった針葉樹。南極の化石材にも記録がある。", "Conifers of Paleocene and Eocene southern forests, also recorded as Antarctic fossil wood.", "生活在古新世与始新世南方森林、也见于南极木材化石的针叶树。"), fact: L("単一の種ではなく、地域と時代で入れ替わる科・群の代表像です。南極の漸新世の森林は、氷のない沿岸だけに表示します。", "This represents a family or group varying by region and time, not a single species. Oligocene Antarctic forests are restricted to ice-free coastal refugia.", "代表随地区与年代更替的科或类群，而非单一物种。南极渐新世森林只在无冰沿岸显示。"),
+    },
+    Species {
+        slug: "southern-ferns", name: L("南方の森のシダ", "Southern forest ferns", "南方林下蕨类"), sci: "Polypodiopsida (Paleogene southern group)", group: L("植物", "Plant", "植物"),
+        len_cm: 120.00, t0: 66.000000, t1: 34.100000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA), Plate(ANTARCTICA)],
+        beh: Beh::Sessile, art: Art::Plant(18), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.0,
+        desc: L("葉と胞子の化石から知られる、古第三紀の湿った南の森のシダの仲間。", "Ferns of humid Paleogene southern forests, documented by fossil fronds and spores.", "由叶片与孢子化石得知、生活在古近纪南方湿润森林的蕨类。"), fact: L("単一の種ではなく、地域と時代で入れ替わる科・群の代表像です。南極の漸新世の森林は、氷のない沿岸だけに表示します。", "This represents a family or group varying by region and time, not a single species. Oligocene Antarctic forests are restricted to ice-free coastal refugia.", "代表随地区与年代更替的科或类群，而非单一物种。南极渐新世森林只在无冰沿岸显示。"),
+    },
+    Species {
+        slug: "australian-proteaceae", name: L("豪州のヤマモガシ科", "Australian proteaceous plants", "澳大利亚山龙眼科"), sci: "Proteaceae (Paleogene Australian group)", group: L("植物", "Plant", "植物"),
+        len_cm: 500.00, t0: 66.000000, t1: 23.030000, hab: LAND | TIDAL, regions: &[Plate(AUSTRALIA)],
+        beh: Beh::Sessile, art: Art::Plant(14), col: [0.42, 0.37, 0.28], col2: [0.61, 0.65, 0.44], rarity: 1.2, shy: 0.5, speed: 0.0,
+        desc: L("花粉や葉の化石が残る、豪州の古い森林の花の咲く植物。", "Flowering plants of ancient Australian forests, recorded by fossil pollen and leaves.", "由花粉与叶片化石得知、生活在澳大利亚古老森林的开花植物。"), fact: L("単一の種ではなく、地域と時代で入れ替わる科・群の代表像です。南極の漸新世の森林は、氷のない沿岸だけに表示します。", "This represents a family or group varying by region and time, not a single species. Oligocene Antarctic forests are restricted to ice-free coastal refugia.", "代表随地区与年代更替的科或类群，而非单一物种。南极渐新世森林只在无冰沿岸显示。"),
+    },
+
 ];
 
 /// 陸に降りて撮る景色の種類
@@ -4298,6 +5168,7 @@ pub enum Scenery {
     GymnoForest,
     /// 花の咲く森
     FlowerForest,
+    Grassland,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -4324,7 +5195,7 @@ pub struct Phenom {
 
 impl Phenom {
     pub fn at(&self, t: f32) -> bool {
-        t <= self.t0 + 1e-3 && t >= self.t1 - 1e-3
+        t <= self.t0 + 1e-6 && t >= self.t1 - 1e-6
     }
 }
 
@@ -4601,7 +5472,16 @@ pub static PHENOMS: &[Phenom] = &[
             "直径10公里的小行星坠落在今墨西哥尤卡坦半岛，引发巨大海啸和山火，遮天蔽日的尘埃挡住了阳光，除鸟类以外的恐龙全部灭绝。",
         ),
         hint: L("6600万年前、上空からユカタン半島に近づいて撮影する", "66 million years ago, fly close to the Yucatán from the sky and photograph it", "6600万年前，从高空靠近尤卡坦半岛拍摄"),
+    },    Phenom { slug: "cenozoic-forest", name: L("新生代の広葉樹林", "Cenozoic broadleaf forest", "新生代阔叶林"), t0: 66.000000, t1: 23.030000, kind: PhKind::Scenery(Scenery::FlowerForest),
+        desc: L("花と実をつける木々が哺乳類や鳥のすみかをつくる。", "Flowering and fruiting trees provide habitats for mammals and birds.", "开花结果的树木为哺乳动物和鸟类提供栖息地。"), hint: L("レーダーで場所を探し、陸に降りて撮影する", "Use the radar, land and photograph the scenery", "使用雷达寻找地点，降落并拍摄风景"),
     },
+    Phenom { slug: "cenozoic-grassland", name: L("新第三紀の草原", "Neogene grassland", "新近纪草原"), t0: 23.000000, t1: 2.580000, kind: PhKind::Scenery(Scenery::Grassland),
+        desc: L("気候の変化とともに広がる草原。草食獣が多様化した。", "Expanding grasslands supported diverse grazing mammals.", "扩展的草原养育了多样的食草哺乳动物。"), hint: L("レーダーで場所を探し、陸に降りて撮影する", "Use the radar, land and photograph the scenery", "使用雷达寻找地点，降落并拍摄风景"),
+    },
+    Phenom { slug: "quaternary-ice", name: L("第四紀の氷床", "Quaternary ice sheets", "第四纪冰盖"), t0: 2.580000, t1: 0.011700, kind: PhKind::Scenery(Scenery::Ice),
+        desc: L("氷期には北半球の高緯度にも厚い氷が広がった。", "Thick ice expanded across high northern latitudes during glacial periods.", "冰期时北半球高纬度也覆盖厚厚的冰层。"), hint: L("レーダーで場所を探し、陸に降りて撮影する", "Use the radar, land and photograph the scenery", "使用雷达寻找地点，降落并拍摄风景"),
+    },
+
 ];
 
 /// 図鑑の項目の画像の名前
@@ -4624,13 +5504,18 @@ pub fn n_entries() -> usize {
 
 /// その生きものがその場所・その時代にいるか
 pub fn lives_here(sp: &Species, earth: &Earth, spot: &Spot, t: f32) -> bool {
+    if sp.slug == "homo-sapiens" && t > 0.07 && spot.plate != Some(GONDWANA) { return false; }
+    // Regional forest reconstructions belong to ice-free terrain, including coastal refugia.
+    if (sp.slug.starts_with("southern-") || sp.slug == "australian-proteaceae") && icy_at(t, spot.lat) {
+        return false;
+    }
     if !sp.alive_at(t) || sp.hab & spot.hab.bit() == 0 {
         return false;
     }
     sp.regions.iter().any(|r| match *r {
         Region::Global => true,
         Region::Tropics => spot.lat.abs() < 35.0,
-        Region::Plate(p) => spot.plate.map_or(false, |sp| plate_matches(sp, p)),
+        Region::Plate(p) => spot.plate.map_or(false, |q| if t < 66.0 && p == GONDWANA { q == GONDWANA } else { plate_matches(q, p) }),
         Region::Site(s) => {
             let site = &SITES[s];
             t <= site.t0 + 0.5 && t >= site.t1 - 0.5 && deg_dist(earth.site_lonlat(s, t), (spot.lon, spot.lat)) < 7.0
@@ -4671,13 +5556,13 @@ pub fn where_when(i: usize, earth: &Earth, now: f32, near: (f32, f32)) -> (f32, 
                 let a = sp.t0.min(site.t0);
                 let b = sp.t1.max(site.t1);
                 if a >= b {
-                    let t = if now <= a && now >= b { now } else { ((a + b) * 0.5 * 2.0).round() / 2.0 };
+                    let t = if now <= a && now >= b { now } else { (a + b) * 0.5 };
                     return (t, earth.site_lonlat(s, t));
                 }
             }
         }
     }
-    let t = if sp.alive_at(now) { now } else { ((sp.t0 + sp.t1) * 0.5 * 2.0).round() / 2.0 };
+    let t = if sp.alive_at(now) { now } else { (sp.t0 + sp.t1) * 0.5 };
     let mut best: Option<(f32, (f32, f32))> = None;
     let mut lat = -80.0;
     while lat <= 80.0 {
@@ -4712,7 +5597,7 @@ pub fn scenery_at(spot: &Spot, t: f32) -> Option<Scenery> {
         return None;
     }
     // 古生代の氷河は南極に近いゴンドワナ大陸にあった
-    if glacial(t) && spot.lat < -55.0 {
+    if icy_at(t, spot.lat) {
         return Some(Scenery::Ice);
     }
     if t >= 433.0 {
@@ -4724,6 +5609,7 @@ pub fn scenery_at(spot: &Spot, t: f32) -> Option<Scenery> {
     if veg_at(t) < 0.6 {
         return Some(Scenery::GreenShore);
     }
+    if t < 23.03 && (15.0..55.0).contains(&spot.lat.abs()) { return Some(Scenery::Grassland); }
     // 中生代：花の咲く植物が広がるまでは針葉樹とシダの森
     if t <= 251.9 {
         return Some(if t > 125.0 { Scenery::GymnoForest } else { Scenery::FlowerForest });
@@ -4745,7 +5631,7 @@ pub fn scenery_phenoms(k: Scenery, t: f32) -> impl Iterator<Item = usize> {
 /// 現象を見に行く時代と場所（経緯度）
 pub fn phenom_where_when(i: usize, earth: &Earth, now: f32, near: (f32, f32)) -> (f32, (f32, f32)) {
     let ph = &PHENOMS[i];
-    let mid = ((ph.t0 + ph.t1) * 0.5 * 2.0).round() / 2.0;
+    let mid = (ph.t0 + ph.t1) * 0.5;
     let t = if ph.at(now) { now } else { mid };
     match ph.kind {
         PhKind::Continent(plates) => {
@@ -4889,12 +5775,72 @@ pub fn place_text(sp: &Species) -> String {
 mod tests {
     use super::*;
 
+    #[test]
+    fn southern_paleogene_records_are_regional_and_do_not_expand_single_site_dates() {
+        assert_eq!(SPECIES.len(), 427);
+        assert_eq!(SPECIES[403..].len(), 24);
+        let earth = Earth::new();
+        let find = |slug| SPECIES.iter().find(|s| s.slug == slug).unwrap();
+        for slug in ["djarthia", "thylacotinga", "australonycteris", "murgonemys", "platyplectrum-casca", "alamitophis"] {
+            let sp = find(slug);
+            assert!(sp.alive_at(54.55));
+            assert!(!sp.alive_at(63.0) && !sp.alive_at(50.0));
+        }
+        assert!(find("crossvallia").alive_at(59.2));
+        assert!(!find("crossvallia").alive_at(63.0));
+        for t in [63.0, 50.0, 28.0] {
+            for p in [AUSTRALIA, ANTARCTICA] {
+                let plants: Vec<_> = SPECIES[403..].iter().filter(|s| {
+                    matches!(s.art, Art::Plant(_)) && s.alive_at(t) && s.regions.contains(&Region::Plate(p))
+                }).collect();
+                assert!(plants.len() >= 2, "regional flora missing at {t} on {p}");
+                assert!(plants.iter().any(|sp| (-85..=85).step_by(3).any(|lat| {
+                    (-180..180).step_by(3).any(|lon| {
+                        let spot = earth.sample(lon as f32, lat as f32, t);
+                        spot.plate == Some(p) && lives_here(sp, &earth, &spot, t)
+                    })
+                })), "regional flora cannot be visited at {t} on {p}");
+            }
+        }
+        let tree = find("southern-podocarps");
+        let frozen = Spot { e: 1.0, hab: Habitat::Land, depth: 0.0, plate: Some(ANTARCTICA), lon: 0.0, lat: -80.0 };
+        assert!(!lives_here(tree, &earth, &frozen, 28.0));
+        let refuge = Spot { lat: -65.0, ..frozen };
+        assert!(lives_here(tree, &earth, &refuge, 28.0));
+        assert!(!icy_at(28.0, -65.0));
+        assert!(icy_at(28.0, -80.0));
+        assert!(icy_at(0.01, -65.0));
+    }
+
+    #[test]
+    fn cenozoic_catalogue_triples_with_distinct_taxa_across_all_three_volumes() {
+        assert_eq!(SPECIES.len() - 295, 132);
+        assert_eq!(SPECIES.len() - 331, 96);
+        let extra = &SPECIES[331..403];
+        for p in [PALEOGENE, NEOGENE, QUATERNARY] {
+            assert_eq!((331..403).filter(|&i| entry_period(i) == p).count(), 24);
+        }
+        let mut slugs: Vec<_> = SPECIES.iter().map(|s| s.slug).collect();
+        slugs.sort_unstable();
+        assert!(slugs.windows(2).all(|w| w[0] != w[1]));
+        let mut names: Vec<_> = extra.iter().map(|s| s.sci).collect();
+        names.sort_unstable();
+        assert!(names.windows(2).all(|w| w[0] != w[1]));
+        for p in [LAURENTIA, SOUTH_AMERICA, BALTICA, SIBERIA, GONDWANA, AUSTRALIA, ANTARCTICA] {
+            assert!(extra.iter().any(|s| s.regions.contains(&Region::Plate(p))), "missing region {p}");
+        }
+        assert!(extra.iter().filter(|s| s.hab & LAND == 0).count() >= 12);
+        assert!(extra.iter().filter(|s| matches!(s.art, Art::Plant(_))).count() >= 6);
+        assert!(extra.iter().filter(|s| matches!(s.art, Art::Bird(_))).count() >= 8);
+        assert!(extra.iter().filter(|s| matches!(s.art, Art::Arthro(_) | Art::Mollusc(_) | Art::Urchin)).count() >= 6);
+    }
+
     /// Check the whole map at every Mesozoic stage boundary and midpoint,
     /// including the poles and continental interiors away from fossil sites.
     #[test]
     fn mesozoic_land_has_diverse_animals_throughout_every_stage() {
         let earth = Earth::new();
-        for stage in STAGES.iter().filter(|s| s.t0 <= 251.9) {
+        for stage in STAGES.iter().filter(|s| s.t0 <= 251.9 && s.t1 >= 66.0) {
             for t in [stage.t0, (stage.t0 + stage.t1) * 0.5, stage.t1] {
                 let mut land = 0;
                 let mut empty = 0;

@@ -242,12 +242,72 @@ mod tests {
         assert!(p.stars[..283].iter().all(|&s| s == 1));
         assert!(p.stars[283..n_species()].iter().all(|&s| s == 0));
         assert!(p.fresh[283..n_species()].iter().all(|&f| !f));
-        assert!(p.stars[n_species()..].iter().all(|&s| s == 1));
+        assert!(p.stars[n_species()..n_species()+19].iter().all(|&s| s == 1));
+        assert!(p.stars[n_species()+19..].iter().all(|&s| s == 0));
         assert_eq!(p.found(), 302);
-        assert!(p.all_clear());
+        assert_eq!(p.done_count(), 51);
+        assert!(!p.all_clear());
         let q = Progress::from_bytes(&p.to_bytes()).unwrap();
         assert_eq!(q.stars, p.stars);
         assert_eq!(q.fresh, p.fresh);
+    }
+
+    #[test]
+    fn complete_295_species_save_keeps_old_tasks_and_adds_cenozoic_unfinished() {
+        let mut w = Writer::new();
+        w.bytes(MAGIC);
+        w.u32(3);
+        w.usize(295);
+        w.usize(314);
+        for _ in 0..314 { w.u8(1); w.bool(true); }
+        w.usize(50);
+        w.f32(66.0);
+        w.f32(0.0);
+        w.f32(0.0);
+        w.u32(314);
+        w.bool(true);
+        w.bool(false);
+        let mut p = Progress::from_bytes(&w.buf).unwrap();
+        assert_eq!(p.found(), 314);
+        assert_eq!(p.done_count(), 51);
+        assert_eq!(p.mission, 51);
+        assert!(p.stars[295..n_species()].iter().all(|&s| s == 0));
+        assert!(p.stars[n_species()..n_species()+19].iter().all(|&s| s == 1));
+        assert!(p.stars[n_species()+19..].iter().all(|&s| s == 0));
+        p.t = crate::earth::T_END;
+        let q = Progress::from_bytes(&p.to_bytes()).unwrap();
+        assert_eq!(q.t, 0.01);
+        assert_eq!(q.stars, p.stars);
+    }
+
+    #[test]
+    fn initial_cenozoic_saves_preserve_all_records_after_regional_additions() {
+        for saved_species in [331, 403] {
+            let saved_entries = saved_species + 22;
+            let mut w = Writer::new();
+            w.bytes(MAGIC);
+            w.u32(3);
+            w.usize(saved_species);
+            w.usize(saved_entries);
+            for _ in 0..saved_entries { w.u8(1); w.bool(true); }
+            w.usize(62);
+            w.f32(0.01);
+            w.f32(20.0);
+            w.f32(-10.0);
+            w.u32(saved_entries as u32);
+            w.bool(true);
+            w.bool(true);
+            let p = Progress::from_bytes(&w.buf).unwrap();
+            assert_eq!(p.found(), saved_entries);
+            assert!(p.stars[..saved_species].iter().all(|&s| s == 1));
+            assert!(p.stars[saved_species..n_species()].iter().all(|&s| s == 0));
+            assert!(p.stars[n_species()..].iter().all(|&s| s == 1));
+            assert_eq!(p.done_count(), 63);
+            assert_eq!(p.t, 0.01);
+            let q = Progress::from_bytes(&p.to_bytes()).unwrap();
+            assert_eq!(q.stars, p.stars);
+            assert_eq!(q.fresh, p.fresh);
+        }
     }
 
     #[test]

@@ -3,3 +3,4 @@
 /output
 *.bmp
 .wrangler
+__pycache__/

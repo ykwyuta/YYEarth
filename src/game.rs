@@ -262,15 +262,15 @@ fn backdrop_slug(sc: &Scene, t: f32) -> Option<&'static str> {
         if sc.icy {
             return first(&["backdrop-ice-land"]);
         }
-        let own = ["barren-land", "backdrop-ordovician-land", "backdrop-silurian-land", "backdrop-devonian-land", "backdrop-carboniferous-land", "backdrop-permian-land", "backdrop-triassic-land", "backdrop-jurassic-land", "backdrop-cretaceous-land"][p];
+        let own = ["barren-land", "backdrop-ordovician-land", "backdrop-silurian-land", "backdrop-devonian-land", "backdrop-carboniferous-land", "backdrop-permian-land", "backdrop-triassic-land", "backdrop-jurassic-land", "backdrop-cretaceous-land", "backdrop-paleogene-land", "backdrop-neogene-land", "backdrop-quaternary-land"][p];
         // 植物のない大地の絵は、陸に植物が広がる前（シルル紀の前半まで）だけ使う
         return if veg_at(t) < 0.05 { first(&[own, "barren-land"]) } else { first(&[own]) };
     }
     if sc.depth > 100.0 {
-        let own = ["deep-sea", "backdrop-ordovician-deep", "backdrop-silurian-deep", "backdrop-devonian-deep", "backdrop-carboniferous-deep", "backdrop-permian-deep", "backdrop-triassic-deep", "backdrop-jurassic-deep", "backdrop-cretaceous-deep"][p];
+        let own = ["deep-sea", "backdrop-ordovician-deep", "backdrop-silurian-deep", "backdrop-devonian-deep", "backdrop-carboniferous-deep", "backdrop-permian-deep", "backdrop-triassic-deep", "backdrop-jurassic-deep", "backdrop-cretaceous-deep", "backdrop-paleogene-deep", "backdrop-neogene-deep", "backdrop-quaternary-deep"][p];
         first(&[own, "deep-sea"])
     } else {
-        let own = ["shallow-sea", "backdrop-ordovician-sea", "backdrop-silurian-sea", "backdrop-devonian-sea", "backdrop-carboniferous-sea", "backdrop-permian-sea", "backdrop-triassic-sea", "backdrop-jurassic-sea", "backdrop-cretaceous-sea"][p];
+        let own = ["shallow-sea", "backdrop-ordovician-sea", "backdrop-silurian-sea", "backdrop-devonian-sea", "backdrop-carboniferous-sea", "backdrop-permian-sea", "backdrop-triassic-sea", "backdrop-jurassic-sea", "backdrop-cretaceous-sea", "backdrop-paleogene-sea", "backdrop-neogene-sea", "backdrop-quaternary-sea"][p];
         first(&[own, "shallow-sea"])
     }
 }
@@ -745,7 +745,7 @@ impl Game {
             self.radar_cells.clear();
             return;
         }
-        let key = (e, (self.prog.t * 2.0).round() as i32);
+        let key = (e, (self.prog.t * 1_000_000.0).round() as i32);
         if self.radar_key != Some(key) {
             self.radar_key = Some(key);
             self.radar_cells = radar_spots(e, &self.earth, self.prog.t);
@@ -1198,10 +1198,10 @@ impl Game {
             }
             Act::StepStage(d) => {
                 let t = self.travel.as_ref().map_or(self.prog.t, |tr| tr.to);
-                let idx = STAGES.iter().position(|s| t <= s.t0 + 1e-3 && t > s.t1 + 1e-3).unwrap_or(STAGES.len() - 1) as i32;
+                let idx = STAGES.iter().position(|s| std::ptr::eq(s, stage_at(t))).unwrap_or(STAGES.len() - 1) as i32;
                 let ni = (idx + d).clamp(0, STAGES.len() as i32 - 1) as usize;
                 let s = &STAGES[ni];
-                self.travel_to(((s.t0 + s.t1) * 0.5 * 10.0).round() / 10.0);
+                self.travel_to((s.t0 + s.t1) * 0.5);
             }
             Act::TimeAt(t) => self.travel_to(t),
             Act::Light => {
@@ -1249,7 +1249,7 @@ impl Game {
         }
         let t = t.clamp(T_END, T_START);
         let from = self.prog.t;
-        if (t - from).abs() < 0.05 {
+        if (t - from).abs() < 1e-6 {
             return;
         }
         let dur = 1.4 + (t - from).abs() / (T_START - T_END) * 2.4;
@@ -1608,7 +1608,10 @@ impl Game {
         // 氷河時代の南極の氷
         if glacial(t) {
             let g = &mut self.gfx;
-            let y55 = (90.0 + 55.0) * DEG;
+            if (0.0117..=2.58).contains(&t) {
+                g.rect_vgrad(0.0, 0.0, MAP_W, 30.0 * DEG, [0.92, 0.96, 1.0, 0.65], [0.92, 0.96, 1.0, 0.0]);
+            }
+            let y55 = (90.0 - southern_ice_lat(t)) * DEG;
             g.rect_vgrad(0.0, y55, MAP_W, MAP_H - 2.0 * DEG, [0.92, 0.96, 1.0, 0.0], [0.92, 0.96, 1.0, 0.72]);
             g.rect(0.0, MAP_H - 2.0 * DEG, MAP_W, MAP_H, [0.92, 0.96, 1.0, 0.72]);
         }
@@ -1914,7 +1917,7 @@ impl Game {
         let t = self.prog.t;
         let spot = self.earth.sample(lon, lat, t);
         self.panel_box(x0, y0, x1, y1);
-        let plate = spot.plate.map(|p| if still_joined(p, t) { plate_name(GONDWANA, t) } else { plate_name(p, t) }).unwrap_or(t!("パンサラサ海（外洋）", "Panthalassic Ocean", "泛大洋（远洋）"));
+        let plate = spot.plate.map(|p| if still_joined(p, t) { plate_name(GONDWANA, t) } else { plate_name(p, t) }).unwrap_or(if t < 66.0 { t!("外洋", "Open ocean", "远洋") } else { t!("パンサラサ海（外洋）", "Panthalassic Ocean", "泛大洋（远洋）") });
         let where_s = if spot.plate.is_some() && spot.hab == Habitat::Deep { tf!("{}の沖", "Off {}", "{}外海", plate) } else { plate.to_string() };
         self.gfx.text(&where_s, x0 + 12.0, y0 + 8.0, x1 - x0 - 24.0, 20.0, Font::Big, TEXT);
         if let Some(p) = spot.plate {
@@ -1952,7 +1955,7 @@ impl Game {
         self.add_button(mid + 5.0, by, x1 - 10.0, by + bh, t!("撮影 (Space)", "Photo (Space)", "拍摄 (Space)"), Act::Shoot, true, false);
     }
 
-    /// 年表：上の細い帯が古生代・中生代の9つの紀、下の帯がいまの紀の期
+    /// 年表：上の細い帯が12の紀、下の帯がいまの紀の世・期
     fn render_timeline(&mut self) {
         let (x0, y0, x1, y1) = self.timeline_rect();
         let t = self.prog.t;
@@ -1964,7 +1967,12 @@ impl Game {
         let bar_y0 = strip_y1 + 8.0;
         let bar_y1 = y1 - 6.0;
         // 紀の帯（全体）
-        let px = |tt: f32| x0 + (T_START - tt) / (T_START - T_END) * (x1 - x0);
+        // Equal period widths keep the short Quaternary accessible on touch screens.
+        let px = |tt: f32| {
+            let i = period_at(tt);
+            let p = &PERIODS[i];
+            x0 + (i as f32 + ((p.t0 - tt) / (p.t0 - p.t1)).clamp(0.0, 1.0)) / PERIODS.len() as f32 * (x1 - x0)
+        };
         for (i, p) in PERIODS.iter().enumerate() {
             let (a, b) = (px(p.t0), px(p.t1));
             let cur = i == pi;
@@ -1979,7 +1987,7 @@ impl Game {
             }
             // 紀の始まりの期へ
             let first = STAGES.iter().find(|s| (s.t0 - p.t0).abs() < 1e-3).unwrap_or(&STAGES[0]);
-            let go = ((first.t0 + first.t1) * 0.5 * 10.0).round() / 10.0;
+            let go = (first.t0 + first.t1) * 0.5;
             self.buttons.push(Button { x0: a, y0: strip_y0 - 2.0, x1: b, y1: strip_y1 + 2.0, act: Act::TimeAt(if cur { t } else { go }), label: nm.to_string(), enabled: self.travel.is_none() && !cur });
             let (mx, my) = self.mouse;
             if mx >= a && mx <= b && my >= strip_y0 - 2.0 && my <= strip_y1 + 2.0 {
@@ -2033,10 +2041,10 @@ impl Game {
         }
         // マウスを乗せた時代
         let (mx, my) = self.mouse;
-        let step = if t0 - t1 > 20.0 { 0.5 } else { 0.1 };
+        let step = if pi == QUATERNARY { 0.0001 } else if t0 - t1 > 20.0 { 0.5 } else { 0.1 };
         if mx >= x0 && mx <= x1 && my >= bar_y0 - 8.0 && my <= bar_y1 + 4.0 {
             let tt = t0 - (mx - x0) / (x1 - x0) * (t0 - t1);
-            let tt = (tt / step).round() * step;
+            let tt = ((tt / step).round() * step).clamp(t1, t0);
             self.tip = Some(tf!("{}\nクリックでこの時代へ", "{}\nClick to travel here", "{}\n点击前往这个时代", ma_text(tt)));
             self.gfx.fill_rect(mx - 1.0, bar_y0, mx + 1.0, bar_y1, [1.0, 1.0, 1.0, 0.5]);
         }
@@ -2046,7 +2054,7 @@ impl Game {
             let f0 = i as f32 / n as f32;
             let f1 = (i + 1) as f32 / n as f32;
             let tt = t0 - (f0 + f1) * 0.5 * (t0 - t1);
-            let tt = ((tt / step).round() * step).clamp(t1, t0);
+            let tt = if i == n - 1 { t1 } else { ((tt / step).round() * step).clamp(t1, t0) };
             self.buttons.push(Button { x0: x0 + f0 * (x1 - x0), y0: bar_y0 - 8.0, x1: x0 + f1 * (x1 - x0), y1: bar_y1 + 4.0, act: Act::TimeAt(tt), label: ma_text(tt), enabled: self.travel.is_none() });
         }
         let bw = 44.0;
@@ -2263,7 +2271,7 @@ impl Game {
         self.gfx.stroke_round(x0, y0, x0 + cw, y0 + 150.0, 18.0, 1.5, EDGE);
         self.gfx.text(t!("地球史図鑑", "YYEarth", "地球史图鉴"), x0, y0 + 14.0, cw, 56.0, Font::Title, [0.80, 1.0, 0.96, 1.0]);
         self.gfx.text(t!("時をめぐる観察カプセル", "A Field Guide Through Deep Time", "时光观测舱"), x0, y0 + 72.0, cw, 26.0, Font::BigCenter, TEXT);
-        self.gfx.text(t!("第1〜9巻　古生代・中生代（カンブリア紀〜白亜紀）", "Volumes 1–9: Paleozoic & Mesozoic (Cambrian to Cretaceous)", "第1—9卷　古生代·中生代（寒武纪至白垩纪）"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
+        self.gfx.text(t!("第1〜12巻　古生代・中生代・新生代（1万年前まで）", "Volumes 1–12: Paleozoic, Mesozoic & Cenozoic (to 10,000 years ago)", "第1—12卷　古生代·中生代·新生代（至1万年前）"), x0, y0 + 104.0, cw, 24.0, Font::NormalCenter, ACCENT);
         let bw = if self.compact() { 300.0 } else { 340.0 };
         let bh = if self.compact() { 40.0 } else { 44.0 };
         let bx = x0 + (cw - bw) * 0.5;
@@ -2418,6 +2426,7 @@ impl Game {
                         Scenery::CoalForest => ([0.50, 0.62, 0.66], [0.20, 0.32, 0.20], [0.24, 0.28, 0.18], [0.16, 0.34, 0.16]),
                         Scenery::Desert => ([0.56, 0.70, 0.86], [0.80, 0.50, 0.30], [0.86, 0.58, 0.36], [0.70, 0.42, 0.26]),
                         Scenery::GymnoForest => ([0.44, 0.62, 0.78], [0.24, 0.38, 0.22], [0.36, 0.38, 0.24], [0.18, 0.34, 0.18]),
+                        Scenery::Grassland => ([0.54, 0.72, 0.88], [0.65, 0.63, 0.32], [0.72, 0.64, 0.36], [0.52, 0.62, 0.24]),
                         Scenery::FlowerForest => ([0.46, 0.66, 0.84], [0.30, 0.46, 0.26], [0.40, 0.44, 0.28], [0.32, 0.52, 0.26]),
                     };
                     self.gfx.rect_vgrad(x0, y0, x1, y1, c4(sky, a), [0.82, 0.86, 0.88, a]);
@@ -2845,7 +2854,7 @@ impl Game {
         let mm = &MISSIONS[m];
         let mut text = format!("{}\n\n{}", tf!("宿題{}「{}」合格！", "Task {} '{}' passed!", "作业{}“{}”合格！", m + 1, mm.title.get()), mm.done.get());
         if self.prog.all_clear() {
-            text.push_str(t!("\n\nこれで古生代と中生代、51の宿題すべて合格です！", "\n\nThat completes all 51 Paleozoic and Mesozoic tasks!", "\n\n古生代和中生代的51个作业全部合格了！"));
+            text.push_str(t!("\n\nこれで古生代・中生代・新生代、63の宿題すべて合格です！", "\n\nThat completes all 63 Paleozoic, Mesozoic and Cenozoic tasks!", "\n\n古生代、中生代和新生代的63个作业全部合格了！"));
         } else if !self.prog.is_done(self.prog.mission) {
             text.push_str(&tf!("\n\n次の宿題：{}（宿題の一覧から好きなものを選べます）", "\n\nNext task: {} (pick any task from the task list)", "\n\n下一个作业：{}（可在作业一览中任选）", MISSIONS[self.prog.mission].title.get()));
         }
@@ -2972,12 +2981,83 @@ impl Game {
 }
 
 // These simulations use the headless renderer; native Direct3D needs a real HWND.
-#[cfg(all(test, not(windows)))]
+#[cfg(all(test, any(not(windows), feature = "headless")))]
 mod tests {
     use super::*;
 
     fn game() -> Game {
         Game::new(Gfx::new(1600, 900))
+    }
+
+    #[test]
+    fn cenozoic_time_controls_reach_the_endpoint_and_step_back_from_holocene() {
+        let mut g = game();
+        g.do_act(Act::NewGame);
+        g.prog.intro_done = true;
+        g.panel = Panel::None;
+        g.prog.t = 0.01;
+        g.render();
+        let end = g.buttons.iter().find(|b| matches!(b.act, Act::TimeAt(t) if t == T_END));
+        assert!(end.is_some(), "the timeline must offer the exact endpoint");
+        g.do_act(Act::StepStage(-1));
+        assert!(g.travel.as_ref().unwrap().to > 0.0117);
+        g.travel = None;
+        g.prog.t = 0.02;
+        g.do_act(Act::StepStage(1));
+        let t = g.travel.as_ref().unwrap().to;
+        assert!(t >= T_END && t < 0.0117);
+    }
+
+    #[test]
+    fn cenozoic_procedural_art_is_finite_and_fits_photo_bounds() {
+        let mut gfx = Gfx::new(1600, 900);
+        for sp in 295..n_species() {
+            gfx.verts.clear();
+            let grounded = matches!(SPECIES[sp].beh, Beh::Sessile | Beh::Crawl | Beh::FlatCrawl | Beh::Burrow);
+            let y = if grounded { -crate::art::base_lift(sp) } else { 0.0 };
+            crate::art::draw(&mut gfx, sp, 0.0, y, 1.0, 1.0, 0.0, 0.5, 1.0, 1.0, 17);
+            assert!(!gfx.verts.is_empty(), "{}", SPECIES[sp].slug);
+            // The fallback geometry has its own extent; sprite bounds follow
+            // the generated PNG's aspect ratio and are tested by photography.
+            let (w, h) = crate::art::extent(sp);
+            let top = if grounded { -h } else { -h * 0.5 };
+            let b = [-w * 0.5, top, w * 0.5, top + h];
+            for v in &gfx.verts {
+                assert!(v.x.is_finite() && v.y.is_finite());
+                assert!(v.x >= b[0] - 0.1 && v.x <= b[2] + 0.1 && v.y >= b[1] - 0.1 && v.y <= b[3] + 0.1, "{} at {},{} outside {:?}", SPECIES[sp].slug, v.x, v.y, b);
+            }
+        }
+    }
+
+    #[test]
+    fn expanded_cenozoic_fauna_can_be_visited_photographed_and_saved() {
+        let mut g = game();
+        g.do_act(Act::NewGame);
+        g.prog.intro_done = true;
+        g.panel = Panel::None;
+        for sp in 331..n_species() {
+            g.close_photo();
+            g.goto(Target::Sp(sp));
+            for _ in 0..180 { g.update(0.1); }
+            assert!(g.travel.is_none() && g.cap_target.is_none(), "{}", SPECIES[sp].slug);
+            g.enter_dive();
+            let sc = g.scene.as_mut().unwrap();
+            let cr = sc.creatures.iter_mut().find(|c| c.sp == sp).unwrap_or_else(|| panic!("missing {}", SPECIES[sp].slug));
+            cr.out = 1.0;
+            let b = crate::units::bounds(sp, cr.x, cr.y, SPECIES[sp].disp_len() * cr.scale, cr.out);
+            let center = ((b[0] + b[2]) * 0.5, (b[1] + b[3]) * 0.5);
+            g.dcam = center;
+            sc.cap.x = center.0;
+            sc.cap.y = center.1;
+            g.prog.light = true;
+            g.lens = ((g.w() / (b[2]-b[0]) * 0.8).min(g.h() / (b[3]-b[1]) * 0.8) / (g.h() / 4.0)).clamp(1.0, 8.0);
+            g.shoot();
+            assert_eq!(g.prog.stars[sp], 1, "could not photograph {}", SPECIES[sp].slug);
+            g.close_photo();
+            g.do_act(Act::Surface);
+        }
+        let saved = Progress::from_bytes(&g.prog.to_bytes()).unwrap();
+        assert!(saved.stars[331..n_species()].iter().all(|&s| s == 1));
     }
 
     #[test]
@@ -3045,7 +3125,7 @@ mod tests {
     }
 
     #[test]
-    fn mesozoic_assignment_targets_can_be_visited_photographed_and_completed() {
+    fn mesozoic_and_cenozoic_targets_can_be_visited_photographed_and_completed() {
         let mut g = game();
         g.do_act(Act::NewGame);
         g.prog.intro_done = true;
@@ -3084,7 +3164,7 @@ mod tests {
     }
 
     #[test]
-    fn nine_period_tabs_fit_and_remain_clickable() {
+    fn twelve_period_tabs_fit_and_remain_clickable() {
         for width in [480, 800, 1280, 1600] {
             let mut g = Game::new(Gfx::new(width, 900));
             g.panel = Panel::Guide;
@@ -3100,12 +3180,12 @@ mod tests {
     }
 
     #[test]
-    fn completion_dialog_only_announces_all_51_after_all_tasks_are_done() {
+    fn completion_dialog_only_announces_all_63_after_all_tasks_are_done() {
         let mut g = game();
         let last = MISSIONS.len()-1;
         g.panel = Panel::Done(last);
         g.render();
-        let announces_all = |text: &str| ["51の宿題", "all 51", "51个作业"].iter().any(|phrase| text.contains(phrase));
+        let announces_all = |text: &str| ["63の宿題", "all 63", "63个作业"].iter().any(|phrase| text.contains(phrase));
         assert!(!announces_all(&g.dialog_voice));
         for e in 0..n_entries() { g.prog.record(e, 1); }
         g.render();
