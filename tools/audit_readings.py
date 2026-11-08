@@ -1,6 +1,6 @@
 """日本語の表示文から、読み辞書で未補正の熟語を一覧にする（標準ライブラリのみ）。
 
-L / t! / tf! の第1引数の通常文字列を対象にする。単漢字、動的に組み立てた
+L / t! / tf! / ja の第1引数の通常文字列を対象にする。単漢字、動的に組み立てた
 文字列、実際の音声の発音・アクセントまでは検査しない。
 """
 import argparse
@@ -10,7 +10,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-JAPANESE = re.compile(r'(?:\bL\(|\bt!\(|\btf!\()\s*"((?:[^"\\]|\\.)*)"')
+JAPANESE = re.compile(r'(?:\bL\(|\bt!\(|\btf!\(|\bja\()\s*"((?:[^"\\]|\\.)*)"')
 COMPOUND = re.compile(r"[一-龯々]{2,}")
 
 

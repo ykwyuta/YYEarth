@@ -187,9 +187,9 @@ pub static SPECIES: &[Species] = &[
         shy: 0.0,
         speed: 0.0,
         desc: L(
-            "光合成をするシアノバクテリアが、泥や砂を少しずつ貼り付けて層状に積み上げたドーム。35億年前から地球に酸素を送り続けてきた。",
-            "Layered domes built as photosynthetic cyanobacteria trap mud and sand. They have been pumping oxygen into the air for 3.5 billion years.",
-            "进行光合作用的蓝细菌一点点黏附泥沙、层层堆积成的圆丘。35亿年来一直为地球输送氧气。",
+            "小さな微生物の活動で、泥や砂などが層状に積み重なった構造。現在は、酸素を出す光合成をするシアノバクテリアなどがつくるものが知られる。古い岩のすべてが同じしくみでできたとはかぎらない。",
+            "Layered structures formed through microbial activity and sediment accumulation. Modern examples include those built by oxygen-producing cyanobacteria, but ancient examples need not all have formed in the same way.",
+            "由微生物活动与泥沙等层层积累形成的构造。现代例子包括产氧光合作用的蓝细菌所建造的叠层石，但古老构造不一定都以相同方式形成。",
         ),
         fact: L(
             "カンブリア紀に動物がふえると、食べられたり掘り返されたりして数が減っていった。",
@@ -5441,9 +5441,9 @@ pub static PHENOMS: &[Phenom] = &[
         t1: 66.0,
         name: L("花の咲く森", "The first flowering forests", "开花的森林"),
         desc: L(
-            "白亜紀の後半、モクレンなどの花の咲く木が森に加わり、陸の景色がいろどり豊かになった。虫と花の助け合いもここから始まった。",
-            "In the later Cretaceous, flowering trees such as magnolias joined the forests and colour came to the land. The partnership between insects and flowers began.",
-            "白垩纪后期，木兰等开花树木加入森林，陆地景色变得多彩。昆虫与花朵的互助关系也从此开始。",
+            "白亜紀には花をつける植物が多様になり、森の顔ぶれも変わった。昆虫が花粉を運ぶ関係は、それ以前の裸子植物にもあり、花の登場とともに新しい組み合わせへ広がった。",
+            "Flowering plants diversified during the Cretaceous, changing forest communities. Insect pollination already existed among gymnosperms; flowers added new partnerships.",
+            "白垩纪开花植物多样化，森林的组成也随之改变。昆虫传粉此前已见于裸子植物，花的出现带来了新的组合。",
         ),
         hint: L("白亜紀に、陸に降りて景色を撮影する", "In the Cretaceous, land and photograph the scenery", "在白垩纪降落到陆地上拍摄风景"),
     },
