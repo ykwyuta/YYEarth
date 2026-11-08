@@ -26,6 +26,9 @@ jobs:
       - name: Test voice guide
         run: node --test tools/speech.test.mjs
 
+      - name: Audit Japanese compound readings
+        run: python3 tools/audit_readings.py --check
+
       - name: Build (WebAssembly)
         run: bash build.sh
 
