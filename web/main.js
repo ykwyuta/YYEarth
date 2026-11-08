@@ -657,6 +657,29 @@ function bindInput() {
   let one = null; // 1本指の操作
   let two = null; // 2本指の操作
   let ignore = false; // 2本指のあと、全部の指が離れるまで無視
+  let coastFrame = 0;
+  const stopCoast = () => {
+    cancelAnimationFrame(coastFrame);
+    coastFrame = 0;
+  };
+  const coast = (gesture) => {
+    let velocity = gesture.velocity;
+    let last = performance.now();
+    const minimum = 0.02 * (pw / Math.max(1, uiCanvas.clientWidth || window.innerWidth));
+    if (last - gesture.time > 80 || Math.abs(velocity) < minimum) return;
+    const step = (now) => {
+      coastFrame = 0;
+      const dt = now - last;
+      // Do not resume an old fling after a suspended tab or a changed panel.
+      if (dt > 100 || wasm.yy_hit(gesture.x, gesture.y) !== 3) return;
+      last = now;
+      const decay = Math.exp(-dt / 240);
+      wasm.yy_event(7, velocity * 240 * (1 - decay), 0, 0);
+      velocity *= decay;
+      if (Math.abs(velocity) >= minimum) coastFrame = requestAnimationFrame(step);
+    };
+    coastFrame = requestAnimationFrame(step);
+  };
   const LONG_MS = 420;
   const slop = () => 10 * (pw / Math.max(1, uiCanvas.clientWidth || window.innerWidth));
   const mid = () => {
@@ -677,6 +700,7 @@ function bindInput() {
     one = null;
   };
   function touchDown(e) {
+    stopCoast();
     const p = pos(e);
     touches.set(e.pointerId, p);
     setTouch(true);
@@ -684,7 +708,7 @@ function bindInput() {
     if (touches.size === 1) {
       const [x, y] = p;
       const kind = wasm.yy_hit(x, y);
-      one = { id: e.pointerId, x0: x, y0: y, x, y, kind, mode: 'pending' };
+      one = { id: e.pointerId, x0: x, y0: y, x, y, kind, mode: 'pending', time: performance.now(), velocity: 0 };
       wasm.yy_event(0, x, y, 0);
       if (kind === 2) {
         // ミニマップ：押した場所へすぐ動かす
@@ -731,6 +755,14 @@ function bindInput() {
     if (!one || one.id !== e.pointerId) return;
     const [x, y] = p;
     const dy = y - one.y;
+    const now = performance.now();
+    const dt = now - one.time;
+    if (dt > 0) {
+      const velocity = dy / dt;
+      const weight = 1 - Math.exp(-dt / 30);
+      one.velocity = dt > 80 ? velocity : one.velocity + (velocity - one.velocity) * weight;
+      one.time = now;
+    }
     one.x = x;
     one.y = y;
     const far = Math.hypot(x - one.x0, y - one.y0) > slop();
@@ -769,7 +801,10 @@ function bindInput() {
     clearTimeout(one.timer);
     if (one.mode === 'pending') tap(one.x0, one.y0);
     else if (one.mode === 'moved' && one.kind === 1 && Math.hypot(x - one.x0, y - one.y0) < slop() * 3) tap(one.x0, one.y0);
-    else endOne(x, y);
+    else {
+      if (one.mode === 'scroll') coast(one);
+      endOne(x, y);
+    }
     one = null;
   }
   // OS が触れた指を横取りした（画面端のジェスチャーなど）：タップにしない
@@ -809,6 +844,7 @@ function bindInput() {
     if (e.pointerType === 'touch') touchCancel(e);
   });
   uiCanvas.addEventListener('pointerdown', (e) => {
+    stopCoast();
     if (e.pointerType === 'touch') {
       e.preventDefault();
       try { uiCanvas.setPointerCapture(e.pointerId); } catch {}
@@ -846,6 +882,7 @@ function bindInput() {
   uiCanvas.addEventListener(
     'wheel',
     (e) => {
+      stopCoast();
       e.preventDefault();
       let d = e.deltaMode === 1 ? -e.deltaY / 3 : e.deltaMode === 2 ? -e.deltaY : -e.deltaY / 100;
       d = Math.max(-3, Math.min(3, d));
@@ -854,6 +891,7 @@ function bindInput() {
     { passive: false },
   );
   window.addEventListener('keydown', (e) => {
+    stopCoast();
     const vk = vkOf(e);
     if (!vk) return;
     if (shouldPrevent(e, vk)) e.preventDefault();
@@ -869,10 +907,12 @@ function bindInput() {
   });
   // フォーカスを失ったら押しっぱなしのキーを離す
   window.addEventListener('blur', () => {
+    stopCoast();
     for (const vk of held) wasm.yy_event(4, vk, 0, 0);
     held.clear();
   });
   window.addEventListener('resize', checkSize);
+  window.addEventListener('resize', stopCoast);
   window.visualViewport?.addEventListener('resize', checkSize);
   screen.orientation?.addEventListener?.('change', checkSize);
 }

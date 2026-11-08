@@ -6,6 +6,7 @@
   "scripts": {
     "build": "bash build.sh",
     "test:voice": "node --test tools/speech.test.mjs",
+    "test:touch": "node --test tools/touch.test.mjs",
     "deploy": "bash build.sh && npx wrangler deploy"
   }
 }
