@@ -47,7 +47,8 @@ pub fn bounds(sp: usize, x: f32, y: f32, len: f32, out: f32) -> [f32; 4] {
     [x - w * 0.5, top, x + w * 0.5, top + h]
 }
 
-/// Keep hard shells steady while tails, limbs and soft tissues move.
+/// Opt in only body types suited to these mesh effects. Walking vertebrates
+/// need articulated animation; the generic wave makes their bodies look soft.
 fn deform(art: Art, beh: Beh, u: f32, v: f32, t: f32, activity: f32) -> (f32, f32) {
     if beh == Beh::Sessile || matches!(art, Art::Trace | Art::Mat | Art::Stromatolite | Art::Mollusc(_) | Art::Starfish | Art::Urchin) {
         return (u, v);
@@ -63,7 +64,7 @@ fn deform(art: Art, beh: Beh, u: f32, v: f32, t: f32, activity: f32) -> (f32, f3
             (u, v + wave * tip * 0.05)
         }
         Art::Marine(_) => (u, v + wave * (1.0-u).powi(2) * 0.1),
-        Art::Pterosaur(0) | Art::Pterosaur(1) | Art::Bird(_) | Art::Griffinfly => {
+        Art::Pterosaur(0) | Art::Pterosaur(1) | Art::Bird(0..=2) | Art::Griffinfly => {
             // はねを上下に羽ばたく（体の中心から離れるほど大きく）
             let flap = (t * 22.0).sin();
             (u, 0.5 + (v - 0.5) * (1.0 - 0.45 * flap.abs()))
@@ -77,12 +78,16 @@ fn deform(art: Art, beh: Beh, u: f32, v: f32, t: f32, activity: f32) -> (f32, f3
         Art::Worm | Art::Slug | Art::Aysheaia =>
             (u + wave * 0.018, v + wave * 0.045 * (0.35+activity*0.65)),
         Art::Radiolarian => (u + (t*0.9).sin()*0.012, v + (t*1.1).cos()*0.012),
-        _ => {
+        Art::Radiodont(_) | Art::Opabinia | Art::Trilobite { .. } | Art::Agnostus
+        | Art::Hallucigenia | Art::Wiwaxia | Art::Halkieria | Art::Marrella
+        | Art::Leanchoilia | Art::Fuxianhuia | Art::Sidneyia | Art::Isoxys
+        | Art::Eurypterid(_) | Art::Arthro(_) | Art::Limulid => {
             let legs = ((v - 0.44) / 0.56).clamp(0.0, 1.0);
             let strength = 0.2 + 0.8 * activity;
             let flap = if matches!(art, Art::Radiodont(_) | Art::Opabinia) { 1.0 } else { strength };
             (u + wave * legs * 0.032 * flap, v + wave * legs * 0.065 * flap)
         }
+        _ => (u, v),
     }
 }
 
@@ -189,6 +194,46 @@ mod tests {
             assert_eq!(deform(sp.art,sp.beh,0.2,0.8,0.0,1.0),deform(sp.art,sp.beh,0.2,0.8,1.0,1.0));
         }
         assert_ne!(deform(Art::Fish(0),Beh::Swim,0.1,0.5,0.0,1.0),deform(Art::Fish(0),Beh::Swim,0.1,0.5,0.5,1.0));
+    }
+    #[test]
+    fn walking_vertebrates_and_flightless_birds_keep_their_shape() {
+        let mut count = 0;
+        for sp in SPECIES.iter().filter(|sp| {
+            matches!(sp.art, Art::Mammal(_) | Art::Dino(_) | Art::Archosaur(_)
+                | Art::Pterosaur(2) | Art::Bird(3..=u8::MAX))
+                || matches!(sp.art, Art::Tetrapod(k) if k != 7)
+        }) {
+            count += 1;
+            // Check the whole sprite, including the legs and the head, at rest
+            // and in motion. Translation is handled independently by the dive.
+            for row in 0..=6 {
+                for col in 0..=18 {
+                    let (u, v) = (col as f32 / 18.0, row as f32 / 6.0);
+                    for t in [0.0, 0.37, 1.0] {
+                        for activity in [0.0, 1.0] {
+                            assert_eq!(deform(sp.art, sp.beh, u, v, t, activity),
+                                (u, v), "{}", sp.slug);
+                        }
+                    }
+                }
+            }
+        }
+        assert!(count > 0);
+    }
+    #[test]
+    fn selected_soft_bodies_limbs_and_flying_wings_still_animate() {
+        for (art, beh) in [
+            (Art::Marine(0), Beh::Swim),
+            (Art::Jelly, Beh::Drift),
+            (Art::Worm, Beh::Burrow),
+            (Art::Radiodont(0), Beh::Swim),
+            (Art::Arthro(0), Beh::Crawl),
+            (Art::Bird(0), Beh::Swim),
+            (Art::Pterosaur(1), Beh::Swim),
+        ] {
+            assert_ne!(deform(art, beh, 0.2, 0.8, 0.0, 1.0),
+                deform(art, beh, 0.2, 0.8, 0.37, 1.0), "{:?}", art);
+        }
     }
     #[test]
     fn ground_contact_and_photo_bounds_match_sprite_footprint() {
