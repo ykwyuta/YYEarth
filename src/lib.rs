@@ -25,31 +25,31 @@ mod rng;
 mod save;
 mod speech;
 
-#[cfg(not(windows))]
+#[cfg(any(not(windows), all(test, feature = "headless")))]
 mod gfx;
-#[cfg(windows)]
+#[cfg(all(windows, not(all(test, feature = "headless"))))]
 #[path = "win/gfx.rs"]
 mod gfx;
 
-#[cfg(not(windows))]
+#[cfg(any(not(windows), all(test, feature = "headless")))]
 pub mod platform;
-#[cfg(windows)]
+#[cfg(all(windows, not(all(test, feature = "headless"))))]
 #[path = "win/platform.rs"]
 pub mod platform;
 
-#[cfg(windows)]
+#[cfg(all(windows, not(all(test, feature = "headless"))))]
 #[path = "win/crashlog.rs"]
 mod crashlog;
 
-#[cfg(not(windows))]
+#[cfg(any(not(windows), all(test, feature = "headless")))]
 mod web;
 
-#[cfg(windows)]
+#[cfg(all(windows, not(all(test, feature = "headless"))))]
 #[path = "win/app.rs"]
 mod app;
 
 /// デスクトップ版（Windows）の入口
-#[cfg(windows)]
+#[cfg(all(windows, not(all(test, feature = "headless"))))]
 pub fn desktop_main() {
     app::main();
 }

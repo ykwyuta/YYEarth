@@ -182,7 +182,7 @@ impl Scene {
         let volcanic = strength(false);
         let impact = strength(true);
         let land = hab == Habitat::Land;
-        let icy = land && glacial(t) && spot.lat < -55.0;
+        let icy = land && icy_at(t, spot.lat);
         let arid = land && !icy && arid(t, spot.lat);
         let veg = if icy { 0.0 } else if arid { veg_at(t) * 0.25 } else { veg_at(t) };
         let anoxic = near_site(S_ALUM) && t <= SITES[S_ALUM].t0 + 0.5 && hab.is_water();

@@ -11,9 +11,9 @@ pub const DEG: f32 = 10.0;
 pub const MAP_W: f32 = 360.0 * DEG;
 pub const MAP_H: f32 = 180.0 * DEG;
 
-/// 古生代の始まり（カンブリア紀の始まり）と、中生代の終わり（白亜紀の終わり）（百万年前）
+/// 古生代の始まり（カンブリア紀の始まり）と、旅の終点（1万年前）（百万年前）
 pub const T_START: f32 = 538.8;
-pub const T_END: f32 = 66.0;
+pub const T_END: f32 = 0.01;
 
 /// 紀（図鑑の巻）
 pub struct Period {
@@ -32,6 +32,9 @@ pub const PERMIAN: usize = 5;
 pub const TRIASSIC: usize = 6;
 pub const JURASSIC: usize = 7;
 pub const CRETACEOUS: usize = 8;
+pub const PALEOGENE: usize = 9;
+pub const NEOGENE: usize = 10;
+pub const QUATERNARY: usize = 11;
 
 pub static PERIODS: &[Period] = &[
     Period { name: L("カンブリア紀", "Cambrian", "寒武纪"), t0: 538.8, t1: 485.4, col: [0.50, 0.72, 0.52] },
@@ -43,11 +46,16 @@ pub static PERIODS: &[Period] = &[
     Period { name: L("三畳紀", "Triassic", "三叠纪"), t0: 251.9, t1: 201.4, col: [0.62, 0.36, 0.66] },
     Period { name: L("ジュラ紀", "Jurassic", "侏罗纪"), t0: 201.4, t1: 145.0, col: [0.26, 0.64, 0.82] },
     Period { name: L("白亜紀", "Cretaceous", "白垩纪"), t0: 145.0, t1: 66.0, col: [0.50, 0.74, 0.36] },
+    Period { name: L("古第三紀", "Paleogene", "古近纪"), t0: 66.000000, t1: 23.030000, col: [0.95, 0.62, 0.32] },
+    Period { name: L("新第三紀", "Neogene", "新近纪"), t0: 23.030000, t1: 2.580000, col: [0.95, 0.74, 0.32] },
+    Period { name: L("第四紀", "Quaternary", "第四纪"), t0: 2.580000, t1: 0.010000, col: [0.95, 0.86, 0.32] },
 ];
 
-/// 代（古生代・中生代）の名前
+/// 代（古生代・中生代・新生代）の名前
 pub fn era_name(t: f32) -> &'static str {
-    if period_at(t) >= TRIASSIC {
+    if period_at(t) >= PALEOGENE {
+        t!("新生代", "Cenozoic", "新生代")
+    } else if period_at(t) >= TRIASSIC {
         t!("中生代", "Mesozoic", "中生代")
     } else {
         t!("古生代", "Paleozoic", "古生代")
@@ -56,7 +64,8 @@ pub fn era_name(t: f32) -> &'static str {
 
 /// その時代の紀の番号
 pub fn period_at(t: f32) -> usize {
-    PERIODS.iter().position(|p| t <= p.t0 + 1e-3 && t > p.t1 - 1e-3).unwrap_or(if t > T_START { 0 } else { PERIODS.len() - 1 })
+    let eps = if t >= 66.0 { 1e-3 } else { 1e-6 };
+    PERIODS.iter().position(|p| t <= p.t0 + eps && t > p.t1 - eps).unwrap_or(if t > T_START { 0 } else { PERIODS.len() - 1 })
 }
 
 /// 陸の植物の広がり（0：植物なし〜1：森）。シルル紀に岸辺から緑が広がり、デボン紀の後半に森ができる
@@ -75,7 +84,17 @@ pub fn veg_at(t: f32) -> f32 {
 
 /// 氷河時代（オルドビス紀末のヒルナンシアン氷期、石炭紀〜ペルム紀前期の後期古生代氷河時代）
 pub fn glacial(t: f32) -> bool {
-    (443.8..=445.4).contains(&t) || (285.0..=340.0).contains(&t)
+    (443.8..=445.4).contains(&t) || (285.0..=340.0).contains(&t) || t <= 34.0
+}
+
+/// Simplified polar ice: Antarctic ice after 34 Ma, northern ice during the late Pleistocene.
+/// Early ice sheets leave a simplified coastal refuge for the recorded Oligocene flora.
+pub fn southern_ice_lat(t: f32) -> f32 {
+    if t <= 34.0 && t > 14.0 { -72.0 } else { -55.0 }
+}
+
+pub fn icy_at(t: f32, lat: f32) -> bool {
+    (glacial(t) && lat < southern_ice_lat(t)) || ((0.0117..=2.58).contains(&t) && lat > 60.0)
 }
 
 /// 乾いた砂漠の広がる時代と場所（ペルム紀〜ジュラ紀前期のパンゲアの内陸）
@@ -496,6 +515,16 @@ pub const S_GOBI: usize = 54;
 pub const S_HELLCREEK: usize = 55;
 pub const S_DECCAN: usize = 56;
 pub const S_CHICXULUB: usize = 57;
+pub const S_MESSEL: usize = 58;
+pub const S_FAYUM: usize = 59;
+pub const S_SIWALIK: usize = 60;
+pub const S_HADAR: usize = 61;
+pub const S_LABREA: usize = 62;
+pub const S_MAMMOTH_STEPPE: usize = 63;
+pub const S_MURGON: usize = 64;
+pub const S_ETADUNNA: usize = 65;
+pub const S_SEYMOUR: usize = 66;
+pub const S_CROSS_VALLEY: usize = 67;
 
 pub static SITES: &[SiteDef] = &[
     SiteDef { name: L("フォーチュン岬", "Fortune Head", "福琼角"), now: L("カナダ・ニューファンドランド島", "Newfoundland, Canada", "加拿大纽芬兰岛"), plate: AVALONIA, at: (-9.0, 4.0), want: Habitat::Shallow, t0: 538.8, t1: 529.0 },
@@ -564,6 +593,16 @@ pub static SITES: &[SiteDef] = &[
     SiteDef { name: L("ヘルクリーク", "Hell Creek", "地狱溪"), now: L("アメリカ・モンタナ州", "Montana, USA", "美国蒙大拿州"), plate: LAURENTIA, at: (-14.0, 4.0), want: Habitat::Land, t0: 68.0, t1: 66.0 },
     SiteDef { name: L("デカン高原", "Deccan Plateau", "德干高原"), now: L("インド西部", "Western India", "印度西部"), plate: GONDWANA, at: (22.0, 44.0), want: Habitat::Land, t0: 66.6, t1: 66.05 },
     SiteDef { name: L("チクシュルーブ", "Chicxulub", "希克苏鲁伯"), now: L("メキシコ・ユカタン半島", "Yucatán, Mexico", "墨西哥尤卡坦半岛"), plate: LAURENTIA, at: (-5.0, -19.0), want: Habitat::Shallow, t0: 66.05, t1: 66.0 },
+    SiteDef { name: L("メッセルの森", "Messel forest", "梅塞尔森林"), now: L("ドイツ", "Germany", "德国"), plate: BALTICA, at: (0.0, 0.0), want: Habitat::Land, t0: 48.0, t1: 47.0 },
+    SiteDef { name: L("ファイユーム", "Fayum", "法尤姆"), now: L("エジプト", "Egypt", "埃及"), plate: GONDWANA, at: (8.0, 12.0), want: Habitat::Land, t0: 34.0, t1: 27.0 },
+    SiteDef { name: L("シワリクの丘陵", "Siwalik Hills", "西瓦利克山"), now: L("インド・パキスタン", "India and Pakistan", "印度、巴基斯坦"), plate: INDIA, at: (20.0, 40.0), want: Habitat::Land, t0: 11.0, t1: 2.58 },
+    SiteDef { name: L("ハダール", "Hadar", "哈达尔"), now: L("エチオピア", "Ethiopia", "埃塞俄比亚"), plate: GONDWANA, at: (12.0, 0.0), want: Habitat::Land, t0: 3.9, t1: 2.9 },
+    SiteDef { name: L("ラ・ブレア", "La Brea", "拉布雷亚"), now: L("アメリカ・カリフォルニア", "California, USA", "美国加利福尼亚"), plate: LAURENTIA, at: (-15.0, -10.0), want: Habitat::Land, t0: 0.05, t1: 0.0117 },
+    SiteDef { name: L("マンモスの草原", "Mammoth steppe", "猛犸象草原"), now: L("シベリア", "Siberia", "西伯利亚"), plate: SIBERIA, at: (6.0, 2.0), want: Habitat::Land, t0: 0.4, t1: 0.01 },
+    SiteDef { name: L("マルゴン（ティンガマラ）", "Murgon (Tingamarra)", "穆尔贡（廷加马拉）"), now: L("オーストラリア・クイーンズランド州", "Queensland, Australia", "澳大利亚昆士兰州"), plate: AUSTRALIA, at: (70.0, 0.0), want: Habitat::Land, t0: 54.6, t1: 54.5 },
+    SiteDef { name: L("エタダナの湖畔", "Etadunna lake shore", "埃塔丹纳湖岸"), now: L("南オーストラリア", "South Australia", "南澳大利亚"), plate: AUSTRALIA, at: (64.0, -6.0), want: Habitat::Land, t0: 26.0, t1: 24.0 },
+    SiteDef { name: L("セイモア島の森", "Seymour Island forest", "西摩岛森林"), now: L("南極半島周辺", "Antarctic Peninsula region", "南极半岛周边"), plate: ANTARCTICA, at: (0.0, -34.0), want: Habitat::Land, t0: 53.0, t1: 34.1 },
+    SiteDef { name: L("クロス・ヴァレーの海", "Cross Valley coast", "克罗斯谷海岸"), now: L("南極・セイモア島", "Seymour Island, Antarctica", "南极西摩岛"), plate: ANTARCTICA, at: (0.0, -34.0), want: Habitat::Shallow, t0: 59.3, t1: 59.1 },
 ];
 
 /// Global geological events: flood-basalt eruptions and the end-Cretaceous impact.
@@ -811,6 +850,12 @@ pub static MILESTONES: &[Milestone] = &[
         title: L("白亜紀末の大絶滅", "The end-Cretaceous mass extinction", "白垩纪末大灭绝"),
         text: L("直径10kmの小惑星がいまのメキシコ・ユカタン半島に衝突。鳥以外の恐竜やアンモナイトが絶滅し、中生代が終わる。", "A 10 km asteroid strikes what is now Mexico's Yucatán. Non-bird dinosaurs and ammonites die out, and the Mesozoic ends.", "直径10公里的小行星撞击今墨西哥尤卡坦半岛。非鸟恐龙和菊石灭绝，中生代结束。"),
     },
+    Milestone { ma: 56.000000, title: L("始新世の温暖な地球", "Eocene warmth", "始新世的温暖地球"), text: L("暖かい森が広がり、哺乳類が多様化した。", "Warm forests spread as mammals diversified.", "温暖的森林扩展，哺乳动物趋于多样化。") },
+    Milestone { ma: 34.000000, title: L("南極の氷床の発達", "Antarctic ice sheets grow", "南极冰盖形成"), text: L("地球が寒冷化し、南極で大きな氷床が発達した。", "Global cooling allowed large Antarctic ice sheets to grow.", "全球变冷，南极形成大规模冰盖。") },
+    Milestone { ma: 23.030000, title: L("新第三紀のはじまり", "The Neogene begins", "新近纪开始"), text: L("草原が広がり、馬やゾウの仲間が多様化していく。", "Grasslands expanded and horses and elephant relatives diversified.", "草原扩展，马类和象类逐渐多样化。") },
+    Milestone { ma: 2.580000, title: L("第四紀のはじまり", "The Quaternary begins", "第四纪开始"), text: L("氷期と間氷期が繰り返される時代へ。", "An age of repeated glacial and interglacial cycles.", "进入冰期与间冰期交替的时代。") },
+    Milestone { ma: 0.300000, title: L("ホモ・サピエンスの登場", "Homo sapiens appears", "智人出现"), text: L("アフリカで私たちと同じ種の人類が現れた。", "Our own species appeared in Africa.", "与我们相同的人类物种在非洲出现。") },
+    Milestone { ma: 0.011700, title: L("完新世のはじまり", "The Holocene begins", "全新世开始"), text: L("最後の氷期が終わり、温暖な完新世に入った。旅の終点は1万年前。", "The last glacial period ended. Our journey continues into the Holocene to 10,000 years ago.", "末次冰期结束，进入温暖的全新世。旅程终点为1万年前。") },
 ];
 
 /// 時代の区分（世・期）
@@ -892,15 +937,34 @@ pub static STAGES: &[Stage] = &[
     Stage { t0: 93.9, t1: 83.6, name: L("チューロニアン〜サントニアン期", "Turonian–Santonian", "土伦—圣通期"), col: [0.74, 0.88, 0.42] },
     Stage { t0: 83.6, t1: 72.1, name: L("カンパニアン期", "Campanian", "坎潘期"), col: [0.80, 0.90, 0.50] },
     Stage { t0: 72.1, t1: 66.0, name: L("マーストリヒチアン期", "Maastrichtian", "马斯特里赫特期"), col: [0.86, 0.92, 0.58] },
+    Stage { name: L("暁新世", "Paleocene", "古新世"), t0: 66.000000, t1: 56.000000, col: [0.96, 0.650, 0.45] },
+    Stage { name: L("始新世", "Eocene", "始新世"), t0: 56.000000, t1: 33.900000, col: [0.96, 0.685, 0.45] },
+    Stage { name: L("漸新世", "Oligocene", "渐新世"), t0: 33.900000, t1: 23.030000, col: [0.96, 0.720, 0.45] },
+    Stage { name: L("中新世", "Miocene", "中新世"), t0: 23.030000, t1: 5.333000, col: [0.96, 0.755, 0.45] },
+    Stage { name: L("鮮新世", "Pliocene", "上新世"), t0: 5.333000, t1: 2.580000, col: [0.96, 0.790, 0.45] },
+    Stage { name: L("更新世前期", "Early Pleistocene", "早更新世"), t0: 2.580000, t1: 0.774000, col: [0.96, 0.825, 0.45] },
+    Stage { name: L("更新世中期（チバニアン）", "Middle Pleistocene (Chibanian)", "中更新世（千叶期）"), t0: 0.774000, t1: 0.129000, col: [0.96, 0.860, 0.45] },
+    Stage { name: L("更新世後期", "Late Pleistocene", "晚更新世"), t0: 0.129000, t1: 0.011700, col: [0.96, 0.895, 0.45] },
+    Stage { name: L("完新世（1万年前まで）", "Holocene (to 10,000 years ago)", "全新世（至1万年前）"), t0: 0.011700, t1: 0.010000, col: [0.96, 0.930, 0.45] },
 ];
 
 pub fn stage_at(t: f32) -> &'static Stage {
-    STAGES.iter().find(|s| t <= s.t0 + 1e-3 && t > s.t1 - 1e-3).unwrap_or(&STAGES[STAGES.len() - 1])
+    let eps = if t >= 66.0 { 1e-3 } else { 1e-6 };
+    STAGES.iter().find(|s| t <= s.t0 + eps && t > s.t1 - eps).unwrap_or(&STAGES[STAGES.len() - 1])
 }
 
 /// 「5億1800万年前」のような表記
 pub fn ma_text(t: f32) -> String {
-    let m = (t * 10.0).round() / 10.0;
+    if t < 1.0 {
+        let years = (t * 1_000_000.0).round() as u32;
+        return match crate::lang::lang() {
+            crate::lang::Lang::En => format!("{} years ago", years),
+            crate::lang::Lang::Ja if years % 10_000 == 0 => format!("{}万年前", years / 10_000),
+            crate::lang::Lang::Zh if years % 10_000 == 0 => format!("{}万年前", years / 10_000),
+            _ => format!("{}年前", years),
+        };
+    }
+    let m = (t * 100.0).round() / 100.0;
     let units = (m * 100.0).round() as i32;
     let oku = units / 10_000;
     let man = units % 10_000;
@@ -1010,6 +1074,14 @@ pub fn expand_plates(plates: &[usize]) -> Vec<usize> {
 
 /// その時代の大陸の呼び名
 pub fn plate_name(i: usize, t: f32) -> &'static str {
+    if t < 66.0 {
+        match i {
+            LAURENTIA => return t!("北アメリカ", "North America", "北美洲"),
+            BALTICA | AVALONIA => return t!("ヨーロッパ", "Europe", "欧洲"),
+            SIBERIA | SOUTH_CHINA | NORTH_CHINA | KAZAKH | TARIM => return t!("アジア", "Asia", "亚洲"),
+            _ => (),
+        }
+    }
     match PLATES[i].late_name {
         Some((tn, n)) if t <= tn => n.get(),
         _ => PLATES[i].name.get(),
@@ -1412,6 +1484,21 @@ fn key_pose(i: usize, t: f32) -> (f32, f32, f32) {
 
 /// 大陸の中心位置と回転（度）。ぶつかった後は相手と一緒に動き、離れた後はまた自分で動く
 pub fn plate_pose(i: usize, t: f32) -> (f32, f32, f32) {
+    if t < 66.0 {
+        let (x, y, r) = plate_pose(i, 66.0);
+        // Simplified displacements; old polygon outlines are retained.
+        let (dx, dy, dr) = match i {
+            LAURENTIA => (-28.0, 3.0, -3.0),
+            GONDWANA => (3.0, 20.0, 2.0),
+            SOUTH_AMERICA => (-5.0, 0.0, -3.0),
+            INDIA => (18.0, 23.0, -10.0),
+            AUSTRALIA => (26.0, 9.0, 8.0),
+            ANTARCTICA => (0.0, -2.0, -3.0),
+            _ => (0.0, 5.0, 0.0),
+        };
+        let f = (66.0 - t) / 66.0;
+        return (x + dx * f, y + dy * f, r + dr * f);
+    }
     let d = &PLATES[i];
     if let Some((td, keys)) = d.detach {
         if t < td {
@@ -1541,6 +1628,26 @@ pub fn cloud_texture() -> (u32, u32, Vec<u32>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cenozoic_reaches_holocene_without_losing_short_intervals() {
+        assert_eq!(T_END, 0.01);
+        assert_eq!(period_at(60.0), PALEOGENE);
+        assert_eq!(period_at(10.0), NEOGENE);
+        assert_eq!(period_at(T_END), QUATERNARY);
+        assert_eq!(stage_at(0.012).name.1, "Late Pleistocene");
+        assert!(stage_at(0.011).name.1.starts_with("Holocene"));
+        assert!(stage_at(T_END).name.1.starts_with("Holocene"));
+        match crate::lang::lang() {
+            crate::lang::Lang::En => assert_eq!(ma_text(T_END), "10000 years ago"),
+            _ => assert_eq!(ma_text(T_END), "1万年前"),
+        }
+        assert!(icy_at(0.02, 65.0));
+        assert!(!icy_at(T_END, 65.0));
+        assert!(icy_at(T_END, -70.0));
+        assert!(plate_pose(INDIA, T_END).1 > plate_pose(INDIA, 66.0).1 + 20.0);
+        assert!(plate_pose(AUSTRALIA, T_END).0 > plate_pose(AUSTRALIA, 66.0).0 + 20.0);
+    }
 
     #[test]
     fn sites_land_in_wanted_habitat() {

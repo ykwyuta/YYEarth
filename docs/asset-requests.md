@@ -1,4 +1,4 @@
-# 画像の注文書（古生代・中生代）
+# 画像の注文書（古生代・中生代・新生代）
 
 このファイルは `cargo test --lib write_asset_requests -- --ignored` でゲームのデータから作り直せます（手で書き換えない）。ツール用の同じ内容が `assets/requests.json` にあります。
 
@@ -12,9 +12,9 @@
 
 ## 進み具合
 
-- 図鑑の画像：314/314（生きもの295・現象19）
-- 観察用スプライト：295/295
-- 遠景（任意）：25/25
+- 図鑑の画像：449/449（生きもの427・現象22）
+- 観察用スプライト：427/427
+- 遠景（任意）：34/34
 
 ## カンブリア紀（Cambrian）
 
@@ -390,6 +390,162 @@
 | `chicxulub-impact` | チクシュルーブの衝突 | — | 現象 | 巨大噴火 | ✅ | 不要 |
 
 遠景（任意）：`backdrop-cretaceous-land` ✅、`backdrop-cretaceous-sea` ✅、`backdrop-cretaceous-deep` ✅
+
+## 古第三紀（Paleogene）
+
+| slug | 名前 | 学名 | 種類 | 観察での姿 | 図鑑 jpg | スプライト png |
+|---|---|---|---|---|---|---|
+| `purgatorius` | プルガトリウス | *Purgatorius* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `pantolambda` | パントラムダ | *Pantolambda* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `gastornis` | ガストルニス | *Gastornis* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `hyracotherium` | ヒラコテリウム | *Hyracotherium* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `basilosaurus` | バシロサウルス | *Basilosaurus* | 海の動物 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `arsinoitherium` | アルシノイテリウム | *Arsinoitherium* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `paraceratherium` | パラケラテリウム | *Paraceratherium* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `paleogene-insects` | 森の昆虫たち（古第三紀） | *Insecta (representative group)* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `paleogene-mammals` | 小型哺乳類（古第三紀） | *Mammalia (representative group)* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `paleogene-trees` | 広葉樹の森（古第三紀） | *Angiosperms (representative group)* | 植物 | 立っている植物 | ✅ | ✅ |
+| `cenozoic-birds` | 新生代の小鳥 | *Aves (representative group)* | 広域の生きもの | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `cenozoic-lizards` | 新生代のトカゲ | *Squamata (representative group)* | 広域の生きもの | 歩く（横から） | ✅ | ✅ |
+| `cenozoic-fish` | 新生代の魚 | *Actinopterygii (representative group)* | 広域の生きもの | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `cenozoic-bivalves` | 新生代の二枚貝 | *Bivalvia (representative group)* | 広域の生きもの | 歩く（横から） | ✅ | ✅ |
+| `cenozoic-gastropods` | 新生代の巻貝 | *Gastropoda (representative group)* | 広域の生きもの | 歩く（横から） | ✅ | ✅ |
+| `cenozoic-crabs` | 新生代のカニ | *Brachyura (representative group)* | 広域の生きもの | 歩く（横から） | ✅ | ✅ |
+| `eritherium` | エリテリウム | *Eritherium azzouzorum* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `plesiadapis` | プレシアダピス | *Plesiadapis* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `trigonostylops` | トリゴノスティロプス | *Trigonostylops* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `uintatherium` | ウインタテリウム | *Uintatherium* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `mesohippus` | メソヒップス | *Mesohippus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `onychonycteris` | オニコニクテリス | *Onychonycteris finneyi* | 哺乳類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `leptictidium` | レプティクティディウム | *Leptictidium* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `diplocynodon` | ディプロキノドン | *Diplocynodon* | 爬虫類 | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `embolotherium` | エンボロテリウム | *Embolotherium* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `pakicetus` | パキケトゥス | *Pakicetus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `moeritherium` | モエリテリウム | *Moeritherium* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `aegyptopithecus` | アエギュプトピテクス | *Aegyptopithecus zeuxis* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `pyrotherium` | ピロテリウム | *Pyrotherium* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `carodnia` | カロドニア | *Carodnia* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `tingamarra` | ティンガマラ | *Tingamarra porterorum* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `anthropornis` | アントロポルニス | *Anthropornis* | 鳥類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `dorudon` | ドルドン | *Dorudon* | 哺乳類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `otodus-obliquus` | オトドゥス・オブリクス | *Otodus obliquus* | 魚類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `nummulites` | ヌンムリテス | *Nummulites* | 有孔虫 | 歩く（横から） | ✅ | ✅ |
+| `metasequoia` | メタセコイア | *Metasequoia* | 植物 | 立っている植物 | ✅ | ✅ |
+| `presbyornis` | プレスビオルニス | *Presbyornis* | 鳥類 | 歩く（横から） | ✅ | ✅ |
+| `cenozoic-equisetum` | トクサ属の水辺 | *Equisetum* | 植物 | 立っている植物 | ✅ | ✅ |
+| `palaeocarpilius` | パレオカルピリウス | *Palaeocarpilius* | 節足動物 | 歩く（横から） | ✅ | ✅ |
+| `venericardia` | ベネリカルディア | *Venericardia* | 二枚貝 | 歩く（横から） | ✅ | ✅ |
+| `djarthia` | ジャルティア | *Djarthia murgonensis* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `thylacotinga` | ティラコティンガ | *Thylacotinga bartholomaii* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `australonycteris` | アウストラロニクテリス | *Australonycteris clarkae* | 哺乳類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `murgonemys` | ムルゴネミス | *Murgonemys braithwaitei* | 爬虫類 | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `kambara` | カンバラ | *Kambara* | 爬虫類 | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `platyplectrum-casca` | マルゴンのカエル | *Platyplectrum casca* | 両生類 | 歩く（横から） | ✅ | ✅ |
+| `alamitophis` | アラミトフィス | *Alamitophis tingamarra* | 爬虫類 | 歩く（横から） | ✅ | ✅ |
+| `balbaroo` | バルバルー | *Balbaroo* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `badjcinus` | バジキヌス | *Badjcinus turnbulli* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `ngapakaldia` | ンガパカルディア | *Ngapakaldia tedfordi* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `muramura` | ムラムラ | *Muramura williamsi* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `janjucetus` | ヤンユケトゥス | *Janjucetus hunderi* | 哺乳類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `mammalodon` | マンマロドン | *Mammalodon colliveri* | 哺乳類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `crossvallia` | クロスヴァリア | *Crossvallia unienwillia* | 鳥類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `notiolofos` | ノティオロフォス | *Notiolofos* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `antarctodolops` | アンタルクトドロプス | *Antarctodolops* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `antarctic-frog` | 南極のカエル | *Calyptocephalellidae (Antarctic fossil)* | 両生類 | 歩く（横から） | ✅ | ✅ |
+| `cucullaea-raea` | ククレア・ラエア | *Cucullaea raea* | 貝の仲間 | 歩く（横から） | ✅ | ✅ |
+| `struthiolarella` | ストルティオラレラ | *Struthiolarella steinmanni* | 貝の仲間 | 歩く（横から） | ✅ | ✅ |
+| `southern-nothofagus` | 南方のナンキョクブナの森 | *Nothofagaceae (Paleogene regional group)* | 植物 | 立っている植物 | ✅ | ✅ |
+| `southern-podocarps` | 南方のマキ科の森 | *Podocarpaceae (Paleogene regional group)* | 植物 | 立っている植物 | ✅ | ✅ |
+| `southern-araucarians` | 南方のナンヨウスギ科 | *Araucariaceae (Paleogene regional group)* | 植物 | 立っている植物 | ✅ | ✅ |
+| `southern-ferns` | 南方の森のシダ | *Polypodiopsida (Paleogene southern group)* | 植物 | 立っている植物 | ✅ | ✅ |
+| `australian-proteaceae` | 豪州のヤマモガシ科 | *Proteaceae (Paleogene Australian group)* | 植物 | 立っている植物 | ✅ | ✅ |
+| `cenozoic-forest` | 新生代の広葉樹林 | — | 現象 | 陸の景色 | ✅ | 不要 |
+
+遠景（任意）：`backdrop-paleogene-land` ✅、`backdrop-paleogene-sea` ✅、`backdrop-paleogene-deep` ✅
+
+## 新第三紀（Neogene）
+
+| slug | 名前 | 学名 | 種類 | 観察での姿 | 図鑑 jpg | スプライト png |
+|---|---|---|---|---|---|---|
+| `deinotherium` | デイノテリウム | *Deinotherium* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `hipparion` | ヒッパリオン | *Hipparion* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `megalodon` | メガロドン | *Otodus megalodon* | 海の動物 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `livyatan` | リヴィアタン | *Livyatan melvillei* | 海の動物 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `sivatherium` | シヴァテリウム | *Sivatherium* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `australopithecus` | アウストラロピテクス | *Australopithecus afarensis* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `neogene-birds` | 草原の鳥たち（新第三紀） | *Aves (representative group)* | 陸の生きもの | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `neogene-mammals` | 小型哺乳類（新第三紀） | *Mammalia (representative group)* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `neogene-insects` | 草原の昆虫たち（新第三紀） | *Insecta (representative group)* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `neogene-grass` | イネ科の草原 | *Poaceae (representative group)* | 植物 | 立っている植物 | ✅ | ✅ |
+| `merychippus` | メリキップス | *Merychippus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `teleoceras` | テレオケラス | *Teleoceras* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `pygoscelis` | アデリーペンギン属 | *Pygoscelis* | 鳥類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `platybelodon` | プラティベロドン | *Platybelodon* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `chalicotherium` | カリコテリウム | *Chalicotherium* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `dryopithecus` | ドリオピテクス | *Dryopithecus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `gomphotherium` | ゴンフォテリウム | *Gomphotherium* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `proconsul` | プロコンスル | *Proconsul* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `ardipithecus` | アルディピテクス | *Ardipithecus ramidus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `phorusrhacos` | フォルスラコス | *Phorusrhacos* | 鳥類 | 歩く（横から） | ✅ | ✅ |
+| `argentavis` | アルゲンタビス | *Argentavis magnificens* | 鳥類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `thalassocnus` | タラッソクヌス | *Thalassocnus* | 哺乳類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `astrapotherium` | アストラポテリウム | *Astrapotherium* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `dromornis` | ドロモルニス | *Dromornis* | 鳥類 | 歩く（横から） | ✅ | ✅ |
+| `obdurodon` | オブドゥロドン | *Obdurodon* | 哺乳類 | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `nimbadon` | ニンバドン | *Nimbadon lavarackorum* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `odobenocetops` | オドベノケトプス | *Odobenocetops* | 哺乳類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `desmostylus` | デスモスチルス | *Desmostylus* | 哺乳類 | 底の近くを泳ぐ（横から） | ✅ | ✅ |
+| `carcharodon-hastalis` | カーカロドン・ハスタリス | *Carcharodon hastalis* | 魚類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `isurus` | アオザメ属 | *Isurus* | 魚類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `clypeaster` | タコノマクラ属 | *Clypeaster* | ウニの仲間 | 歩く（横から） | ✅ | ✅ |
+| `sequoia` | セコイア | *Sequoia* | 植物 | 立っている植物 | ✅ | ✅ |
+| `acacia` | アカシア属 | *Acacia* | 植物 | 立っている植物 | ✅ | ✅ |
+| `proplebeia` | プロプレベイア | *Proplebeia dominicana* | 節足動物 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `cenozoic-grassland` | 新第三紀の草原 | — | 現象 | 陸の景色 | ✅ | 不要 |
+
+遠景（任意）：`backdrop-neogene-land` ✅、`backdrop-neogene-sea` ✅、`backdrop-neogene-deep` ✅
+
+## 第四紀（Quaternary）
+
+| slug | 名前 | 学名 | 種類 | 観察での姿 | 図鑑 jpg | スプライト png |
+|---|---|---|---|---|---|---|
+| `woolly-mammoth` | ケナガマンモス | *Mammuthus primigenius* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `smilodon` | スミロドン | *Smilodon* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `megatherium` | メガテリウム | *Megatherium* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `woolly-rhino` | ケブカサイ | *Coelodonta antiquitatis* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `megaloceros` | メガロケロス | *Megaloceros giganteus* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `homo-sapiens` | ホモ・サピエンス | *Homo sapiens* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `quaternary-birds` | 第四紀の鳥たち | *Aves (representative group)* | 陸の生きもの | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `quaternary-mammals` | 第四紀の小型哺乳類 | *Mammalia (representative group)* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `quaternary-insects` | 第四紀の昆虫たち | *Insecta (representative group)* | 陸の生きもの | 歩く（横から） | ✅ | ✅ |
+| `holocene-oak` | 完新世のオーク | *Quercus (representative group)* | 植物 | 立っている植物 | ✅ | ✅ |
+| `mastodon` | アメリカマストドン | *Mammut americanum* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `elasmotherium` | エラスモテリウム | *Elasmotherium sibiricum* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `glyptodon` | グリプトドン | *Glyptodon* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `mylodon` | ミロドン | *Mylodon darwinii* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `loxodonta` | アフリカゾウ属 | *Loxodonta* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `dire-wolf` | ダイアウルフ | *Aenocyon dirus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `panthera-leo` | ライオン | *Panthera leo* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `giraffa` | キリン属 | *Giraffa* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `equus-ferus` | 野生のウマ | *Equus ferus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `diprotodon` | ディプロトドン | *Diprotodon optatum* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `thylacoleo` | ティラコレオ | *Thylacoleo carnifex* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `macropus` | ハイイロカンガルーの仲間 | *Macropus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `genyornis` | ゲニオルニス | *Genyornis newtoni* | 鳥類 | 歩く（横から） | ✅ | ✅ |
+| `homo-erectus` | ホモ・エレクトス | *Homo erectus* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `neanderthal` | ネアンデルタール人 | *Homo neanderthalensis* | 哺乳類 | 歩く（横から） | ✅ | ✅ |
+| `great-auk` | オオウミガラス | *Pinguinus impennis* | 鳥類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `hydrodamalis` | ステラーカイギュウ | *Hydrodamalis gigas* | 哺乳類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `quaternary-betula` | 氷期のカバノキ属 | *Betula* | 植物 | 立っている植物 | ✅ | ✅ |
+| `chelonoidis` | 南アメリカのリクガメ | *Chelonoidis* | 爬虫類 | 歩く（横から） | ✅ | ✅ |
+| `megadyptes` | キンメペンギン属 | *Megadyptes* | 鳥類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `salmo` | サケ・マスの仲間 | *Salmo* | 魚類 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `bombus` | マルハナバチ属 | *Bombus* | 節足動物 | 泳ぐ・漂う（横から） | ✅ | ✅ |
+| `quaternary-picea` | 氷期のトウヒ属 | *Picea* | 植物 | 立っている植物 | ✅ | ✅ |
+| `ostrea` | ヨーロッパのカキ | *Ostrea edulis* | 二枚貝 | 歩く（横から） | ✅ | ✅ |
+| `quaternary-ice` | 第四紀の氷床 | — | 現象 | 陸の景色 | ✅ | 不要 |
+
+遠景（任意）：`backdrop-quaternary-land` ✅、`backdrop-quaternary-sea` ✅、`backdrop-quaternary-deep` ✅
 
 ## 生成プロンプト（例）
 
