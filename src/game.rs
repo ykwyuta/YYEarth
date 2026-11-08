@@ -518,11 +518,16 @@ impl Game {
     #[cfg_attr(windows, allow(dead_code))]
     pub fn hit_kind(&self, x: f32, y: f32) -> u32 {
         let (x, y) = (x / self.gfx.ui, y / self.gfx.ui);
+        // Cards are tappable buttons, but a swipe anywhere in the grid scrolls.
+        // Keep the header (period tabs and Close) outside this gesture region.
+        if self.panel == Panel::Guide {
+            let (x0, y0, x1, y1, _, _, _) = self.guide_layout();
+            if x >= x0 && x <= x1 && y >= y0 && y <= y1 {
+                return 3;
+            }
+        }
         if self.button_at(x, y).is_some() {
             return 1;
-        }
-        if self.panel == Panel::Guide {
-            return 3;
         }
         if self.panel != Panel::None || self.screen == Screen::Title || self.photo.is_some() {
             return 1;
@@ -3279,6 +3284,36 @@ mod tests {
         let saved = Progress::from_bytes(&g.prog.to_bytes()).unwrap();
         for (i, m) in MISSIONS.iter().enumerate().filter(|(_, m)| m.period >= TRIASSIC) {
             assert!(saved.is_done(i), "{}", m.title.1);
+        }
+    }
+
+    #[test]
+    fn guide_cards_accept_swipes_and_taps_at_mobile_scales() {
+        for (width, height) in [(844, 390), (1280, 720), (2532, 1170)] {
+            let mut g = Game::new(Gfx::new(width, height));
+            g.panel = Panel::Guide;
+            g.touch = true;
+            g.render();
+            let ui = g.gfx.ui;
+            let card = g.buttons.iter().find(|b| matches!(b.act, Act::Entry(_))).unwrap();
+            let (x, y) = ((card.x0 + card.x1) * 0.5, (card.y0 + card.y1) * 0.5);
+            let entry = card.act;
+            assert_eq!(g.hit_kind(x * ui, y * ui), 3, "card at {width}x{height}");
+            let (x0, y0, _, _, _, cw, _) = g.guide_layout();
+            assert_eq!(g.hit_kind((x0 + cw + 5.0) * ui, (y0 + 5.0) * ui), 3, "gap");
+            for b in g.buttons.iter().filter(|b| matches!(b.act, Act::GuideTab(_) | Act::Close)) {
+                assert_eq!(g.hit_kind((b.x0 + b.x1) * 0.5 * ui, (b.y0 + b.y1) * 0.5 * ui), 1);
+            }
+            assert!(g.guide_max > 0.0);
+            g.handle(Ev::Scroll(-40.0));
+            assert_eq!(g.guide_scroll, 40.0_f32.min(g.guide_max));
+            assert_eq!(g.panel, Panel::Guide);
+            g.handle(Ev::Scroll(-10000.0));
+            assert_eq!(g.guide_scroll, g.guide_max);
+            g.handle(Ev::Scroll(10000.0));
+            assert_eq!(g.guide_scroll, 0.0);
+            g.handle(Ev::Down(0, x, y));
+            if let Act::Entry(e) = entry { assert_eq!(g.panel, Panel::Entry(e)); }
         }
     }
 

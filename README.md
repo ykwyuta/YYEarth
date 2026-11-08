@@ -129,6 +129,7 @@ iPad・iPhoneでは、画面をタップして指を離すと音声を初期化�
 cargo test --release --lib
 cargo test --release --lib --features headless  # Windowsでも画面なしで移動・撮影・描画を検証
 npm run test:voice                 # 音声ガイド・iPad向け初期化の回帰テスト
+npm run test:touch                 # 図鑑のスワイプ・タップ・慣性スクロールの回帰テスト
 python tools/audit_readings.py --check  # 日本語熟語の読み辞書の登録漏れ
 ```
 
