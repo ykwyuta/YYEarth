@@ -19,6 +19,7 @@ mod dive;
 mod earth;
 mod game;
 mod life;
+mod guide;
 mod mission;
 mod progress;
 mod rng;

@@ -85,6 +85,7 @@ enum Act {
     Close,
     Entry(usize),
     Goto(Target),
+    EntryPage(i32),
     /// 宿題を選ぶ（どの順番でも）
     SelectMission(usize),
     /// まだ合格していない次・前の宿題へ
@@ -107,6 +108,44 @@ enum Act {
     MissionCard,
     Boost,
     Jump(bool),
+}
+
+/// 計測結果は画面サイズと言語が変わるまで再利用する。
+struct EntryBook {
+    key: (usize, lang::Lang, u32, u32),
+    pages: Vec<(String, String)>,
+}
+
+/// UTF-8 の文字境界で区切り、各ページの全文が表示領域に収まるようにする。
+fn reading_pages(gfx: &mut Gfx, sections: &[crate::guide::Section], width: f32, height: f32) -> Vec<(String, String)> {
+    let mut pages = Vec::new();
+    for section in sections {
+        let mut rest = section.body.as_str();
+        while !rest.is_empty() {
+            let mut boundaries: Vec<usize> = rest.char_indices().map(|(i, _)| i).collect();
+            boundaries.push(rest.len());
+            let (mut low, mut high) = (0, boundaries.len() - 1);
+            while low < high {
+                let mid = (low + high + 1) / 2;
+                if gfx.measure_h(&rest[..boundaries[mid]], Font::Normal, width) <= height {
+                    low = mid;
+                } else {
+                    high = mid - 1;
+                }
+            }
+            // 通常は複数行が入る。極小ウィンドウでも必ず前へ進む。
+            let mut end = boundaries[low.max(1)];
+            if end < rest.len() {
+                // ページ末尾付近の文末を優先し、できるだけ文を途中で切らない。
+                if let Some((i, c)) = rest[..end].char_indices().rev().find(|(i, c)| *i >= end / 2 && matches!(c, '。' | '！' | '？' | '\n')) {
+                    end = i + c.len_utf8();
+                }
+            }
+            pages.push((section.title.to_string(), rest[..end].to_string()));
+            rest = &rest[end..];
+        }
+    }
+    pages
 }
 
 struct Button {
@@ -178,6 +217,8 @@ pub struct Game {
     clock: f32,
     guide_scroll: f32,
     guide_max: f32,
+    entry_page: usize,
+    entry_book: Option<EntryBook>,
     /// 図鑑で開いている巻（紀）
     guide_period: usize,
     /// 宿題の一覧で開いている紀
@@ -327,6 +368,8 @@ impl Game {
             flash: 0.0,
             clock: 0.0,
             guide_scroll: 0.0,
+            entry_page: 0,
+            entry_book: None,
             guide_period: 0,
             mission_tab: 0,
             radar: None,
@@ -562,8 +605,15 @@ impl Game {
         let m = &MISSIONS[self.prog.mission];
         match self.panel {
             Panel::Entry(e) => {
-                let desc = if e < n_species() { SPECIES[e].desc.get() } else { PHENOMS[e - n_species()].desc.get() };
-                format!("{}。{}", entry_name(e), desc)
+                if self.prog.stars[e] == 0 {
+                    return t!("まだ撮影していない。時代と場所を調べて、探しに行こう。", "Not photographed yet. Check the time and place, then go exploring.", "尚未拍摄。查看时代和地点，出发寻找吧。").to_string();
+                }
+                if let Some(book) = &self.entry_book {
+                    if let Some((title, body)) = book.pages.get(self.entry_page) {
+                        return format!("{}。{}。{}", entry_name(e), title, body);
+                    }
+                }
+                entry_name(e).to_string()
             }
             Panel::Missions => format!("{}。{}", m.title.get(), m.brief.get()),
             Panel::Guide => t!("生きものの絵を押すと、お話が聞けるよ。", "Choose a creature's picture to hear about it.", "点击生物图片，听听它的故事吧。").to_string(),
@@ -914,6 +964,8 @@ impl Game {
             Ev::Wheel(d) => {
                 if self.panel == Panel::Guide {
                     self.guide_scroll = (self.guide_scroll - d * 60.0).clamp(0.0, self.guide_max);
+                } else if matches!(self.panel, Panel::Entry(_)) {
+                    if d != 0.0 { self.do_act(Act::EntryPage(if d < 0.0 { 1 } else { -1 })); }
                 } else if self.panel == Panel::None {
                     match self.screen {
                         Screen::Map => {
@@ -988,9 +1040,13 @@ impl Game {
             }
             Panel::Entry(i) => {
                 if k == VK_LEFT || k == 0x41 {
-                    self.panel = Panel::Entry((i + n_entries() - 1) % n_entries());
+                    self.do_act(Act::Entry((i + n_entries() - 1) % n_entries()));
                 } else if k == VK_RIGHT || k == 0x44 {
-                    self.panel = Panel::Entry((i + 1) % n_entries());
+                    self.do_act(Act::Entry((i + 1) % n_entries()));
+                } else if k == VK_DOWN || k == 0x22 || k == VK_SPACE {
+                    self.do_act(Act::EntryPage(1));
+                } else if k == VK_UP || k == 0x21 {
+                    self.do_act(Act::EntryPage(-1));
                 } else if k == VK_ESCAPE || k == VK_BACK || k == VK_F2 || k == 0x47 {
                     self.panel = Panel::Guide;
                 }
@@ -1142,10 +1198,21 @@ impl Game {
             Act::Entry(i) => {
                 if i < n_entries() {
                     self.prog.fresh[i] = false;
+                    self.entry_page = 0;
+                    self.entry_book = None;
                     self.panel = Panel::Entry(i);
                 }
             }
             Act::Goto(tg) => self.goto(tg),
+            Act::EntryPage(delta) => {
+                if let Panel::Entry(e) = self.panel {
+                    if self.prog.stars[e] > 0 {
+                        if let Some(book) = &self.entry_book {
+                            self.entry_page = (self.entry_page as i32 + delta).clamp(0, book.pages.len().saturating_sub(1) as i32) as usize;
+                        }
+                    }
+                }
+            }
             Act::SelectMission(i) => {
                 if i < MISSIONS.len() {
                     self.prog.mission = i;
@@ -2576,67 +2643,68 @@ impl Game {
         self.add_button(w - 174.0, top + 10.0, w - 124.0, top + 44.0, "▶", Act::Entry(next), true, false);
         let (tx, tw) = (split + 14.0, x1 - split - 14.0);
         let mut y = y0;
-        if e < ns {
-            let sp = &SPECIES[e];
-            let name = if found { sp.name.get() } else { "？？？" };
-            self.gfx.text(name, tx, y, tw, 34.0, Font::TitleMid, TEXT);
-            y += 40.0;
-            if found {
-                self.gfx.text(&format!("{}　/　{}", sp.sci, sp.group.get()), tx, y, tw, 20.0, Font::Normal, DIM);
-                y += 26.0;
-                let _ = st;
+        let name = if found { entry_name(e) } else { "？？？" };
+        let name_h = self.gfx.measure_h(name, Font::TitleMid, tw).max(34.0);
+        self.gfx.text(name, tx, y, tw, name_h, Font::TitleMid, TEXT);
+        y += name_h + 8.0;
+        if found {
+            // ヘッダー・ページ操作・レーダーの領域を本文の高さから除く。
+            let title_h = 26.0;
+            let body_y = y + title_h + 8.0;
+            let body_h = (y1 - 98.0 - body_y).max(28.0);
+            let key = (e, lang::lang(), tw.to_bits(), body_h.to_bits());
+            if self.entry_book.as_ref().map(|b| b.key) != Some(key) {
+                let mut sections = crate::guide::sections(e, lang::lang());
+                let metadata = if e < ns {
+                    let sp = &SPECIES[e];
+                    format!("{} / {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n\n",
+                        sp.sci, sp.group.get(),
+                        t!("時代", "When", "时代"), span_text(sp.t0, sp.t1),
+                        t!("すみか", "Habitat", "栖息地"), hab_list(sp.hab),
+                        t!("化石の産地", "Fossils", "化石产地"), place_text(sp),
+                        t!("大きさ", "Size", "大小"), size_text(sp.len_cm))
+                } else {
+                    let ph = &PHENOMS[e - ns];
+                    format!("{}: {}\n\n", t!("時代", "When", "时代"), span_text(ph.t0, ph.t1))
+                };
+                sections[0].body.insert_str(0, &metadata);
+                self.entry_book = Some(EntryBook { key, pages: reading_pages(&mut self.gfx, &sections, tw, body_h) });
+                self.entry_page = 0;
             }
-            let rows: Vec<(&str, String)> = vec![
-                (t!("時代", "When", "时代"), span_text(sp.t0, sp.t1)),
-                (t!("すみか", "Habitat", "栖息地"), hab_list(sp.hab)),
-                (t!("化石の産地", "Fossils", "化石产地"), place_text(sp)),
-                (t!("大きさ", "Size", "大小"), size_text(sp.len_cm)),
-            ];
-            for (k, v) in rows {
-                if !found && k == t!("大きさ", "Size", "大小") {
-                    continue;
-                }
-                self.gfx.text(k, tx, y, 96.0, 20.0, Font::Normal, ACCENT);
-                let hh = self.gfx.measure_h(&v, Font::Normal, tw - 100.0).max(20.0);
-                self.gfx.text(&v, tx + 100.0, y, tw - 100.0, hh, Font::Normal, TEXT);
-                y += hh + 6.0;
-            }
-            y += 8.0;
-            if found {
-                let d = sp.desc.get();
-                let hh = self.gfx.measure_h(d, Font::Normal, tw);
-                self.gfx.text(d, tx, y, tw, hh, Font::Normal, TEXT);
-                y += hh + 12.0;
-                let f = format!("💡 {}", sp.fact.get());
-                let hh = self.gfx.measure_h(&f, Font::Normal, tw);
-                if y + hh < y1 - 50.0 {
-                    self.gfx.text(&f, tx, y, tw, hh, Font::Normal, [0.75, 0.95, 0.9, 1.0]);
-                }
-                // もう一度会いに行くためのレーダー
-                self.add_button(tx, y1 - 44.0, tx + 220.0, y1 - 6.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
-            } else {
-                self.gfx.text(t!("まだ撮影していない。上の時代と場所で探してみよう。", "Not photographed yet. Look for it at the time and place above.", "还没有拍到。按上面的时代和地点去找找吧。"), tx, y, tw, 40.0, Font::Normal, DIM);
-                y += 48.0;
-                self.add_button(tx, y, tx + 220.0, y + 38.0, t!("探しに行く", "Go look for it", "去寻找"), Act::Goto(Target::Sp(e)), true, true);
-                self.add_button(tx + 230.0, y, tx + 450.0, y + 38.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
-            }
+            let book = self.entry_book.as_ref().unwrap();
+            self.entry_page = self.entry_page.min(book.pages.len().saturating_sub(1));
+            let count = book.pages.len();
+            let (title, body) = &book.pages[self.entry_page];
+            self.gfx.text(title, tx, y, tw, title_h, Font::Big, ACCENT);
+            self.gfx.text(body, tx, body_y, tw, body_h, Font::Normal, TEXT);
+            let by = y1 - 90.0;
+            let bw = (tw * 0.32).min(150.0);
+            self.add_button(tx, by, tx + bw, by + 34.0, t!("↑ 前のページ", "↑ Previous", "↑ 上一页"), Act::EntryPage(-1), self.entry_page > 0, false);
+            self.add_button(x1 - bw, by, x1, by + 34.0, t!("次のページ ↓", "Next ↓", "下一页 ↓"), Act::EntryPage(1), self.entry_page + 1 < count, false);
+            self.gfx.text(&format!("{} / {}", self.entry_page + 1, count), tx + bw + 4.0, by + 6.0, tw - 2.0 * bw - 8.0, 24.0, Font::NormalCenter, DIM);
+            self.add_button(tx, y1 - 44.0, (tx + 220.0).min(x1), y1 - 6.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
         } else {
-            let p = e - ns;
-            let ph = &PHENOMS[p];
-            self.gfx.text(if found { ph.name.get() } else { "？？？" }, tx, y, tw, 34.0, Font::TitleMid, TEXT);
-            y += 40.0;
-            if found {
-                let _ = st;
-                let d = ph.desc.get();
-                let hh = self.gfx.measure_h(d, Font::Normal, tw);
-                self.gfx.text(d, tx, y, tw, hh, Font::Normal, TEXT);
-                self.add_button(tx, y1 - 44.0, tx + 220.0, y1 - 6.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
-            } else {
-                self.gfx.text(ph.hint.get(), tx, y, tw, 40.0, Font::Normal, DIM);
-                y += 48.0;
-                self.add_button(tx, y, tx + 220.0, y + 38.0, t!("見に行く", "Go and see", "去看看"), Act::Goto(Target::Ph(p)), true, true);
-                self.add_button(tx + 230.0, y, tx + 450.0, y + 38.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
+            if e < ns {
+                let sp = &SPECIES[e];
+                for (label, value) in [
+                    (t!("時代", "When", "时代"), span_text(sp.t0, sp.t1)),
+                    (t!("すみか", "Habitat", "栖息地"), hab_list(sp.hab)),
+                    (t!("化石の産地", "Fossils", "化石产地"), place_text(sp)),
+                ] {
+                    let text = format!("{}: {}", label, value);
+                    let hh = self.gfx.measure_h(&text, Font::Normal, tw);
+                    self.gfx.text(&text, tx, y, tw, hh, Font::Normal, TEXT);
+                    y += hh + 6.0;
+                }
             }
+            let hint = if e < ns {
+                t!("まだ撮影していない。上の時代と場所で探してみよう。", "Not photographed yet. Look for it at the time and place above.", "还没有拍到。按上面的时代和地点去找找吧。")
+            } else { PHENOMS[e - ns].hint.get() };
+            let hh = self.gfx.measure_h(hint, Font::Normal, tw);
+            self.gfx.text(hint, tx, y + 8.0, tw, hh, Font::Normal, DIM);
+            let target = if e < ns { Target::Sp(e) } else { Target::Ph(e - ns) };
+            self.add_button(tx, y1 - 90.0, (tx + 220.0).min(x1), y1 - 52.0, t!("探しに行く", "Go look for it", "去寻找"), Act::Goto(target), true, true);
+            self.add_button(tx, y1 - 44.0, (tx + 220.0).min(x1), y1 - 6.0, t!("◎ レーダーで探す", "◎ Find with radar", "◎ 用雷达寻找"), Act::Radar(e), true, false);
         }
     }
 
@@ -2987,6 +3055,57 @@ mod tests {
 
     fn game() -> Game {
         Game::new(Gfx::new(1600, 900))
+    }
+
+    #[test]
+    fn reading_pages_preserve_every_character_and_fit_the_available_height() {
+        let mut gfx = Gfx::new(1600, 900);
+        for e in 0..n_entries() {
+            for section in crate::guide::sections(e, lang::Lang::Ja) {
+                let original = section.body.clone();
+                for (width, height) in [(230.0, 100.0), (480.0, 320.0)] {
+                    let pages = reading_pages(&mut gfx, std::slice::from_ref(&section), width, height);
+                    assert_eq!(pages.iter().map(|(_, body)| body.as_str()).collect::<String>(), original);
+                    for (title, body) in pages {
+                        assert_eq!(title, section.title);
+                        assert!(!body.is_empty());
+                        assert!(gfx.measure_h(&body, Font::Normal, width) <= height, "{}", entry_slug(e));
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn entry_pages_navigate_narrate_and_keep_unphotographed_content_hidden() {
+        let mut g = game();
+        g.prog.stars[0] = 1;
+        g.do_act(Act::Entry(0));
+        g.render_entry_ui(0);
+        let count = g.entry_book.as_ref().unwrap().pages.len();
+        assert!(count > 3);
+        let first_voice = g.voice_text();
+        g.key_down(VK_DOWN);
+        assert_eq!(g.entry_page, 1);
+        assert_ne!(g.voice_text(), first_voice);
+        g.do_act(Act::EntryPage(1000));
+        assert_eq!(g.entry_page, count - 1);
+        assert!(g.voice_text().contains(&g.entry_book.as_ref().unwrap().pages[count - 1].1));
+        g.do_act(Act::EntryPage(1));
+        assert_eq!(g.entry_page, count - 1);
+        g.key_down(VK_UP);
+        assert_eq!(g.entry_page, count - 2);
+        g.gfx.resize(900, 420);
+        g.render_entry_ui(0);
+        assert_eq!(g.entry_page, 0);
+        g.key_down(VK_RIGHT);
+        assert_eq!(g.panel, Panel::Entry(1));
+        assert!(g.entry_book.is_none());
+        g.render_entry_ui(1);
+        assert!(g.entry_book.is_none());
+        assert!(!g.voice_text().contains(SPECIES[1].desc.get()));
+        g.do_act(Act::EntryPage(1));
+        assert_eq!(g.entry_page, 0);
     }
 
     #[test]
