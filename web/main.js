@@ -768,7 +768,7 @@ function bindInput() {
     const far = Math.hypot(x - one.x0, y - one.y0) > slop();
     if (one.mode === 'pending' && far) {
       clearTimeout(one.timer);
-      if (one.kind === 0) {
+      if (one.kind === 0 || one.kind === 4) {
         // なぞる：地図を動かす（中ボタンのドラッグとして送る）
         one.mode = 'pan';
         wasm.yy_event(0, one.x0, one.y0, 0);
@@ -886,7 +886,11 @@ function bindInput() {
       e.preventDefault();
       let d = e.deltaMode === 1 ? -e.deltaY / 3 : e.deltaMode === 2 ? -e.deltaY : -e.deltaY / 100;
       d = Math.max(-3, Math.min(3, d));
-      if (d !== 0) wasm.yy_event(3, d, 0, 0);
+      if (d !== 0) {
+        const [x, y] = pos(e);
+        wasm.yy_event(0, x, y, 0);
+        wasm.yy_event(3, d, 0, 0);
+      }
     },
     { passive: false },
   );

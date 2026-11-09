@@ -140,3 +140,56 @@ test('coasting covers the same distance at different display refresh rates', () 
   };
   assert.ok(Math.abs(distance(8) - distance(16)) < 1e-8);
 });
+
+test('atlas cards tap once but one-finger drags pan in both axes without selecting', () => {
+  const s = setup();
+  s.setKind(4);
+  s.emit('pointerdown', 200, 250);
+  s.emit('pointerup', 200, 250);
+  assert.equal(s.events.filter(e => e[0] === 1 && e[1] === 0).length, 1);
+  s.events.length = 0;
+  s.emit('pointerdown', 200, 250);
+  s.emit('pointermove', 260, 300);
+  s.emit('pointermove', 290, 320);
+  s.emit('pointerup', 290, 320);
+  assert.ok(s.events.some(e => e[0] === 1 && e[1] === 2 && e[2] === 400 && e[3] === 500));
+  assert.ok(s.events.some(e => e[0] === 0 && e[1] === 580 && e[2] === 640));
+  assert.equal(s.events.filter(e => e[0] === 1 && e[1] === 0).length, 0);
+  assert.equal(s.frames.size, 0);
+});
+
+test('atlas pinch sends midpoint translation and anchored zoom, then suppresses a remaining-finger tap', () => {
+  const s = setup();
+  s.setKind(4);
+  s.emit('pointerdown', 200, 250);
+  s.emit('pointerdown', 300, 250, { pointerId: 2 });
+  s.emit('pointermove', 350, 270, { pointerId: 2 });
+  s.emit('pointermove', 160, 230);
+  assert.ok(s.events.some(e => e[0] === 3 && e[1] > 0));
+  assert.ok(s.events.some(e => e[0] === 0 && e[1] === 550 && e[2] === 520));
+  s.emit('pointerup', 350, 270, { pointerId: 2 });
+  s.emit('pointerup', 160, 230);
+  assert.equal(s.events.filter(e => e[0] === 1 && e[1] === 0).length, 0);
+  assert.equal(s.events.filter(e => e[0] === 2 && e[1] === 2).length, 1);
+});
+
+test('atlas minimap responds immediately and keeps tracking a finger', () => {
+  const s = setup();
+  s.setKind(2);
+  s.emit('pointerdown', 600, 100);
+  s.emit('pointermove', 630, 120);
+  s.emit('pointerup', 630, 120);
+  assert.equal(s.events.filter(e => e[0] === 1 && e[1] === 0).length, 1);
+  assert.ok(s.events.some(e => e[0] === 0 && e[1] === 1260 && e[2] === 240));
+  assert.equal(s.events.filter(e => e[0] === 2 && e[1] === 0).length, 1);
+});
+
+test('wheel zoom carries the wheel cursor position even without a preceding pointermove', () => {
+  const s = setup();
+  s.setKind(4);
+  s.emit('wheel', 550, 250, { pointerType: 'mouse', deltaY: -100, deltaMode: 0 });
+  const zoom = s.events.findIndex(e => e[0] === 3);
+  assert.ok(zoom > 0);
+  assert.deepEqual(s.events[zoom - 1], [0, 1100, 500, 0]);
+  assert.equal(s.events[zoom][1], 1);
+});

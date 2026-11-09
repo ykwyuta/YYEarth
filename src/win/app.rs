@@ -67,6 +67,11 @@ extern "system" fn wndproc(hwnd: HWND, msg: u32, wp: WPARAM, lp: LPARAM) -> LRES
             }
             WM_MOUSEWHEEL => {
                 let d = ((wp.0 >> 16) & 0xffff) as i16 as f32 / 120.0;
+                let (x, y) = lp_xy(lp);
+                let mut cursor = POINT { x: x as i32, y: y as i32 };
+                if ScreenToClient(hwnd, &mut cursor).as_bool() {
+                    push(Ev::MouseMove(cursor.x as f32, cursor.y as f32));
+                }
                 push(Ev::Wheel(d));
                 LRESULT(0)
             }

@@ -1,5 +1,6 @@
 //! A deliberately pruned cladogram. Fossils are examples on branches, never
-//! asserted to be direct ancestors. Branch lengths do not encode time.
+//! asserted to be direct ancestors. Branch points are schematic; specimen
+//! ranges use the catalogue ages on a separate, piecewise time axis.
 use crate::{earth::PERIODS, lang::L, life::SPECIES};
 
 pub struct Node {
@@ -70,9 +71,161 @@ pub fn on_path(ancestor: usize, mut node: usize) -> bool {
     }
 }
 
+pub const PRELUDE: f32 = 1100.0;
+pub const PERIOD_HEIGHT: f32 = 460.0;
+pub const CARD_W: f32 = 264.0;
+pub const CARD_H: f32 = 112.0;
+
+/// Equal-height periods keep short recent intervals navigable. Within each
+/// band ages are linear. The header above the Cambrian is intentionally not dated.
+pub fn age_y(age: f32) -> f32 {
+    for (i, p) in PERIODS.iter().enumerate() {
+        if age >= p.t1 {
+            return PRELUDE + (i as f32 + ((p.t0 - age) / (p.t0 - p.t1)).clamp(0.0, 1.0)) * PERIOD_HEIGHT;
+        }
+    }
+    PRELUDE + PERIODS.len() as f32 * PERIOD_HEIGHT
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct Card {
+    pub entry: usize,
+    pub node: usize,
+    pub x: f32,
+    pub y: f32,
+    pub start: f32,
+    pub end: f32,
+}
+
+pub struct Map {
+    pub nodes: Vec<(f32, f32)>,
+    pub cards: Vec<Card>,
+    pub width: f32,
+    pub height: f32,
+}
+
+impl Map {
+    pub fn new() -> Self {
+        let mut result = Self { nodes: vec![(0.0, 0.0); NODES.len()], cards: Vec::new(), width: 0.0, height: PRELUDE + PERIODS.len() as f32 * PERIOD_HEIGHT + 100.0 };
+        let mut columns = vec![0; NODES.len()];
+        for (n, node) in NODES.iter().enumerate() {
+            let mut entries: Vec<_> = node.examples.iter().map(|slug| SPECIES.iter().position(|s| s.slug == *slug).expect("tree example exists")).collect();
+            entries.sort_by(|&a, &b| age_y((SPECIES[a].t0 + SPECIES[a].t1) * 0.5).total_cmp(&age_y((SPECIES[b].t0 + SPECIES[b].t1) * 0.5)));
+            let mut ends = Vec::new();
+            for entry in entries {
+                let sp = &SPECIES[entry];
+                let y = age_y((sp.t0 + sp.t1) * 0.5) - CARD_H * 0.5;
+                let column = ends.iter().position(|&end| end + 26.0 <= y).unwrap_or(ends.len());
+                if column == ends.len() { ends.push(y + CARD_H); } else { ends[column] = y + CARD_H; }
+                result.cards.push(Card { entry, node: n, x: column as f32 * 300.0, y, start: age_y(sp.t0), end: age_y(sp.t1) });
+            }
+            columns[n] = ends.len();
+        }
+        fn place(n: usize, cursor: &mut f32, columns: &[usize], map: &mut Map) {
+            let left = *cursor;
+            for card in map.cards.iter_mut().filter(|c| c.node == n) { card.x += left; }
+            *cursor += columns[n] as f32 * 300.0;
+            for child in 0..NODES.len() {
+                if NODES[child].parent == Some(n) { place(child, cursor, columns, map); }
+            }
+            map.nodes[n].0 = (left + *cursor - 36.0) * 0.5;
+        }
+        let mut cursor = 120.0;
+        place(0, &mut cursor, &columns, &mut result);
+        result.width = cursor + 120.0;
+        for n in (0..NODES.len()).rev() {
+            let earliest_card = result.cards.iter().filter(|c| c.node == n).map(|c| c.start).fold(f32::INFINITY, f32::min);
+            let earliest_child = NODES.iter().enumerate().filter(|(_, child)| child.parent == Some(n)).map(|(child, _)| result.nodes[child].1).fold(f32::INFINITY, f32::min);
+            result.nodes[n].1 = earliest_card.min(earliest_child) - 72.0;
+        }
+        result
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Camera {
+    pub x: f32,
+    pub y: f32,
+    pub zoom: f32,
+}
+
+impl Camera {
+    pub fn new() -> Self { Self { x: 0.0, y: 0.0, zoom: 0.0 } }
+
+    pub fn fit(&mut self, map: &Map, width: f32, height: f32) {
+        self.x = map.width * 0.5;
+        self.y = map.height * 0.5;
+        self.zoom = (width / map.width).min(height / map.height) * 0.94;
+    }
+
+    pub fn clamp(&mut self, map: &Map, width: f32, height: f32) {
+        let min = (width / map.width).min(height / map.height) * 0.94;
+        self.zoom = self.zoom.clamp(min, 2.4);
+        fn bound(center: f32, size: f32, extent: f32) -> f32 {
+            if size >= extent { extent * 0.5 } else { center.clamp(size * 0.5, extent - size * 0.5) }
+        }
+        self.x = bound(self.x, width / self.zoom, map.width);
+        self.y = bound(self.y, height / self.zoom, map.height);
+    }
+
+    /// Anchor-preserving zoom. Coordinates are relative to the viewport centre.
+    pub fn zoom_at(&mut self, factor: f32, x: f32, y: f32, map: &Map, width: f32, height: f32) {
+        let before = (self.x + x / self.zoom, self.y + y / self.zoom);
+        self.zoom *= factor;
+        self.clamp(map, width, height);
+        self.x = before.0 - x / self.zoom;
+        self.y = before.1 - y / self.zoom;
+        self.clamp(map, width, height);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn atlas_layout_orders_time_and_branches_without_overlapping_cards() {
+        let map = Map::new();
+        assert!(map.width > 4000.0 && map.height > 6000.0);
+        for (n, &(x, y)) in map.nodes.iter().enumerate() {
+            assert!(x > 0.0 && x < map.width && y > 0.0 && y < map.height, "node {n}: {x},{y}");
+            if let Some(parent) = NODES[n].parent { assert!(map.nodes[parent].1 < y); }
+        }
+        assert_eq!(map.cards.len(), NODES.iter().map(|n| n.examples.len()).sum::<usize>());
+        for (i, a) in map.cards.iter().enumerate() {
+            assert!(a.start <= a.y + CARD_H * 0.5 && a.y + CARD_H * 0.5 <= a.end);
+            assert!(map.nodes[a.node].1 < a.start);
+            for b in &map.cards[i + 1..] {
+                assert!(a.x + CARD_W <= b.x || b.x + CARD_W <= a.x || a.y + CARD_H <= b.y || b.y + CARD_H <= a.y, "overlap {} / {}", a.entry, b.entry);
+            }
+        }
+        for (i, p) in PERIODS.iter().enumerate() {
+            assert!((age_y(p.t0) - (PRELUDE + i as f32 * PERIOD_HEIGHT)).abs() < 0.01);
+            assert!((age_y(p.t1) - (PRELUDE + (i + 1) as f32 * PERIOD_HEIGHT)).abs() < 0.01);
+        }
+    }
+
+    #[test]
+    fn atlas_zoom_keeps_its_anchor_and_camera_stays_in_bounds() {
+        let map = Map::new();
+        let mut camera = Camera::new();
+        camera.fit(&map, 1100.0, 600.0);
+        let fit = camera;
+        camera.zoom = 0.6;
+        let anchor = (camera.x + 180.0 / camera.zoom, camera.y - 100.0 / camera.zoom);
+        camera.zoom_at(1.7, 180.0, -100.0, &map, 1100.0, 600.0);
+        assert!((camera.x + 180.0 / camera.zoom - anchor.0).abs() < 0.01);
+        assert!((camera.y - 100.0 / camera.zoom - anchor.1).abs() < 0.01);
+        camera.zoom_at(1000.0, 0.0, 0.0, &map, 1100.0, 600.0);
+        assert_eq!(camera.zoom, 2.4);
+        camera.x = -100000.0;
+        camera.y = 100000.0;
+        camera.clamp(&map, 1100.0, 600.0);
+        assert!(camera.x - 550.0 / camera.zoom >= -0.01);
+        assert!(camera.y + 300.0 / camera.zoom <= map.height + 0.01);
+        camera.zoom_at(0.00001, 0.0, 0.0, &map, 1100.0, 600.0);
+        assert_eq!(camera, fit);
+    }
+
     #[test]
     fn tree_examples_are_unique_existing_entries_and_cover_every_period() {
         let mut seen = std::collections::HashSet::new();
