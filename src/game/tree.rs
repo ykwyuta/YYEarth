@@ -275,7 +275,9 @@ impl Game {
     }
 }
 
-#[cfg(test)]
+// These simulations use the portable renderer, as do game.rs's UI tests.
+// The native renderer requires a real HWND and is built separately in CI.
+#[cfg(all(test, any(not(windows), feature = "headless")))]
 mod tests {
     use super::*;
 
