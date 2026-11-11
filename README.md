@@ -18,7 +18,7 @@ cd dist && python3 -m http.server 8000
 
 ブラウザで http://localhost:8000/ を開く（WebGL2 が必要）。`?lang=en` / `?lang=zh` で表示言語、`?touch=1` でタッチ向けの画面を試せます。
 
-更新したのに古い版が表示されるときは、タイトル画面か操作説明（F3）の「キャッシュを消して再読み込み」を2回押す。Service Worker・Cache Storage を消し、ページと wasm を取り直して読み込み直す（記録と言語の設定は残る）。
+更新したのに古い版が表示されるときは、操作説明（F3）の「キャッシュを消して再読み込み」を2回押す。Service Worker・Cache Storage を消し、ページと wasm を取り直して読み込み直す（記録と言語の設定は残る）。
 
 Windows 版：`cargo run --release --bin yyearth-win`（記録は `%APPDATA%\yyearth\saves`）。
 
