@@ -1113,7 +1113,9 @@ impl Game {
         }
         match self.screen {
             Screen::Title => {
-                if k == VK_RETURN || k == VK_SPACE {
+                if k == VK_F3 || k == 0x48 {
+                    self.do_act(Act::Help);
+                } else if k == VK_RETURN || k == VK_SPACE {
                     if self.have_save {
                         self.do_act(Act::Continue);
                     } else {
@@ -2441,12 +2443,8 @@ impl Game {
         self.add_button(bx, by, bx + half, by + 36.0, lang::lang().native(), Act::Lang, true, false);
         self.add_button(bx + half + 10.0, by, bx + bw, by + 36.0, t!("全画面", "Fullscreen", "全屏"), Act::Fullscreen, true, false);
         by += 46.0;
-        self.add_button(bx, by, bx + bw, by + 36.0, t!("記録ファイルを読み込む", "Load a save file", "读取存档文件"), Act::Import, true, false);
-        if platform::CAN_RELOAD {
-            by += 46.0;
-            let label = self.reload_label();
-            self.add_button(bx, by, bx + bw, by + 36.0, label, Act::Reload, true, self.confirm_reload > 0.0);
-        }
+        self.add_button(bx, by, bx + half, by + 36.0, t!("記録ファイルを読み込む", "Load a save file", "读取存档文件"), Act::Import, true, false);
+        self.add_button(bx + half + 10.0, by, bx + bw, by + 36.0, t!("操作説明", "Help", "操作说明"), Act::Help, true, false);
         let foot = t!(
             "西暦2650年。時間旅行学校の宿題で、5億年前から恐竜の時代の終わりまでの地球へ。",
             "The year 2650. A time-travel school assignment takes you from 500 million years ago to the end of the age of dinosaurs.",
@@ -2877,7 +2875,12 @@ impl Game {
         let y0 = self.top_h() + 16.0;
         let y1 = h - 16.0;
         self.panel_box(x0, y0, x0 + pw, y1);
-        self.gfx.text(t!("カプセルの操作", "Capsule controls", "观测舱操作"), x0 + 20.0, y0 + 14.0, pw - 160.0, 26.0, Font::Big, TEXT);
+        let title_w = pw - if platform::CAN_RELOAD { 410.0 } else { 160.0 };
+        self.gfx.text(t!("カプセルの操作", "Capsule controls", "观测舱操作"), x0 + 20.0, y0 + 14.0, title_w, 26.0, Font::Big, TEXT);
+        if platform::CAN_RELOAD {
+            let label = self.reload_label();
+            self.add_button(x0 + pw - 380.0, y0 + 12.0, x0 + pw - 130.0, y0 + 44.0, label, Act::Reload, true, self.confirm_reload > 0.0);
+        }
         self.add_button(x0 + pw - 120.0, y0 + 12.0, x0 + pw - 16.0, y0 + 44.0, t!("閉じる", "Close", "关闭"), Act::Close, true, false);
         let lines: Vec<(&str, &str)> = if self.touch {
             vec![
@@ -2915,20 +2918,15 @@ impl Game {
         self.gfx.text(platform::storage_note(), x0 + 20.0, y, pw - 40.0, 40.0, Font::Small, DIM);
         y += 44.0;
         if y + 36.0 < y1 {
-            let n = if platform::CAN_RELOAD { 3.0 } else { 2.0 };
-            let bw = ((pw - 40.0 - 10.0 * (n - 1.0)) / n).min(240.0);
+            let bw = ((pw - 50.0) / 2.0).min(240.0);
             self.add_button(x0 + 20.0, y, x0 + 20.0 + bw, y + 34.0, t!("記録をファイルに書き出す", "Export save to a file", "导出存档文件"), Act::Export, self.have_save, false);
             self.add_button(x0 + 30.0 + bw, y, x0 + 30.0 + bw * 2.0, y + 34.0, t!("記録ファイルを読み込む", "Load a save file", "读取存档文件"), Act::Import, true, false);
-            if platform::CAN_RELOAD {
-                let label = self.reload_label();
-                self.add_button(x0 + 40.0 + bw * 2.0, y, x0 + 40.0 + bw * 3.0, y + 34.0, label, Act::Reload, true, self.confirm_reload > 0.0);
-            }
         }
     }
 
     fn reload_label(&self) -> &'static str {
         if self.confirm_reload > 0.0 {
-            t!("もう一度押すと再読み込み（記録は残る）", "Press again to reload (saves are kept)", "再按一次重新加载（存档保留）")
+            t!("再読み込みする（記録は残る）", "Reload now (keeps saves)", "再按一次重新加载（存档保留）")
         } else {
             t!("キャッシュを消して再読み込み", "Clear cache and reload", "清除缓存并重新加载")
         }
